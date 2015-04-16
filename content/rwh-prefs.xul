@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<prefwindow id="rwhPrefsDialog"
+            xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+            title="RWH Preferences">
+
+    <prefpane id="rwhPane" orient="vertical">
+        <preferences id="rwhGlobalPref">
+            <preference id="pref-enableRwh" name="extensions.replywithheader.enable" type="bool" instantApply="true" />
+            <preference id="pref-fromAttributionStyle" name="extensions.replywithheader.header.from.style" type="int" instantApply="true" />
+            <preference id="pref-enableRwhTypography" name="extensions.replywithheader.typography" type="bool" instantApply="true" />
+        </preferences>
+
+        <hbox align="left">
+            <checkbox id="enableRwh" label="Enable" preference="pref-enableRwh" />
+        </hbox>
+        <tabbox>
+            <tabs>
+                <tab label="Manage Headers" selected="true"/>
+                <tab label="About"/>
+            </tabs>
+            <tabpanels>
+                <tabpanel orient="vertical">
+                    <hbox align="left">
+                        <label value="From header attribution style:" />
+                        <radiogroup preference="pref-fromAttributionStyle">
+                            <radio value="0" label="Default (From: Name)" />
+                            <radio value="1" label="Extended (From: Name [mailto:email-address])" />
+                        </radiogroup>
+                    </hbox>
+                    <hbox align="left">
+                        <checkbox id="enableRwhTypography" label="Apply typography to headers"
+                                  preference="pref-enableRwhTypography" />
+                    </hbox>
+                </tabpanel>
+                <tabpanel orient="vertical">
+
+                </tabpanel>
+            </tabpanels>
+        </tabbox>
+    </prefpane>
+
+    <script type="application/javascript" src="chrome://replywithheader/content/rwh.js"/>
+    <script type="application/javascript" src="chrome://replywithheader/content/rwh-prefs.js"/>
+
+</prefwindow>
+
