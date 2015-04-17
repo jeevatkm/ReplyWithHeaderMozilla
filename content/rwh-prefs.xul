@@ -2,41 +2,76 @@
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
+<?xml-stylesheet href="data:text/css,
+        radio { font-size: 12px }
+        button { cursor: pointer }
+        " type="text/css"?>
+
 <prefwindow id="rwhPrefsDialog"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-            title="RWH Preferences">
+            title="RWH Preferences" style="width:500px">
 
     <prefpane id="rwhPane" orient="vertical">
         <preferences id="rwhGlobalPref">
             <preference id="pref-enableRwh" name="extensions.replywithheader.enable" type="bool" instantApply="true" />
             <preference id="pref-fromAttributionStyle" name="extensions.replywithheader.header.from.style" type="int" instantApply="true" />
-            <preference id="pref-enableRwhTypography" name="extensions.replywithheader.typography" type="bool" instantApply="true" />
+            <preference id="pref-labelAttributionType" name="extensions.replywithheader.header.label.type" type="int" instantApply="true" />
         </preferences>
 
-        <hbox align="left">
+        <hbox align="center">
             <checkbox id="enableRwh" label="Enable" preference="pref-enableRwh" />
         </hbox>
-        <tabbox>
+        <tabbox style="margin-bottom:7px">
             <tabs>
                 <tab label="Manage Headers" selected="true"/>
                 <tab label="About"/>
             </tabs>
             <tabpanels>
                 <tabpanel orient="vertical">
-                    <hbox align="left">
-                        <label value="From header attribution style:" />
-                        <radiogroup preference="pref-fromAttributionStyle">
+                    <hbox align="center">
+                        <label value="Header 'From' attribution style" />
+                    </hbox>
+                    <hbox align="center">
+                        <radiogroup id="fromAttributionStyle" preference="pref-fromAttributionStyle"
+                                    style="margin-left:30px">
                             <radio value="0" label="Default (From: Name)" />
                             <radio value="1" label="Extended (From: Name [mailto:email-address])" />
                         </radiogroup>
                     </hbox>
-                    <hbox align="left">
-                        <checkbox id="enableRwhTypography" label="Apply typography to headers"
-                                  preference="pref-enableRwhTypography" />
+                    <hbox align="center" style="margin-top:10px">
+                        <label value="Header label and order options [Default or Outlook]" />
+                    </hbox>
+                    <hbox align="center">
+                        <radiogroup id="labelAttributionType" preference="pref-labelAttributionType"
+                                    style="margin-left:30px">
+                            <radio value="0" label="Default" />
+                            <radio value="1" label="Outlook" />
+                        </radiogroup>
                     </hbox>
                 </tabpanel>
                 <tabpanel orient="vertical">
-
+                    <hbox align="center">
+                        <image src='chrome://replywithheader/skin/icon-64.png' width='64' height='64'
+                               style="margin-left:100px"/>
+                        <label value="ReplyWithHeader v1.0" style="font-weight:bold;" />
+                        <label value="&#169; 2015 Jeevanandam M."
+                               style="font-size:12px; margin-top:40px;margin-left:-152px" />
+                    </hbox>
+                    <hbox align="center" style="margin: 40px 0 0 80px">
+                        <button label="Website" oncommand="ReplyWithHeader.Prefs.openWebsite();" />
+                        <button label="Feedback" oncommand="ReplyWithHeader.Prefs.openFeedback();" />
+                        <button label="Support" oncommand="ReplyWithHeader.Prefs.openSupport();" />
+                    </hbox>
+                    <hbox align="center" style="margin-top:40px">
+                        <groupbox>
+                            <caption label="Support ReplyWithHeader"/>
+                            <hbox align="center">
+                                <image src='chrome://replywithheader/skin/bitcoin-24.png' width='24' height='24' />
+                                <label value="1Q87wEWvQyxFHag77fqvabrEuPsAidWpyD" style="font-size:12px" />
+                                <image src='chrome://replywithheader/skin/pp-donate-142x27.png' width='142' height='27' />
+                            </hbox>
+                        </groupbox>
+                    </hbox>
                 </tabpanel>
             </tabpanels>
         </tabbox>
@@ -46,4 +81,3 @@
     <script type="application/javascript" src="chrome://replywithheader/content/rwh-prefs.js"/>
 
 </prefwindow>
-

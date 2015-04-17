@@ -29,5 +29,17 @@ ReplyWithHeader.Prefs = {
 
     get debugEnabled() {
         return this.getBool('extensions.replywithheader.debug');
+    },
+
+    openWebsite: function() {
+        alert('Website');
+    },
+
+    openFeedback: function() {
+        alert('Feedback');
+    },
+
+    openSupport: function() {
+        alert('Support');
     }
 };
