@@ -6,11 +6,11 @@
     <em:id>replywithheader@myjeeva.com</em:id>
     <em:name>ReplyWithHeader</em:name>
     <em:version>1.0</em:version>
+    <em:unpack>false</em:unpack>
     <em:creator>Jeevanandam M.</em:creator>
     <em:description>Quoting headers of email message, few goodies for Thunderbird &amp; Postbox.</em:description>
     <em:homepageURL>http://myjeeva.com/replywithheadermozilla</em:homepageURL>
     <em:optionsURL>chrome://replywithheader/content/rwh-prefs.xul</em:optionsURL>
-    <!-- <em:aboutURL>chrome://replywithheader/content/rwh-about.xul</em:aboutURL> -->
 
     <!-- Thunderbird -->
     <em:targetApplication>

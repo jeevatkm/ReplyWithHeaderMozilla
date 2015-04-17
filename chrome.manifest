@@ -1,5 +1,6 @@
 content replywithheader content/
-skin    replywithheader skin/
+
+skin    replywithheader default/1.0 skin/
 
 # messengercompose.xul [MailCompose Window]
 overlay chrome://messenger/content/messengercompose/messengercompose.xul    chrome://replywithheader/content/messengerComposeOverlay.xul
