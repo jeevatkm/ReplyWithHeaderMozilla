@@ -9,17 +9,19 @@
 
 <prefwindow id="rwhPrefsDialog"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-            title="RWH Preferences" style="width:500px">
+            title="RWH Preferences" style="width:500px"
+            onload="ReplyWithHeader.Prefs.init();">
 
     <prefpane id="rwhPane" orient="vertical">
         <preferences id="rwhGlobalPref">
             <preference id="pref-enableRwh" name="extensions.replywithheader.enable" type="bool" instantApply="true" />
             <preference id="pref-fromAttributionStyle" name="extensions.replywithheader.header.from.style" type="int" instantApply="true" />
-            <preference id="pref-labelAttributionType" name="extensions.replywithheader.header.label.type" type="int" instantApply="true" />
+            <preference id="pref-toccAttributionStyle" name="extensions.replywithheader.header.tocc.style" type="int" instantApply="true" />
         </preferences>
 
         <hbox align="center">
-            <checkbox id="enableRwh" label="Enable" preference="pref-enableRwh" />
+            <checkbox id="enableRwh" label="Enable" preference="pref-enableRwh"
+                    oncommand="ReplyWithHeader.Prefs.toggleRwh();" />
         </hbox>
         <tabbox style="margin-bottom:7px">
             <tabs>
@@ -29,24 +31,59 @@
             <tabpanels>
                 <tabpanel orient="vertical">
                     <hbox align="center">
-                        <label value="Header 'From' attribution style" />
+                        <label id="lblFromAttribution" value="Header 'From' attribution style" />
                     </hbox>
                     <hbox align="center">
                         <radiogroup id="fromAttributionStyle" preference="pref-fromAttributionStyle"
                                     style="margin-left:30px">
-                            <radio value="0" label="Default (From: Name)" />
-                            <radio value="1" label="Extended (From: Name [mailto:email-address])" />
+                            <radio value="0" label="Default" />
+                            <radio value="1" label="Outlook Simple (From: Name)" style="margin-top:-2px" />
+                            <radio value="2" label="Outlook Extended (From: Name [mailto:email-address])"
+                                   style="margin-top:-2px" />
                         </radiogroup>
                     </hbox>
                     <hbox align="center" style="margin-top:10px">
-                        <label value="Header label and order options [Default or Outlook]" />
+                        <label id="lblHeaderlabel" value="Header 'To' &amp; 'Cc' attribution style" />
                     </hbox>
                     <hbox align="center">
-                        <radiogroup id="labelAttributionType" preference="pref-labelAttributionType"
+                        <radiogroup id="toccAttributionStyle" preference="pref-toccAttributionStyle"
                                     style="margin-left:30px">
-                            <radio value="0" label="Default" />
-                            <radio value="1" label="Outlook" />
+                            <radio value="0" label="Default (To: Name1 &lt;email-address1&gt;, ...)" />
+                            <radio value="1" label="Outlook (To: Name1; Name2; ...)" style="margin-top:-2px" />
                         </radiogroup>
+                    </hbox>
+                    <hbox align="center" style="margin-top:10px">
+                        <label id="lblTypography" value="Apply header typography" disabled="true" />
+                    </hbox>
+                    <hbox align="center" style="margin-left:30px">
+                        <label id="lblFontface" value="Font face:" disabled="true" />
+                        <menulist id="hdrFontface" style="width:300px" disabled="true">
+                            <menupopup>
+                                <menuitem label="Tahoma" value="Tahoma" />
+                            </menupopup>
+                        </menulist>
+                    </hbox>
+                    <hbox align="center" style="margin-left:30px;margin-top:-5px">
+                        <label id="lblFontsize" value="Font size:" disabled="true" />
+                        <menulist id="hdrFontsize" style="width:90px" disabled="true">
+                            <menupopup>
+                                <menuitem label="10px" value="10" />
+                                <menuitem label="11px" value="11" />
+                                <menuitem label="12px" value="12" />
+                                <menuitem label="13px" value="13" />
+                                <menuitem label="14px" value="14" />
+                                <menuitem label="15px" value="15" />
+                                <menuitem label="16px" value="16" />
+                                <menuitem label="17px" value="17" />
+                                <menuitem label="18px" value="18" />
+                                <menuitem label="19px" value="19" />
+                                <menuitem label="20px" value="20" />
+                                <menuitem label="21px" value="21" />
+                                <menuitem label="22px" value="22" />
+                                <menuitem label="23px" value="23" />
+                                <menuitem label="24px" value="24" />
+                            </menupopup>
+                        </menulist>
                     </hbox>
                 </tabpanel>
                 <tabpanel orient="vertical">
@@ -60,15 +97,25 @@
                     <hbox align="center" style="margin: 40px 0 0 80px">
                         <button label="Website" oncommand="ReplyWithHeader.Prefs.openWebsite();" />
                         <button label="Feedback" oncommand="ReplyWithHeader.Prefs.openFeedback();" />
-                        <button label="Support" oncommand="ReplyWithHeader.Prefs.openSupport();" />
+                        <button label="Report Issues" oncommand="ReplyWithHeader.Prefs.reportIssues();" />
                     </hbox>
-                    <hbox align="center" style="margin-top:40px">
-                        <groupbox>
-                            <caption label="Support ReplyWithHeader"/>
-                            <hbox align="center">
-                                <image src='chrome://replywithheader/skin/bitcoin-24.png' width='24' height='24' />
-                                <label value="1Q87wEWvQyxFHag77fqvabrEuPsAidWpyD" style="font-size:12px" />
-                                <image src='chrome://replywithheader/skin/pp-donate-142x27.png' width='142' height='27' />
+                    <hbox align="center" style="margin-top:40px;">
+                        <groupbox style="width:430px;padding-bottom:10px;margin:0">
+                            <caption label="Support ReplyWithHeader" style="font-size:13px" />
+                            <hbox align="center" style="margin-bottom:10px;margin-top:5px">
+                                <image src='chrome://replywithheader/skin/bitcoin-24.png' width='24' height='24'
+                                       onclick="ReplyWithHeader.Prefs.copyBtcAddress();"
+                                       tooltiptext="Click here to copy BTC address."
+                                       style="cursor: pointer" />
+                                <label value="1FG6G5tCmFm7vrc7BzUyRxr3RBrMDJA6zp" style="font-size:11px;cursor:pointer"
+                                       onclick="ReplyWithHeader.Prefs.copyBtcAddress();"
+                                       tooltiptext="Click here to copy BTC address." />
+                                <vbox style="margin-left:15px">
+                                <image src='chrome://replywithheader/skin/paypal-btn.png' width='142' height='27'
+                                       onclick="ReplyWithHeader.Prefs.openPaypal();"
+                                       style="cursor: pointer"
+                                       tooltiptext="Click here to Donate via Paypal." />
+                                </vbox>
                             </hbox>
                         </groupbox>
                     </hbox>
