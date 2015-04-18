@@ -7,6 +7,14 @@
         button { cursor: pointer }
         " type="text/css"?>
 
+<!--
+  Copyright (c) 2015 Jeevanandam M. (jeeva@myjeeva.com)
+
+  This Source Code is subject to terms of MIT License.
+  Please refer to LICENSE.txt in the root folder of RWH extension.
+  You download a copy of license at https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE.txt
+  -->
+
 <prefwindow id="rwhPrefsDialog"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
             title="RWH Preferences" style="width:500px"

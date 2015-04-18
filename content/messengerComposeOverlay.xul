@@ -1,5 +1,13 @@
 <?xml version="1.0"?>
 
+<!--
+  Copyright (c) 2015 Jeevanandam M. (jeeva@myjeeva.com)
+
+  This Source Code is subject to terms of MIT License.
+  Please refer to LICENSE.txt in the root folder of RWH extension.
+  You download a copy of license at https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE.txt
+  -->
+
 <overlay id="rwhMessengerComposeOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
     <script type="application/javascript" src="chrome://replywithheader/content/rwh.js"/>

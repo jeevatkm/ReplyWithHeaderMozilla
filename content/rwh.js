@@ -1,5 +1,14 @@
 'use strict';
-const {classes: Cc, interfaces: Ci, utils: Cu} = Components;
+
+/*
+ * Copyright (c) 2015 Jeevanandam M. (jeeva@myjeeva.com)
+ *
+ * This Source Code is subject to terms of MIT License.
+ * Please refer to LICENSE.txt in the root folder of RWH extension.
+ * You download a copy of license at https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE.txt
+ */
+
+const { classes: RCc, interfaces: RCi, utils: RCu } = Components;
 
 var ReplyWithHeader = {
     addonName: 'ReplyWithHeader',
@@ -12,7 +21,7 @@ var ReplyWithHeader = {
     hdrCnt: 4,
 
     Log: {
-        service: Cc['@mozilla.org/consoleservice;1'].getService(Ci.nsIConsoleService),
+        service: RCc['@mozilla.org/consoleservice;1'].getService(RCi.nsIConsoleService),
 
         rwhInfo: function() {
             var rInfo = ReplyWithHeader.addonName + ' ' + ReplyWithHeader.version
@@ -51,7 +60,7 @@ var ReplyWithHeader = {
             }
 
             var srcName = ex.fileName || '';
-            var scriptError = Cc['@mozilla.org/scripterror;1'].createInstance(Ci.nsIScriptError);
+            var scriptError = RCc['@mozilla.org/scripterror;1'].createInstance(RCi.nsIScriptError);
 
             // Addon generates this error, it is better to use warningFlag = 0x1
             scriptError.init(msg + '\n' + ex.message, srcName, stack, ex.lineNumber, 0, 0x1, group);
@@ -76,7 +85,7 @@ var ReplyWithHeader = {
     },
 
     get isReply() {
-        let mct = Ci.nsIMsgCompType;
+        let mct = RCi.nsIMsgCompType;
         let ct = this.composeType;
 
         var reply = (ct == mct.Reply || ct == mct.ReplyAll || mct.ReplyToSender);
@@ -86,7 +95,7 @@ var ReplyWithHeader = {
     },
 
     get isForward() {
-        var forward = (ReplyWithHeader.composeType == Ci.nsIMsgCompType.ForwardInline);
+        var forward = (ReplyWithHeader.composeType == RCi.nsIMsgCompType.ForwardInline);
         ReplyWithHeader.Log.debug('isForward: ' + forward);
 
         return forward;
@@ -400,6 +409,8 @@ var ReplyWithHeader = {
         if (ReplyWithHeader.isEnabled && ReplyWithHeader.isOkayToMoveOn) {
             this.hdrCnt = 4;
 
+            ReplyWithHeader.Log.debug('BEFORE:: ' + gMsgCompose.editor.rootElement.innerHTML);
+
             if (this.isForward) {
                 this.handleForwardMessage();
             } else {
@@ -410,7 +421,7 @@ var ReplyWithHeader = {
 
             //log.debug('gCurrentIdentity.identityName==>' + gCurrentIdentity.identityName);
 
-            ReplyWithHeader.Log.debug(gMsgCompose.editor.rootElement.innerHTML);
+            ReplyWithHeader.Log.debug('BEFORE:: ' + gMsgCompose.editor.rootElement.innerHTML);
         } else {
             ReplyWithHeader.Log.info('ReplyWithHeader is not enabled, also message composeType is not supported.'
                      + '\n kindly enable it from Add-on Preferences.');

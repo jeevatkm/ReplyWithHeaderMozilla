@@ -1,7 +1,15 @@
 'use strict';
 
+/*
+ * Copyright (c) 2015 Jeevanandam M. (jeeva@myjeeva.com)
+ *
+ * This Source Code is subject to terms of MIT License.
+ * Please refer to LICENSE.txt in the root folder of RWH extension.
+ * You download a copy of license at https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE.txt
+ */
+
 ReplyWithHeader.Prefs = {
-    service: Cc['@mozilla.org/preferences-service;1'].getService(Ci.nsIPrefBranch),
+    service: RCc['@mozilla.org/preferences-service;1'].getService(RCi.nsIPrefBranch),
 
     getInt: function(p) {
         return this.service.getIntPref(p);
@@ -55,14 +63,14 @@ ReplyWithHeader.Prefs = {
 
     copyToClipboard: function(str) {
         if (str) {
-            let clipboardHelper = Cc['@mozilla.org/widget/clipboardhelper;1'].getService(Ci.nsIClipboardHelper);
+            let clipboardHelper = RCc['@mozilla.org/widget/clipboardhelper;1'].getService(RCi.nsIClipboardHelper);
             clipboardHelper.copyString(str);
         }
     },
 
     showAlert: function(str) {
         if (str) {
-            let alertsService = Cc['@mozilla.org/alerts-service;1'].getService(Ci.nsIAlertsService);
+            let alertsService = RCc['@mozilla.org/alerts-service;1'].getService(RCi.nsIAlertsService);
             try {
                 alertsService.showAlertNotification('chrome://replywithheader/skin/icon-64.png',
                                                     ReplyWithHeader.addonName, str, false, '', null, '');
@@ -73,7 +81,7 @@ ReplyWithHeader.Prefs = {
     },
 
     openUrlInDefaultBrowser: function(url) {
-        let messenger = Cc['@mozilla.org/messenger;1'].createInstance(Ci.nsIMessenger);
+        let messenger = RCc['@mozilla.org/messenger;1'].createInstance(RCi.nsIMessenger);
         try {
             messenger.launchExternalURL(url);
         } catch(ex) {
