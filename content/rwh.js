@@ -88,7 +88,7 @@ var ReplyWithHeader = {
         let mct = RCi.nsIMsgCompType;
         let ct = this.composeType;
 
-        var reply = (ct == mct.Reply || ct == mct.ReplyAll || mct.ReplyToSender);
+        var reply = (ct == mct.Reply || ct == mct.ReplyAll || mct.ReplyToSender) ? true : false;
         ReplyWithHeader.Log.debug('isReply: ' + reply);
 
         return reply;
@@ -103,7 +103,7 @@ var ReplyWithHeader = {
 
     get isOkayToMoveOn() {
         // Compose type have to be 1=Reply, 2=ReplyAll, 4=ForwardInline, 6=ReplyToSender then
-        var isOkay = (this.isReply || this.isForward);
+        var isOkay = (this.isReply || this.isForward) ? true : false;
         ReplyWithHeader.Log.debug('isOkayToMoveOn: ' + isOkay);
 
         return isOkay;
@@ -144,9 +144,26 @@ var ReplyWithHeader = {
         return gMsgCompose.composeHTML;
     },
 
+    get hostApp() {
+        let appInfo = RCc['@mozilla.org/xre/app-info;1'].getService(RCi.nsIXULAppInfo);
+
+        var app = '';
+        if(appInfo.ID == '{3550f703-e582-4d05-9a08-453d09bdfdc6}') {
+            app = 'Thunderbird';
+        } else if(appInfo.ID == 'postbox@postbox-inc.com') {
+            app = 'Postbox';
+        }
+        ReplyWithHeader.Log.debug('Host Application: ' + app);
+
+        return app;
+    },
+
     getMsgHeader: function(mUri) {
         try {
+            // Ref: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMessenger
             let messengerService = gMessenger.messageServiceFromURI(mUri);
+
+            // Ref: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMsgDBHdr
             return messengerService.messageURIToMsgHdr(mUri);
         } catch(ex) {
             ReplyWithHeader.Log.errorWithException('Unable to get message [' + mUri + ']', ex);
@@ -154,9 +171,9 @@ var ReplyWithHeader = {
         }
     },
 
-    parseDate: function(prtime) {
-        // Input is epoch time
-        let d = new Date(prtime / 1000);
+    parseDate: function(prTime) {
+        // Input is PR time
+        let d = new Date(prTime / 1000);
 
         var nd = d.toString();
         ReplyWithHeader.Log.debug('Parsed date: ' + nd);
@@ -177,6 +194,15 @@ var ReplyWithHeader = {
         d.innerHTML = hs;
 
         return d.firstChild;
+    },
+
+    createBrTags: function(cnt) {
+        var tags = '';
+        for (let i=0; i<cnt; i++) {
+            tags += '<br/>'
+        }
+
+        return tags;
     },
 
     prepareFromHdr: function(author) {
@@ -259,11 +285,19 @@ var ReplyWithHeader = {
 
     parseMsgHeader: function(hdr) {
         // Decoding values into object
+        // Ref: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMsgDBHdr
         var header = { 'from': this.prepareFromHdr(hdr.mime2DecodedAuthor),
                      'to': this.prepareToCcHdr(hdr.mime2DecodedRecipients),
                      'cc': this.prepareToCcHdr(hdr.ccList),
                      'date': this.parseDate(hdr.date),
                      'subject': this.escapeHtml(hdr.mime2DecodedSubject) };
+
+        ReplyWithHeader.Log.debug('hdr.getStringProperty(reply-to): ' + hdr.getStringProperty('reply-to'));
+
+        // Ref: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/NsIMsgCompFields
+        /*ReplyWithHeader.Log.debug('gMsgCompose.compFields.replyTo: ' + gMsgCompose.compFields.replyTo);
+
+        ReplyWithHeader.Log.debug('gCurrentIdentity.replyTo: ' + gCurrentIdentity.replyTo);*/
 
         ReplyWithHeader.Log.debug('\nFrom: ' + header.from
                                 + '\nTo: ' + header.to
@@ -275,10 +309,14 @@ var ReplyWithHeader = {
     },
 
     get createRwhHeader() {
-        let rawhdr = this.getMsgHeader(this.messageUri);
-        let pheader = this.parseMsgHeader(rawhdr);
+        let rawHdr = this.getMsgHeader(this.messageUri);
+        let pheader = this.parseMsgHeader(rawHdr);
 
         var rwhHdr = '<div id="rwhMsgHeader">';
+
+        if (this.isForward) {
+            rwhHdr += this.createBrTags(1);
+        }
 
         // for HTML emails
         if (this.isHtmlMail) {
@@ -288,13 +326,14 @@ var ReplyWithHeader = {
 
             let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontface + '" color="#000000" style="font: ' + fontsize + '.0px ' + fontface + '; color: #000000;">';
             rwhHdr += '<hr style="border:none;border-top:solid #B5C4DF 1.0pt;padding:0;margin:10px 0 5px 0;width:100%;">';
+            rwhHdr += this.createBrTags(0);
             rwhHdr += htmlTagPrefix + '<b>From:</b> ' + pheader.from + '</font></span><br/>';
             rwhHdr += htmlTagPrefix + '<b>Sent:</b> ' + pheader.date + '</font></span><br/>';
             rwhHdr += htmlTagPrefix + '<b>To:</b> '+ pheader.to + '</font></span><br/>';
 
             if (pheader.cc) {
                 rwhHdr += htmlTagPrefix + '<b>Cc:</b> '+ pheader.cc + '</font></span><br/>';
-                this.hdrCnt += 1;
+                this.hdrCnt += 2; // incrementing for Cc header + br tag
             }
 
             rwhHdr += htmlTagPrefix + '<b>Subject:</b> '+ pheader.subject + '</font></span><br/>';
@@ -306,13 +345,15 @@ var ReplyWithHeader = {
 
             if (pheader.cc) {
                 rwhHdr += 'Cc: '+ pheader.cc + '<br/>';
-                this.hdrCnt += 1;
+                this.hdrCnt += 2;  // incrementing for Cc header + br tag
             }
 
-            rwhHdr += 'Subject: '+ pheader.subject + '<br/><br/>';
+            rwhHdr += 'Subject: '+ pheader.subject + '<br/>';
         }
-
+        rwhHdr += this.createBrTags(1);
         rwhHdr += '</div>';
+
+        ReplyWithHeader.Log.debug('RWH header html: ' + rwhHdr);
 
         return rwhHdr;
     },
@@ -321,18 +362,37 @@ var ReplyWithHeader = {
         return gMsgCompose.editor.rootElement.getElementsByClassName(name);
     },
 
-    cleanBrTags: function(node) {
-        ReplyWithHeader.Log.debug('Cleaning BR tag')
+    getElement: function(name) {
+        return this.getByClassName(name)[0];
+    },
 
-        var found = true;
-        while(node && found) {
+    deleteNode: function(node) {
+        gMsgCompose.editor.deleteNode(node);
+    },
+
+    cleanEmptyTags: function(node) {
+        ReplyWithHeader.Log.debug('Cleaning consecutive Empty Tags')
+
+        let toDelete = true;
+        while (node && toDelete) {
             let nextNode = node.nextSibling;
-            if (node.nodeName && node.nodeName.toLowerCase() == 'br') {
-                gMsgCompose.editor.deleteNode(node);
+            toDelete = false;
+            switch (node.nodeType) { // Ref: https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
+                case Node.ELEMENT_NODE:
+                    if (node.nodeName && node.nodeName.toLowerCase() == 'br') {
+                        toDelete = true;
+                    }
+                break;
+                case Node.TEXT_NODE:
+                    if (node.nodeValue == '\n' || node.nodeValue == '\r') {
+                        toDelete = true;
+                    }
+            }
+
+            if (toDelete) {
+                ReplyWithHeader.Log.debug('Delete node: \t' + node.nodeName + '	' + node.nodeValue);
+                this.deleteNode(node);
                 node = nextNode;
-                found = true;
-            } else {
-                found = false;
             }
         }
     },
@@ -340,34 +400,39 @@ var ReplyWithHeader = {
     handleReplyMessage: function() {
         ReplyWithHeader.Log.debug('handleReplyMessage()');
 
-        this.getByClassName('moz-cite-prefix')[0].innerHTML = this.createRwhHeader;
+        let cName = (this.hostApp == 'Postbox') ? '__pbConvHr' : 'moz-cite-prefix';
+        this.getByClassName(cName)[0].innerHTML = this.createRwhHeader;
     },
 
     handleForwardMessage: function() {
-        ReplyWithHeader.Log.warn('handleForwardMessage()');
+        ReplyWithHeader.Log.debug('handleForwardMessage()');
 
-        this.cleanBrTags(this.getByClassName('moz-forward-container')[0].firstChild);
+        if (this.hostApp == 'Postbox') {
+            this.getElement('__pbConvHr').innerHTML = this.createRwhHeader;
+        } else { // For Thunderbird
+            this.cleanEmptyTags(this.getElement('moz-forward-container').firstChild);
 
-        // Logically removing text node header elements
-        ReplyWithHeader.Log.debug('Cleaning text node')
-        gMsgCompose.editor.deleteNode(this.getByClassName('moz-forward-container')[0].firstChild);
+            // Logically removing text node header elements
+            ReplyWithHeader.Log.debug('Cleaning text node')
+            this.deleteNode(this.getElement('moz-forward-container').firstChild);
 
-        let hdrNode = this.parseHtml(this.createRwhHeader);
+            let hdrNode = this.parseHtml(this.createRwhHeader);
 
-        if (this.isHtmlMail) {
-            this.getByClassName('moz-forward-container')[0].replaceChild(hdrNode, this.getByClassName('moz-email-headers-table')[0]);
-        } else {
-            ReplyWithHeader.Log.debug('this.hdrCnt: ' + this.hdrCnt);
+            if (this.isHtmlMail) {
+                this.getElement('moz-forward-container').replaceChild(hdrNode, this.getElement('moz-email-headers-table'));
+            } else {
+                ReplyWithHeader.Log.debug('hdrCnt: ' + this.hdrCnt);
 
-            // Logically removing forward header elements
-            let lc = this.hdrCnt + 5;
-            var i = 0;
-            while(i < lc) {
-                gMsgCompose.editor.deleteNode(this.getByClassName('moz-forward-container')[0].firstChild);
-                i++;
+                // Logically removing forward header elements
+                let lc = this.hdrCnt + 3;
+                for(var i = 0; i < lc; i++) {
+                    this.deleteNode(this.getElement('moz-forward-container').firstChild);
+                }
+                
+                this.getElement('moz-forward-container').replaceChild(hdrNode, this.getElement('moz-forward-container').firstChild);
             }
 
-            this.getByClassName('moz-forward-container')[0].replaceChild(hdrNode, this.getByClassName('moz-forward-container')[0].firstChild);
+            this.cleanEmptyTags(gMsgCompose.editor.document.getElementById('rwhMsgHeader').nextSibling);
         }
     },
 
@@ -376,8 +441,10 @@ var ReplyWithHeader = {
         gMsgCompose.editor.resetModificationCount();
 
         if (!this.isForward) {
-            ReplyWithHeader.Log.debug('gCurrentIdentity.replyOnTop: ' + gCurrentIdentity.replyOnTop);
-            if (gCurrentIdentity.replyOnTop == 1) {
+            let rot = gCurrentIdentity.replyOnTop;
+            ReplyWithHeader.Log.debug('gCurrentIdentity.replyOnTop: ' + rot);
+
+            if (rot == 1) {
                 gMsgCompose.editor.beginningOfDocument();
             } else {
                 gMsgCompose.editor.endOfDocument();
@@ -385,8 +452,8 @@ var ReplyWithHeader = {
         }
     },
 
-    initListener: function() {
-        ReplyWithHeader.Log.debug('initListener()');
+    init: function() {
+        ReplyWithHeader.Log.debug('init()');
         gMsgCompose.RegisterStateListener(ReplyWithHeader.composeStateListener);
     },
 
@@ -421,7 +488,7 @@ var ReplyWithHeader = {
 
             //log.debug('gCurrentIdentity.identityName==>' + gCurrentIdentity.identityName);
 
-            ReplyWithHeader.Log.debug('BEFORE:: ' + gMsgCompose.editor.rootElement.innerHTML);
+            ReplyWithHeader.Log.debug('AFTER:: ' + gMsgCompose.editor.rootElement.innerHTML);
         } else {
             ReplyWithHeader.Log.info('ReplyWithHeader is not enabled, also message composeType is not supported.'
                      + '\n kindly enable it from Add-on Preferences.');
