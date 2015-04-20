@@ -401,7 +401,12 @@ var ReplyWithHeader = {
         ReplyWithHeader.Log.debug('handleReplyMessage()');
 
         let cName = (this.hostApp == 'Postbox') ? '__pbConvHr' : 'moz-cite-prefix';
-        this.getByClassName(cName)[0].innerHTML = this.createRwhHeader;
+        let instObj = this.getElement(cName);
+        if (instObj) {
+            instObj.innerHTML = this.createRwhHeader;
+        } else {
+            ReplyWithHeader.Log.error('Unable to get header insertion location for Reply/Reply All [' + this.hostApp + '].');
+        }
     },
 
     handleForwardMessage: function() {
@@ -428,7 +433,7 @@ var ReplyWithHeader = {
                 for(var i = 0; i < lc; i++) {
                     this.deleteNode(this.getElement('moz-forward-container').firstChild);
                 }
-                
+
                 this.getElement('moz-forward-container').replaceChild(hdrNode, this.getElement('moz-forward-container').firstChild);
             }
 
