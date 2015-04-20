@@ -15,8 +15,8 @@ const { classes: RCc, interfaces: RCi, utils: RCu } = Components;
 var ReplyWithHeader = {
     addonName: 'ReplyWithHeader',
     version: '1.0-beta',
-    homepageUrl: '',
-    feedbackPageUrl: '',
+    homepageUrl: 'http://myjeeva.com/replywithheadermozilla',
+    reviewsPageUrl: 'https://addons.mozilla.org/en-US/thunderbird/addon/replywithheader/',
     issuesPageUrl: 'https://github.com/jeevatkm/ReplyWithHeaderMozilla/issues',
     btcAddress: '1FG6G5tCmFm7vrc7BzUyRxr3RBrMDJA6zp',
     paypalDonateUrl: 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=Jeevanandam%20M%2e&item_number=ReplyWithHeaderMozilla&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted',
@@ -354,12 +354,16 @@ var ReplyWithHeader = {
         return rwhHdr;
     },
 
-    getByClassName: function(name) {
+    byId: function(id) {
+        return document.getElementById(id);
+    },
+
+    byClassName: function(name) {
         return gMsgCompose.editor.rootElement.getElementsByClassName(name);
     },
 
     getElement: function(name) {
-        return this.getByClassName(name)[0];
+        return this.byClassName(name)[0];
     },
 
     deleteNode: function(node) {

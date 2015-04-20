@@ -71,7 +71,7 @@
                             </menupopup>
                         </menulist>
                     </hbox>
-                    <hbox align="center" style="margin-left:30px;margin-top:-5px">
+                    <hbox align="center" style="margin-left:30px">
                         <label id="lblFontsize" value="Font size:" disabled="true" />
                         <menulist id="hdrFontsize" style="width:90px" disabled="true">
                             <menupopup>
@@ -98,17 +98,17 @@
                     <hbox align="center">
                         <image src='chrome://replywithheader/skin/icon-64.png' width='64' height='64'
                                style="margin-left:100px"/>
-                        <label value="ReplyWithHeader v1.0" style="font-weight:bold;" />
-                        <label value="&#169; 2015 Jeevanandam M."
+                        <label id="abtRwhCaption" value="ReplyWithHeader" style="font-weight:bold;" />
+                        <label id="abtRwhCopyrights" value="&#169; 2015 Jeevanandam M."
                                style="font-size:12px; margin-top:40px;margin-left:-152px" />
                     </hbox>
                     <hbox align="center" style="margin: 40px 0 0 80px">
                         <button label="Website" oncommand="ReplyWithHeader.Prefs.openWebsite();" />
-                        <button label="Feedback" oncommand="ReplyWithHeader.Prefs.openFeedback();" />
+                        <button label="Reviews" oncommand="ReplyWithHeader.Prefs.openReviews();" />
                         <button label="Report Issues" oncommand="ReplyWithHeader.Prefs.reportIssues();" />
                     </hbox>
                     <hbox align="center" style="margin-top:40px;">
-                        <groupbox style="width:430px;padding-bottom:10px;margin:0">
+                        <groupbox id="abtGrpBoxRwhDonate" style="width:430px;padding-bottom:10px;margin:0">
                             <caption label="Support ReplyWithHeader" style="font-size:13px" />
                             <hbox align="center" style="margin-bottom:10px;margin-top:5px">
                                 <image src='chrome://replywithheader/skin/bitcoin-24.png' width='24' height='24'

@@ -43,8 +43,8 @@ ReplyWithHeader.Prefs = {
         this.openUrlInDefaultBrowser(ReplyWithHeader.homepageUrl);
     },
 
-    openFeedback: function() {
-        this.openUrlInDefaultBrowser(ReplyWithHeader.feedbackPageUrl);
+    openReviews: function() {
+        this.openUrlInDefaultBrowser(ReplyWithHeader.reviewsPageUrl);
     },
 
     reportIssues: function() {
@@ -92,7 +92,11 @@ ReplyWithHeader.Prefs = {
     init: function() {
         this.toggleRwh();
 
-        document.getElementById('hdrFontsize').selectedIndex = 3;
+        // Assigning values
+        ReplyWithHeader.byId('abtRwhCaption').value = ReplyWithHeader.addonName + ' ' + ReplyWithHeader.version;
+
+        // Preselected values
+        ReplyWithHeader.byId('hdrFontsize').selectedIndex = 3;
     },
 
     toggleRwh: function() {
@@ -126,6 +130,6 @@ ReplyWithHeader.Prefs = {
     },
 
     toggle: function(id, v) {
-        document.getElementById(id).disabled = v;
+        ReplyWithHeader.byId(id).disabled = v;
     }
 };
