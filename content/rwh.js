@@ -8,6 +8,8 @@
  * You download a copy of license at https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE.txt
  */
 
+var EXPORTED_SYMBOLS = ['ReplyWithHeader'];
+
 const { classes: RCc, interfaces: RCi, utils: RCu } = Components;
 
 var ReplyWithHeader = {
@@ -175,6 +177,7 @@ var ReplyWithHeader = {
         // Input is PR time
         let d = new Date(prTime / 1000);
 
+        // currently using default system format defined by user/system
         var nd = d.toString();
         ReplyWithHeader.Log.debug('Parsed date: ' + nd);
 
@@ -292,13 +295,6 @@ var ReplyWithHeader = {
                      'date': this.parseDate(hdr.date),
                      'subject': this.escapeHtml(hdr.mime2DecodedSubject) };
 
-        ReplyWithHeader.Log.debug('hdr.getStringProperty(reply-to): ' + hdr.getStringProperty('reply-to'));
-
-        // Ref: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/NsIMsgCompFields
-        /*ReplyWithHeader.Log.debug('gMsgCompose.compFields.replyTo: ' + gMsgCompose.compFields.replyTo);
-
-        ReplyWithHeader.Log.debug('gCurrentIdentity.replyTo: ' + gCurrentIdentity.replyTo);*/
-
         ReplyWithHeader.Log.debug('\nFrom: ' + header.from
                                 + '\nTo: ' + header.to
                                 + '\nCC: '+ header.cc
@@ -310,7 +306,7 @@ var ReplyWithHeader = {
 
     get createRwhHeader() {
         let rawHdr = this.getMsgHeader(this.messageUri);
-        let pheader = this.parseMsgHeader(rawHdr);
+        let pHeader = this.parseMsgHeader(rawHdr);
 
         var rwhHdr = '<div id="rwhMsgHeader">';
 
@@ -320,35 +316,35 @@ var ReplyWithHeader = {
 
         // for HTML emails
         if (this.isHtmlMail) {
-            let fontface = this.Prefs.getString('extensions.replywithheader.header.font.face');
-            let fontsize = this.Prefs.getInt('extensions.replywithheader.header.font.size');
-            ReplyWithHeader.Log.debug('Fontface: ' + fontface + '\tFontsize: ' + fontsize);
+            let fontFace = this.Prefs.getString('extensions.replywithheader.header.font.face');
+            let fontSize = this.Prefs.getInt('extensions.replywithheader.header.font.size');
+            ReplyWithHeader.Log.debug('Font face: ' + fontFace + '\tFont size: ' + fontSize);
 
-            let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontface + '" color="#000000" style="font: ' + fontsize + '.0px ' + fontface + '; color: #000000;">';
+            let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontFace + '" color="#000000" style="font: ' + fontSize + '.0px ' + fontFace + '; color: #000000;">';
             rwhHdr += '<hr style="border:none;border-top:solid #B5C4DF 1.0pt;padding:0;margin:10px 0 5px 0;width:100%;">';
             rwhHdr += this.createBrTags(0);
-            rwhHdr += htmlTagPrefix + '<b>From:</b> ' + pheader.from + '</font></span><br/>';
-            rwhHdr += htmlTagPrefix + '<b>Sent:</b> ' + pheader.date + '</font></span><br/>';
-            rwhHdr += htmlTagPrefix + '<b>To:</b> '+ pheader.to + '</font></span><br/>';
+            rwhHdr += htmlTagPrefix + '<b>From:</b> ' + pHeader.from + '</font></span><br/>';
+            rwhHdr += htmlTagPrefix + '<b>Sent:</b> ' + pHeader.date + '</font></span><br/>';
+            rwhHdr += htmlTagPrefix + '<b>To:</b> '+ pHeader.to + '</font></span><br/>';
 
-            if (pheader.cc) {
-                rwhHdr += htmlTagPrefix + '<b>Cc:</b> '+ pheader.cc + '</font></span><br/>';
+            if (pHeader.cc) {
+                rwhHdr += htmlTagPrefix + '<b>Cc:</b> '+ pHeader.cc + '</font></span><br/>';
                 this.hdrCnt += 2; // incrementing for Cc header + br tag
             }
 
-            rwhHdr += htmlTagPrefix + '<b>Subject:</b> '+ pheader.subject + '</font></span><br/>';
+            rwhHdr += htmlTagPrefix + '<b>Subject:</b> '+ pHeader.subject + '</font></span><br/>';
         } else { // for plain/text emails
             rwhHdr += this.isForward ? '<br>-------- Forwarded Message --------<br>' : '<br>-------- Original Message --------<br>';
-            rwhHdr += 'From: ' + pheader.from + '<br/>';
-            rwhHdr += 'Sent: ' + pheader.date + '<br/>';
-            rwhHdr += 'To: '+ pheader.to + '<br/>';
+            rwhHdr += 'From: ' + pHeader.from + '<br/>';
+            rwhHdr += 'Sent: ' + pHeader.date + '<br/>';
+            rwhHdr += 'To: '+ pHeader.to + '<br/>';
 
-            if (pheader.cc) {
-                rwhHdr += 'Cc: '+ pheader.cc + '<br/>';
+            if (pHeader.cc) {
+                rwhHdr += 'Cc: '+ pHeader.cc + '<br/>';
                 this.hdrCnt += 2;  // incrementing for Cc header + br tag
             }
 
-            rwhHdr += 'Subject: '+ pheader.subject + '<br/>';
+            rwhHdr += 'Subject: '+ pHeader.subject + '<br/>';
         }
         rwhHdr += this.createBrTags(1);
         rwhHdr += '</div>';
@@ -429,6 +425,7 @@ var ReplyWithHeader = {
                 ReplyWithHeader.Log.debug('hdrCnt: ' + this.hdrCnt);
 
                 // Logically removing forward header elements
+                // TODO Currently known issue is, it doesn't clean few headers; Need improvements
                 let lc = this.hdrCnt + 3;
                 for(var i = 0; i < lc; i++) {
                     this.deleteNode(this.getElement('moz-forward-container').firstChild);
@@ -445,7 +442,7 @@ var ReplyWithHeader = {
         ReplyWithHeader.Log.debug('handOverToUser()');
         gMsgCompose.editor.resetModificationCount();
 
-        if (!this.isForward) {
+        /* if (!this.isForward) {
             let rot = gCurrentIdentity.replyOnTop;
             ReplyWithHeader.Log.debug('gCurrentIdentity.replyOnTop: ' + rot);
 
@@ -454,7 +451,7 @@ var ReplyWithHeader = {
             } else {
                 gMsgCompose.editor.endOfDocument();
             }
-        }
+        } */
     },
 
     init: function() {
@@ -490,8 +487,6 @@ var ReplyWithHeader = {
             }
 
             this.handOverToUser();
-
-            //log.debug('gCurrentIdentity.identityName==>' + gCurrentIdentity.identityName);
 
             ReplyWithHeader.Log.debug('AFTER:: ' + gMsgCompose.editor.rootElement.innerHTML);
         } else {
