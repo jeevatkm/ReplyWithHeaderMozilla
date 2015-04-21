@@ -310,9 +310,9 @@ var ReplyWithHeader = {
 
         var rwhHdr = '<div id="rwhMsgHeader">';
 
-        if (this.isForward) {
-            rwhHdr += this.createBrTags(1);
-        }
+        let beforeSep = this.Prefs.beforeSepSpaceCnt;
+        ReplyWithHeader.Log.debug('Before Separator Space: ' + beforeSep);
+        rwhHdr += this.createBrTags(beforeSep);
 
         // for HTML emails
         if (this.isHtmlMail) {
@@ -322,7 +322,11 @@ var ReplyWithHeader = {
 
             let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontFace + '" color="#000000" style="font: ' + fontSize + '.0px ' + fontFace + '; color: #000000;">';
             rwhHdr += '<hr style="border:none;border-top:solid #B5C4DF 1.0pt;padding:0;margin:10px 0 5px 0;width:100%;">';
-            rwhHdr += this.createBrTags(0);
+
+            let beforeHdr = this.Prefs.beforeHdrSpaceCnt;
+            ReplyWithHeader.Log.debug('Before Header Space: ' + beforeHdr);
+            rwhHdr += this.createBrTags(beforeHdr);
+
             rwhHdr += htmlTagPrefix + '<b>From:</b> ' + pHeader.from + '</font></span><br/>';
             rwhHdr += htmlTagPrefix + '<b>Sent:</b> ' + pHeader.date + '</font></span><br/>';
             rwhHdr += htmlTagPrefix + '<b>To:</b> '+ pHeader.to + '</font></span><br/>';
@@ -346,7 +350,10 @@ var ReplyWithHeader = {
 
             rwhHdr += 'Subject: '+ pHeader.subject + '<br/>';
         }
-        rwhHdr += this.createBrTags(1);
+        let afterHdr = this.Prefs.afterHdrSpaceCnt;
+        ReplyWithHeader.Log.debug('After Header Space: ' + afterHdr);
+        rwhHdr += this.createBrTags(afterHdr);
+
         rwhHdr += '</div>';
 
         ReplyWithHeader.Log.debug('RWH header html: ' + rwhHdr);
@@ -446,7 +453,7 @@ var ReplyWithHeader = {
         ReplyWithHeader.Log.debug('handOverToUser()');
         gMsgCompose.editor.resetModificationCount();
 
-        /* if (!this.isForward) {
+        if (!this.isForward) {
             let rot = gCurrentIdentity.replyOnTop;
             ReplyWithHeader.Log.debug('gCurrentIdentity.replyOnTop: ' + rot);
 
@@ -455,7 +462,7 @@ var ReplyWithHeader = {
             } else {
                 gMsgCompose.editor.endOfDocument();
             }
-        } */
+        }
     },
 
     init: function() {
