@@ -39,6 +39,18 @@ ReplyWithHeader.Prefs = {
         return this.getBool('extensions.replywithheader.debug');
     },
 
+    get beforeSepSpaceCnt() {
+        return (this.getInt('extensions.replywithheader.header.separator.space.before') || 1);
+    },
+
+    get beforeHdrSpaceCnt() {
+        return (this.getInt('extensions.replywithheader.header.space.before') || 0);
+    },
+
+    get afterHdrSpaceCnt() {
+        return (this.getInt('extensions.replywithheader.header.space.after') || 1);
+    },
+
     openWebsite: function() {
         this.openUrlInDefaultBrowser(ReplyWithHeader.homepageUrl);
     },
@@ -86,6 +98,16 @@ ReplyWithHeader.Prefs = {
             messenger.launchExternalURL(url);
         } catch(ex) {
             ReplyWithHeader.Log.errorWithException('Unable to open RWH URL.', ex);
+        }
+    },
+
+    fixCursorBlink: function() {
+        // Ref: Due this Bug 567240 - Cursor does not blink when replying (https://bugzilla.mozilla.org/show_bug.cgi?id=567240)
+        // RWH is setting this 'mail.compose.max_recycled_windows' value to 0
+        let maxRecycledWindows = this.getInt('mail.compose.max_recycled_windows');
+        if (maxRecycledWindows == 1) {
+            ReplyWithHeader.Log.info('Setting "mail.compose.max_recycled_windows" value to 0');
+            this.setInt('mail.compose.max_recycled_windows', 0);
         }
     },
 

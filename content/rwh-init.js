@@ -10,6 +10,8 @@
 
 // Registering RWH into compose window Thunderbird/Postbox
 window.setTimeout( function(){
+    ReplyWithHeader.Prefs.fixCursorBlink();
+
 	document.getElementById('msgcomposeWindow')
                     .addEventListener('compose-window-init', ReplyWithHeader.init, false);
 },10 );
