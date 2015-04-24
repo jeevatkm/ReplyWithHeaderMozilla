@@ -407,12 +407,10 @@ var ReplyWithHeader = {
     handleReplyMessage: function() {
         ReplyWithHeader.Log.debug('handleReplyMessage()');
 
-        let cName = (this.hostApp == 'Postbox') ? '__pbConvHr' : 'moz-cite-prefix';
-        let instObj = this.getElement(cName);
-        if (instObj) {
-            instObj.innerHTML = this.createRwhHeader;
+        if (this.hostApp == 'Postbox') {
+            this.getElement('__pbConvHr').innerHTML = this.createRwhHeader;
         } else {
-            ReplyWithHeader.Log.error('Unable to get header insertion location for Reply/Reply All [' + this.hostApp + '].');
+            this.getElement('moz-cite-prefix').innerHTML = this.createRwhHeader;
         }
     },
 
