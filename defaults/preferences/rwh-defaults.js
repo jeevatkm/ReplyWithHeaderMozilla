@@ -14,7 +14,7 @@ pref('extensions.replywithheader.header.from.style', 1);
 pref('extensions.replywithheader.header.tocc.style', 1);
 pref('extensions.replywithheader.header.font.face', 'Tahoma');
 pref('extensions.replywithheader.header.font.size', 13);
-pref('extensions.replywithheader.header.separator.space.before', 1);
+pref('extensions.replywithheader.header.separator.space.before', 0);
 pref('extensions.replywithheader.header.space.before', 0);
 pref('extensions.replywithheader.header.space.after', 1);
 
