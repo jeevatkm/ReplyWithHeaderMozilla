@@ -25,9 +25,12 @@
             <preference id="pref-enableRwh" name="extensions.replywithheader.enable" type="bool" instantApply="true" />
             <preference id="pref-fromAttributionStyle" name="extensions.replywithheader.header.from.style" type="int" instantApply="true" />
             <preference id="pref-toccAttributionStyle" name="extensions.replywithheader.header.tocc.style" type="int" instantApply="true" />
-            <preference id="pref-headerFontface" name="extensions.replywithheader.header.font.face" type="string" instantApply="true" />
-            <preference id="pref-headerFontsize" name="extensions.replywithheader.header.font.size" type="int" instantApply="true" />
-            <preference id="pref-headerFontcolor" name="extensions.replywithheader.header.font.color" type="string" instantApply="true" />
+            <preference id="pref-hdrFontface" name="extensions.replywithheader.header.font.face" type="string" instantApply="true" />
+            <preference id="pref-hdrFontsize" name="extensions.replywithheader.header.font.size" type="int" instantApply="true" />
+            <preference id="pref-hdrFontcolor" name="extensions.replywithheader.header.font.color" type="string" instantApply="true" />
+            <preference id="pref-spaceBeforeSep" name="extensions.replywithheader.header.separator.space.before" type="int" instantApply="true" />
+            <preference id="pref-spaceBeforeHdr" name="extensions.replywithheader.header.space.before" type="int" instantApply="true" />
+            <preference id="pref-spaceAfterHdr" name="extensions.replywithheader.header.space.after" type="int" instantApply="true" />
         </preferences>
 
         <hbox align="center">
@@ -68,15 +71,53 @@
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblFontface" value="Font face:" />
-                        <menulist id="hdrFontface" style="width:275px" preference="pref-headerFontface" />
+                        <menulist id="hdrFontface" style="width:275px" preference="pref-hdrFontface" />
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblFontsize" value="Font size:" />
-                        <menulist id="hdrFontsize" style="width:90px" preference="pref-headerFontsize" />
-                        <spacer width="30px" />
+                        <menulist id="hdrFontsize" style="width:90px" preference="pref-hdrFontsize" />
+                        <spacer width="20px" />
                         <label id="lblFontcolor" value="Color:" />
                         <colorpicker id="hdrFontColor" type="button" value="" style="max-width:35px;max-height:17px;"
-                                     preference="pref-headerFontcolor" />
+                                     preference="pref-hdrFontcolor" />
+                    </hbox>
+                    <hbox align="center" style="margin-top:10px">
+                        <label id="lblSpace" value="Apply header space" />
+                    </hbox>
+                    <hbox align="center" style="margin-left:30px">
+                        <label id="lblBeforeHeader" value="Before header:" />
+                        <menulist id="spaceBeforeHdr" style="width:55px" preference="pref-spaceBeforeHdr">
+                            <menupopup>
+                                <menuitem label="0" value="0" />
+                                <menuitem label="1" value="1" />
+                                <menuitem label="2" value="2" />
+                                <menuitem label="3" value="3" />
+                                <menuitem label="4" value="4" />
+                            </menupopup>
+                        </menulist>
+                        <spacer width="20px" />
+                        <label id="lblAfterHeader" value="After header:" />
+                        <menulist id="spaceAfterHdr" style="width:55px" preference="pref-spaceAfterHdr">
+                            <menupopup>
+                                <menuitem label="0" value="0" />
+                                <menuitem label="1" value="1" />
+                                <menuitem label="2" value="2" />
+                                <menuitem label="3" value="3" />
+                                <menuitem label="4" value="4" />
+                            </menupopup>
+                        </menulist>
+                    </hbox>
+                    <hbox align="center" style="margin-left:30px">
+                        <label id="lblBeforeSeparator" value="Before separator:" />
+                        <menulist id="spaceBeforeSep" style="width:55px" preference="pref-spaceBeforeSep">
+                            <menupopup>
+                                <menuitem label="0" value="0" />
+                                <menuitem label="1" value="1" />
+                                <menuitem label="2" value="2" />
+                                <menuitem label="3" value="3" />
+                                <menuitem label="4" value="4" />
+                            </menupopup>
+                        </menulist>
                     </hbox>
                 </tabpanel>
                 <tabpanel orient="vertical">
@@ -87,12 +128,12 @@
                         <label id="abtRwhCopyrights" value="&#169; 2015 Jeevanandam M."
                                style="font-size:12px; margin-top:40px;margin-left:-152px" />
                     </hbox>
-                    <hbox align="center" style="margin: 40px 0 0 80px">
+                    <hbox align="center" style="margin: 40px 0 0 70px">
                         <button label="Website" oncommand="ReplyWithHeader.Prefs.openWebsite();" />
                         <button label="Reviews" oncommand="ReplyWithHeader.Prefs.openReviews();" />
                         <button label="Report Issues" oncommand="ReplyWithHeader.Prefs.reportIssues();" />
                     </hbox>
-                    <hbox align="center" style="margin-top:40px;">
+                    <hbox align="center" style="margin-top:120px;">
                         <groupbox id="abtGrpBoxRwhDonate" style="width:430px;padding-bottom:10px;margin:0">
                             <caption label="Support ReplyWithHeader" style="font-size:13px" />
                             <hbox align="center" style="margin-bottom:10px;margin-top:5px">
