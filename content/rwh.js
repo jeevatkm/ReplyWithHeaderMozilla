@@ -318,11 +318,12 @@ var ReplyWithHeader = {
 
         // for HTML emails
         if (this.isHtmlMail) {
-            let fontFace = this.Prefs.getString('extensions.replywithheader.header.font.face');
-            let fontSize = this.Prefs.getInt('extensions.replywithheader.header.font.size');
-            ReplyWithHeader.Log.debug('Font face: ' + fontFace + '\tFont size: ' + fontSize);
+            let fontFace = this.Prefs.headerFontFace;
+            let fontSize = this.Prefs.headerFontSize;
+            let fontColor = this.Prefs.headerFontColor;
+            ReplyWithHeader.Log.debug('Font face: ' + fontFace + '\tFont size: ' + fontSize + '\tColor: ' + fontColor);
 
-            let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontFace + '" color="#000000" style="font: ' + fontSize + '.0px ' + fontFace + '; color: #000000;">';
+            let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontFace + '" color="' + fontColor + '" style="font: ' + fontSize + '.0px ' + fontFace + '; color: ' + fontColor + ';">';
             rwhHdr += '<hr style="border:none;border-top:solid #B5C4DF 1.0pt;padding:0;margin:10px 0 5px 0;width:100%;">';
 
             let beforeHdr = this.Prefs.beforeHdrSpaceCnt;

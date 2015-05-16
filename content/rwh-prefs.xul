@@ -27,6 +27,7 @@
             <preference id="pref-toccAttributionStyle" name="extensions.replywithheader.header.tocc.style" type="int" instantApply="true" />
             <preference id="pref-headerFontface" name="extensions.replywithheader.header.font.face" type="string" instantApply="true" />
             <preference id="pref-headerFontsize" name="extensions.replywithheader.header.font.size" type="int" instantApply="true" />
+            <preference id="pref-headerFontcolor" name="extensions.replywithheader.header.font.color" type="string" instantApply="true" />
         </preferences>
 
         <hbox align="center">
@@ -72,6 +73,10 @@
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblFontsize" value="Font size:" />
                         <menulist id="hdrFontsize" style="width:90px" preference="pref-headerFontsize" />
+                        <spacer width="30px" />
+                        <label id="lblFontcolor" value="Color:" />
+                        <colorpicker id="hdrFontColor" type="button" value="" style="max-width:35px;max-height:17px;"
+                                     preference="pref-headerFontcolor" />
                     </hbox>
                 </tabpanel>
                 <tabpanel orient="vertical">

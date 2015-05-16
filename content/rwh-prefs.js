@@ -63,6 +63,10 @@ ReplyWithHeader.Prefs = {
         return this.getInt('extensions.replywithheader.header.font.size');
     },
 
+    get headerFontColor() {
+        return this.getString('extensions.replywithheader.header.font.color');
+    },
+
     openWebsite: function() {
         this.openUrlInDefaultBrowser(ReplyWithHeader.homepageUrl);
     },
@@ -159,7 +163,7 @@ ReplyWithHeader.Prefs = {
         let menuPopup = document.createElement('menupopup');
         let selectedIdx = 0;
 
-        for (var i=10, j=0; i<25; i++, j++) {
+        for (var i=10, j=0; i<35; i++, j++) {
             if (i == hdrFontsize) {
                 selectedIdx = j;
             }
