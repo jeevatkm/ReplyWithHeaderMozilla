@@ -5,7 +5,7 @@
  *
  * This Source Code is subject to terms of MIT License.
  * Please refer to LICENSE.txt in the root folder of RWH extension.
- * You download a copy of license at https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE.txt
+ * You can download a copy of license at https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE.txt
  */
 
 var EXPORTED_SYMBOLS = ['ReplyWithHeader'];
