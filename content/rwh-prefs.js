@@ -52,7 +52,15 @@ ReplyWithHeader.Prefs = {
     },
 
     get dateFormat() {
-        return this.getString('extensions.replywithheader.date.format');
+        return this.getString('extensions.replywithheader.header.date.format');
+    },
+
+    get headerFontFace() {
+        return this.getString('extensions.replywithheader.header.font.face');
+    },
+
+    get headerFontSize() {
+        return this.getInt('extensions.replywithheader.header.font.size');
     },
 
     openWebsite: function() {
@@ -115,14 +123,63 @@ ReplyWithHeader.Prefs = {
         }
     },
 
+    createMenuItem: function(v, l) {
+        var menuItem = document.createElement('menuitem');
+        menuItem.setAttribute('value', v);
+        menuItem.setAttribute('label', l);
+        return menuItem;
+    },
+
+    loadFontfaces: function() {
+        let allFonts = RCc['@mozilla.org/gfx/fontenumerator;1']
+                            .createInstance(RCi.nsIFontEnumerator).EnumerateAllFonts({});
+
+        let hdrFontface = this.headerFontFace;
+        ReplyWithHeader.Log.debug('Header Font Face: ' + hdrFontface);
+
+        let menuPopup = document.createElement('menupopup');
+        let selectedIdx = 0;
+
+        for (var i=0; i<allFonts.length; i++) {
+            if (allFonts[i] == hdrFontface) {
+                selectedIdx = i;
+            }
+            menuPopup.appendChild(this.createMenuItem(allFonts[i], allFonts[i]));
+        }
+
+        let hdrFontfaceObj = ReplyWithHeader.byId('hdrFontface');
+        hdrFontfaceObj.appendChild(menuPopup);
+        hdrFontfaceObj.selectedIndex = selectedIdx;
+    },
+
+    loadFontSizes: function() {
+        let hdrFontsize = this.headerFontSize;
+        ReplyWithHeader.Log.debug('Header Font Size: ' + hdrFontsize);
+
+        let menuPopup = document.createElement('menupopup');
+        let selectedIdx = 0;
+
+        for (var i=10, j=0; i<25; i++, j++) {
+            if (i == hdrFontsize) {
+                selectedIdx = j;
+            }
+            menuPopup.appendChild(this.createMenuItem(i, i + 'px'));
+        }
+
+        let hdrFontsizeObj = ReplyWithHeader.byId('hdrFontsize');
+        hdrFontsizeObj.appendChild(menuPopup);
+        hdrFontsizeObj.selectedIndex = selectedIdx;
+    },
+
     init: function() {
         this.toggleRwh();
 
         // Assigning values
         ReplyWithHeader.byId('abtRwhCaption').value = ReplyWithHeader.addonName + ' ' + ReplyWithHeader.version;
 
-        // Preselected values
-        ReplyWithHeader.byId('hdrFontsize').selectedIndex = 3;
+        this.loadFontfaces();
+
+        this.loadFontSizes();
     },
 
     toggleRwh: function() {
@@ -135,11 +192,11 @@ ReplyWithHeader.Prefs = {
             this.toggle('lblHeaderlabel', false);
             this.toggle('toccAttributionStyle', false);
 
-            /*this.toggle('lblTypography', false);
+            this.toggle('lblTypography', false);
             this.toggle('lblFontface', false);
             this.toggle('hdrFontface', false);
             this.toggle('lblFontsize', false);
-            this.toggle('hdrFontsize', false); */
+            this.toggle('hdrFontsize', false);
         } else {
             this.toggle('lblFromAttribution', true);
             this.toggle('fromAttributionStyle', true);
@@ -147,11 +204,11 @@ ReplyWithHeader.Prefs = {
             this.toggle('lblHeaderlabel', true);
             this.toggle('toccAttributionStyle', true);
 
-            /*this.toggle('lblTypography', true);
+            this.toggle('lblTypography', true);
             this.toggle('lblFontface', true);
             this.toggle('hdrFontface', true);
             this.toggle('lblFontsize', true);
-            this.toggle('hdrFontsize', true);*/
+            this.toggle('hdrFontsize', true);
         }
     },
 

@@ -25,6 +25,8 @@
             <preference id="pref-enableRwh" name="extensions.replywithheader.enable" type="bool" instantApply="true" />
             <preference id="pref-fromAttributionStyle" name="extensions.replywithheader.header.from.style" type="int" instantApply="true" />
             <preference id="pref-toccAttributionStyle" name="extensions.replywithheader.header.tocc.style" type="int" instantApply="true" />
+            <preference id="pref-headerFontface" name="extensions.replywithheader.header.font.face" type="string" instantApply="true" />
+            <preference id="pref-headerFontsize" name="extensions.replywithheader.header.font.size" type="int" instantApply="true" />
         </preferences>
 
         <hbox align="center">
@@ -61,37 +63,15 @@
                         </radiogroup>
                     </hbox>
                     <hbox align="center" style="margin-top:10px">
-                        <label id="lblTypography" value="Apply header typography" disabled="true" />
+                        <label id="lblTypography" value="Apply header typography" />
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
-                        <label id="lblFontface" value="Font face:" disabled="true" />
-                        <menulist id="hdrFontface" style="width:300px" disabled="true">
-                            <menupopup>
-                                <menuitem label="Tahoma" value="Tahoma" />
-                            </menupopup>
-                        </menulist>
+                        <label id="lblFontface" value="Font face:" />
+                        <menulist id="hdrFontface" style="width:275px" preference="pref-headerFontface" />
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
-                        <label id="lblFontsize" value="Font size:" disabled="true" />
-                        <menulist id="hdrFontsize" style="width:90px" disabled="true">
-                            <menupopup>
-                                <menuitem label="10px" value="10" />
-                                <menuitem label="11px" value="11" />
-                                <menuitem label="12px" value="12" />
-                                <menuitem label="13px" value="13" />
-                                <menuitem label="14px" value="14" />
-                                <menuitem label="15px" value="15" />
-                                <menuitem label="16px" value="16" />
-                                <menuitem label="17px" value="17" />
-                                <menuitem label="18px" value="18" />
-                                <menuitem label="19px" value="19" />
-                                <menuitem label="20px" value="20" />
-                                <menuitem label="21px" value="21" />
-                                <menuitem label="22px" value="22" />
-                                <menuitem label="23px" value="23" />
-                                <menuitem label="24px" value="24" />
-                            </menupopup>
-                        </menulist>
+                        <label id="lblFontsize" value="Font size:" />
+                        <menulist id="hdrFontsize" style="width:90px" preference="pref-headerFontsize" />
                     </hbox>
                 </tabpanel>
                 <tabpanel orient="vertical">
