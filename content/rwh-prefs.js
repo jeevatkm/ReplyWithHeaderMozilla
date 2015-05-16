@@ -144,7 +144,7 @@ ReplyWithHeader.Prefs = {
         let menuPopup = document.createElement('menupopup');
         let selectedIdx = 0;
 
-        for (var i=0; i<allFonts.length; i++) {
+        for (var fontCount=allFonts.length, i=0; i<fontCount; i++) {
             if (allFonts[i] == hdrFontface) {
                 selectedIdx = i;
             }
@@ -188,31 +188,19 @@ ReplyWithHeader.Prefs = {
 
     toggleRwh: function() {
         let rwh = document.getElementById('enableRwh');
+        var ids = ['lblFromAttribution', 'fromAttributionStyle', 'lblHeaderlabel', 'toccAttributionStyle',
+                   'lblTypography', 'lblFontface', 'hdrFontface', 'lblFontsize', 'hdrFontsize', 'lblFontcolor',
+                   'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr', 'lblAfterHeader',
+                   'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep'];
 
         if (rwh.checked) {
-            this.toggle('lblFromAttribution', false);
-            this.toggle('fromAttributionStyle', false);
-
-            this.toggle('lblHeaderlabel', false);
-            this.toggle('toccAttributionStyle', false);
-
-            this.toggle('lblTypography', false);
-            this.toggle('lblFontface', false);
-            this.toggle('hdrFontface', false);
-            this.toggle('lblFontsize', false);
-            this.toggle('hdrFontsize', false);
+            for (var len=ids.length, i=0; i<len; i++) {
+                this.toggle(ids[i], false);
+            }
         } else {
-            this.toggle('lblFromAttribution', true);
-            this.toggle('fromAttributionStyle', true);
-
-            this.toggle('lblHeaderlabel', true);
-            this.toggle('toccAttributionStyle', true);
-
-            this.toggle('lblTypography', true);
-            this.toggle('lblFontface', true);
-            this.toggle('hdrFontface', true);
-            this.toggle('lblFontsize', true);
-            this.toggle('hdrFontsize', true);
+            for (var len=ids.length, i=0; i<len; i++) {
+                this.toggle(ids[i], true);
+            }
         }
     },
 
