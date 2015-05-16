@@ -12,6 +12,8 @@ var EXPORTED_SYMBOLS = ['ReplyWithHeader'];
 
 const { classes: RCc, interfaces: RCi, utils: RCu } = Components;
 
+//RCu.import('resource://replywithheader/rwh-modules.js');
+
 var ReplyWithHeader = {
     addonName: 'ReplyWithHeader',
     version: '1.0-beta',
@@ -176,9 +178,7 @@ var ReplyWithHeader = {
     parseDate: function(prTime) {
         // Input is PR time
         let d = new Date(prTime / 1000);
-
-        // currently using default system format defined by user/system
-        var nd = d.toString();
+        var nd = moment(d).format(this.Prefs.dateFormat);
         ReplyWithHeader.Log.debug('Parsed date: ' + nd);
 
         return nd;

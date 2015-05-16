@@ -18,6 +18,9 @@ pref('extensions.replywithheader.header.separator.space.before', 1);
 pref('extensions.replywithheader.header.space.before', 0);
 pref('extensions.replywithheader.header.space.after', 1);
 
+// As per http://momentjs.com/docs/#/displaying/format/
+pref('extensions.replywithheader.date.format', 'dddd, MMM DD, YYYY [at] HH:mm:ss [GMT] Z');
+
 // RWH Mail message
 // Upcoming things here!
 

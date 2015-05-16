@@ -51,6 +51,10 @@ ReplyWithHeader.Prefs = {
         return (this.getInt('extensions.replywithheader.header.space.after') || 1);
     },
 
+    get dateFormat() {
+        return this.getString('extensions.replywithheader.date.format');
+    },
+
     openWebsite: function() {
         this.openUrlInDefaultBrowser(ReplyWithHeader.homepageUrl);
     },
