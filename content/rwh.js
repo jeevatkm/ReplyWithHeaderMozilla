@@ -12,11 +12,9 @@ var EXPORTED_SYMBOLS = ['ReplyWithHeader'];
 
 const { classes: RCc, interfaces: RCi, utils: RCu } = Components;
 
-//RCu.import('resource://replywithheader/rwh-modules.js');
-
 var ReplyWithHeader = {
     addonName: 'ReplyWithHeader',
-    version: '1.0-beta',
+    version: '1.0',
     homepageUrl: 'http://myjeeva.com/replywithheader-mozilla',
     reviewsPageUrl: 'https://addons.mozilla.org/en-US/thunderbird/addon/replywithheader/',
     issuesPageUrl: 'https://github.com/jeevatkm/ReplyWithHeaderMozilla/issues',

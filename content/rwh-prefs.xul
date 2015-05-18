@@ -39,8 +39,9 @@
         </hbox>
         <tabbox style="margin-bottom:7px">
             <tabs>
-                <tab label="Manage Headers" selected="true"/>
-                <tab label="About"/>
+                <tab label="Manage Headers" selected="true" />
+                <tab label="Misc" />
+                <tab label="About" />
             </tabs>
             <tabpanels>
                 <tabpanel orient="vertical">
@@ -67,7 +68,7 @@
                         </radiogroup>
                     </hbox>
                     <hbox align="center" style="margin-top:10px">
-                        <label id="lblTypography" value="Apply header typography" />
+                        <label id="lblTypography" value="Header typography" />
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblFontface" value="Font face:" />
@@ -82,7 +83,7 @@
                                      preference="pref-hdrFontcolor" />
                     </hbox>
                     <hbox align="center" style="margin-top:10px">
-                        <label id="lblSpace" value="Apply header space" />
+                        <label id="lblSpace" value="Header line space" />
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblBeforeHeader" value="Before header:" />
@@ -118,6 +119,20 @@
                                 <menuitem label="4" value="4" />
                             </menupopup>
                         </menulist>
+                    </hbox>
+                </tabpanel>
+                <tabpanel orient="vertical">
+                    <hbox align="center" tooltiptext="Upcoming feature stay tuned.">
+                        <label id="lblCntFormat" value="Content formatting and cleanups" disabled="true" />
+                    </hbox>
+                    <hbox align="center" style="margin-left:30px" tooltiptext="Upcoming feature stay tuned.">
+                        <checkbox id="cleanBlockQuote" label="Cleanup the blockquotes and colors" disabled="true" />
+                    </hbox>
+                    <hbox align="center" style="margin-left:30px" tooltiptext="Upcoming feature stay tuned.">
+                        <checkbox id="cleanGreaterSignPrefix" label="Cleanup the quote character '>'" disabled="true" />
+                    </hbox>
+                    <hbox align="center" style="margin-left:30px" tooltiptext="Upcoming feature stay tuned.">
+                        <checkbox id="cleanPipeSignPrefix" label="Cleanup the quote character '|'" disabled="true" />
                     </hbox>
                 </tabpanel>
                 <tabpanel orient="vertical">
