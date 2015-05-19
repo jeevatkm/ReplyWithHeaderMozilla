@@ -192,6 +192,8 @@ ReplyWithHeader.Prefs = {
         this.loadFontfaces();
 
         this.loadFontSizes();
+
+        this.forPostbox(true);
     },
 
     toggleRwh: function() {
@@ -200,7 +202,7 @@ ReplyWithHeader.Prefs = {
                    'lblTypography', 'lblFontface', 'hdrFontface', 'lblFontsize', 'hdrFontsize', 'lblFontcolor',
                    'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr', 'lblAfterHeader',
                    'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle',
-                   'transSubjectPrefix'];
+                   'transSubjectPrefix', 'lblNotAppBeforeSeparator'];
 
         if (rwh.checked) {
             for (var len=ids.length, i=0; i<len; i++) {
@@ -211,9 +213,19 @@ ReplyWithHeader.Prefs = {
                 this.toggle(ids[i], true);
             }
         }
+
+        this.forPostbox(true);
     },
 
     toggle: function(id, v) {
         ReplyWithHeader.byId(id).disabled = v;
+    },
+
+    forPostbox: function(v) {
+        if (ReplyWithHeader.hostApp == 'Postbox') {
+            this.toggle('lblBeforeSeparator', v);
+            this.toggle('spaceBeforeSep', v);
+            this.toggle('lblNotAppBeforeSeparator', v);
+        }
     }
 };

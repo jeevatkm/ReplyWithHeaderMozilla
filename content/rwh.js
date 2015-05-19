@@ -308,11 +308,11 @@ var ReplyWithHeader = {
 
         var rwhHdr = '<div id="rwhMsgHeader">';
 
-        //if (this.hostApp == 'Thunderbird') {
+        if (this.hostApp == 'Thunderbird') {
             let beforeSep = this.Prefs.beforeSepSpaceCnt;
             ReplyWithHeader.Log.debug('Before Separator Space: ' + beforeSep);
             rwhHdr += this.createBrTags(beforeSep);
-        //}
+        }
 
         let headerQuotLblSeq = this.Prefs.headerQuotLblSeq;
 

@@ -135,6 +135,7 @@
                                 <menuitem label="5" value="5" />
                             </menupopup>
                         </menulist>
+                        <label id="lblNotAppBeforeSeparator" value="(not applicable for Postbox)" style="font-size:11px;" />
                     </hbox>
                     <hbox align="center" style="margin-top:5px">
                         <checkbox id="transSubjectPrefix" label="Transform subject prefix (Re -> RE and Fwd -> FW)" preference="pref-transSubjectPrefix" />
