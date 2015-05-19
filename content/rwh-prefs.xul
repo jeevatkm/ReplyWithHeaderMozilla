@@ -25,12 +25,14 @@
             <preference id="pref-enableRwh" name="extensions.replywithheader.enable" type="bool" instantApply="true" />
             <preference id="pref-fromAttributionStyle" name="extensions.replywithheader.header.from.style" type="int" instantApply="true" />
             <preference id="pref-toccAttributionStyle" name="extensions.replywithheader.header.tocc.style" type="int" instantApply="true" />
+            <preference id="pref-quotSeqAttributionStyle" name="extensions.replywithheader.header.lblseq.style" type="int" instantApply="true" />
             <preference id="pref-hdrFontface" name="extensions.replywithheader.header.font.face" type="string" instantApply="true" />
             <preference id="pref-hdrFontsize" name="extensions.replywithheader.header.font.size" type="int" instantApply="true" />
             <preference id="pref-hdrFontcolor" name="extensions.replywithheader.header.font.color" type="string" instantApply="true" />
             <preference id="pref-spaceBeforeSep" name="extensions.replywithheader.header.separator.space.before" type="int" instantApply="true" />
             <preference id="pref-spaceBeforeHdr" name="extensions.replywithheader.header.space.before" type="int" instantApply="true" />
             <preference id="pref-spaceAfterHdr" name="extensions.replywithheader.header.space.after" type="int" instantApply="true" />
+            <preference id="pref-transSubjectPrefix" name="extensions.replywithheader.trans.subject.prefix" type="bool" instantApply="true" />
         </preferences>
 
         <hbox align="center">
@@ -45,7 +47,7 @@
             </tabs>
             <tabpanels>
                 <tabpanel orient="vertical">
-                    <hbox align="center">
+                    <hbox align="center" style="margin-top:-15px">
                         <label id="lblFromAttribution" value="Header 'From' attribution style" />
                     </hbox>
                     <hbox align="center">
@@ -57,8 +59,8 @@
                                    style="margin-top:-2px" />
                         </radiogroup>
                     </hbox>
-                    <hbox align="center" style="margin-top:10px">
-                        <label id="lblHeaderlabel" value="Header 'To' &amp; 'Cc' attribution style" />
+                    <hbox align="center" style="margin-top:5px">
+                        <label id="lblHeaderToCcAttrib" value="Header 'To' &amp; 'Cc' attribution style" />
                     </hbox>
                     <hbox align="center">
                         <radiogroup id="toccAttributionStyle" preference="pref-toccAttributionStyle"
@@ -67,7 +69,17 @@
                             <radio value="1" label="Outlook (To: Name1; Name2; ...)" style="margin-top:-2px" />
                         </radiogroup>
                     </hbox>
-                    <hbox align="center" style="margin-top:10px">
+                    <hbox align="center" style="margin-top:5px">
+                        <label id="lblHeaderQuotSeq" value="Header quoting sequence and labels" />
+                    </hbox>
+                    <hbox align="center">
+                        <radiogroup id="quotSeqAttributionStyle" preference="pref-quotSeqAttributionStyle"
+                                    style="margin-left:30px">
+                            <radio value="0" label="Default (From, Subject, Date, To Cc)" />
+                            <radio value="1" label="Outlook (From, Sent, To, Cc, Subject)" style="margin-top:-2px" />
+                        </radiogroup>
+                    </hbox>
+                    <hbox align="center" style="margin-top:5px">
                         <label id="lblTypography" value="Header typography" />
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
@@ -82,11 +94,12 @@
                         <colorpicker id="hdrFontColor" type="button" value="" style="max-width:35px;max-height:17px;"
                                      preference="pref-hdrFontcolor" />
                     </hbox>
-                    <hbox align="center" style="margin-top:10px">
-                        <label id="lblSpace" value="Header line space" />
+                    <hbox align="center" style="margin-top:5px">
+                        <label id="lblSpace" value="Header line spaces" />
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblBeforeHeader" value="Before header:" />
+                        <spacer width="16px" />
                         <menulist id="spaceBeforeHdr" style="width:55px" preference="pref-spaceBeforeHdr">
                             <menupopup>
                                 <menuitem label="0" value="0" />
@@ -94,6 +107,7 @@
                                 <menuitem label="2" value="2" />
                                 <menuitem label="3" value="3" />
                                 <menuitem label="4" value="4" />
+                                <menuitem label="5" value="5" />
                             </menupopup>
                         </menulist>
                         <spacer width="20px" />
@@ -105,6 +119,7 @@
                                 <menuitem label="2" value="2" />
                                 <menuitem label="3" value="3" />
                                 <menuitem label="4" value="4" />
+                                <menuitem label="5" value="5" />
                             </menupopup>
                         </menulist>
                     </hbox>
@@ -117,8 +132,12 @@
                                 <menuitem label="2" value="2" />
                                 <menuitem label="3" value="3" />
                                 <menuitem label="4" value="4" />
+                                <menuitem label="5" value="5" />
                             </menupopup>
                         </menulist>
+                    </hbox>
+                    <hbox align="center" style="margin-top:5px">
+                        <checkbox id="transSubjectPrefix" label="Transform subject prefix (Re -> RE and Fwd -> FW)" preference="pref-transSubjectPrefix" />
                     </hbox>
                 </tabpanel>
                 <tabpanel orient="vertical">
@@ -136,7 +155,7 @@
                     </hbox>
                 </tabpanel>
                 <tabpanel orient="vertical">
-                    <hbox align="center">
+                    <hbox align="center" style="margin-top: 30px">
                         <image src='chrome://replywithheader/skin/icon-64.png' width='64' height='64'
                                style="margin-left:100px"/>
                         <label id="abtRwhCaption" value="ReplyWithHeader" style="font-weight:bold;" />
@@ -148,7 +167,7 @@
                         <button label="Reviews" oncommand="ReplyWithHeader.Prefs.openReviews();" />
                         <button label="Report Issues" oncommand="ReplyWithHeader.Prefs.reportIssues();" />
                     </hbox>
-                    <hbox align="center" style="margin-top:120px;">
+                    <hbox align="center" style="margin-top:150px;">
                         <groupbox id="abtGrpBoxRwhDonate" style="width:430px;padding-bottom:10px;margin:0">
                             <caption label="Support ReplyWithHeader" style="font-size:13px" />
                             <hbox align="center" style="margin-bottom:10px;margin-top:5px">

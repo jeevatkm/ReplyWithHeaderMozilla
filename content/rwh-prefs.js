@@ -35,7 +35,7 @@ ReplyWithHeader.Prefs = {
         return this.service.getCharPref(p);
     },
 
-    get debugEnabled() {
+    get isDebugEnabled() {
         return this.getBool('extensions.replywithheader.debug');
     },
 
@@ -65,6 +65,14 @@ ReplyWithHeader.Prefs = {
 
     get headerFontColor() {
         return this.getString('extensions.replywithheader.header.font.color');
+    },
+
+    get headerQuotLblSeq() {
+        return this.getInt('extensions.replywithheader.header.lblseq.style');
+    },
+
+    get isSubjectPrefixEnabled() {
+        return this.getBool('extensions.replywithheader.trans.subject.prefix');
     },
 
     openWebsite: function() {
@@ -179,7 +187,7 @@ ReplyWithHeader.Prefs = {
         this.toggleRwh();
 
         // Assigning values
-        ReplyWithHeader.byId('abtRwhCaption').value = ReplyWithHeader.addonName + ' ' + ReplyWithHeader.version;
+        ReplyWithHeader.byId('abtRwhCaption').value = ReplyWithHeader.addonName + ' v' + ReplyWithHeader.version;
 
         this.loadFontfaces();
 
@@ -188,10 +196,11 @@ ReplyWithHeader.Prefs = {
 
     toggleRwh: function() {
         let rwh = document.getElementById('enableRwh');
-        var ids = ['lblFromAttribution', 'fromAttributionStyle', 'lblHeaderlabel', 'toccAttributionStyle',
+        var ids = ['lblFromAttribution', 'fromAttributionStyle', 'lblHeaderToCcAttrib', 'toccAttributionStyle',
                    'lblTypography', 'lblFontface', 'hdrFontface', 'lblFontsize', 'hdrFontsize', 'lblFontcolor',
                    'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr', 'lblAfterHeader',
-                   'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep'];
+                   'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle',
+                   'transSubjectPrefix'];
 
         if (rwh.checked) {
             for (var len=ids.length, i=0; i<len; i++) {

@@ -40,7 +40,7 @@ var ReplyWithHeader = {
         },
 
         debug: function(msg) {
-            if (ReplyWithHeader.Prefs.debugEnabled) {
+            if (ReplyWithHeader.Prefs.isDebugEnabled) {
                 this.toConsole('DEBUG', msg);
             }
         },
@@ -308,11 +308,13 @@ var ReplyWithHeader = {
 
         var rwhHdr = '<div id="rwhMsgHeader">';
 
-        if (this.hostApp == 'Thunderbird') {
+        //if (this.hostApp == 'Thunderbird') {
             let beforeSep = this.Prefs.beforeSepSpaceCnt;
             ReplyWithHeader.Log.debug('Before Separator Space: ' + beforeSep);
             rwhHdr += this.createBrTags(beforeSep);
-        }
+        //}
+
+        let headerQuotLblSeq = this.Prefs.headerQuotLblSeq;
 
         // for HTML emails
         if (this.isHtmlMail) {
@@ -322,34 +324,61 @@ var ReplyWithHeader = {
             ReplyWithHeader.Log.debug('Font face: ' + fontFace + '\tFont size: ' + fontSize + '\tColor: ' + fontColor);
 
             let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontFace + '" color="' + fontColor + '" style="font: ' + fontSize + '.0px ' + fontFace + '; color: ' + fontColor + ';">';
+            let htmlTagSuffix = '</font></span><br/>';
             rwhHdr += '<hr style="border:none;border-top:solid #B5C4DF 1.0pt;padding:0;margin:10px 0 5px 0;width:100%;">';
 
             let beforeHdr = this.Prefs.beforeHdrSpaceCnt;
             ReplyWithHeader.Log.debug('Before Header Space: ' + beforeHdr);
             rwhHdr += this.createBrTags(beforeHdr);
 
-            rwhHdr += htmlTagPrefix + '<b>From:</b> ' + pHeader.from + '</font></span><br/>';
-            rwhHdr += htmlTagPrefix + '<b>Sent:</b> ' + pHeader.date + '</font></span><br/>';
-            rwhHdr += htmlTagPrefix + '<b>To:</b> '+ pHeader.to + '</font></span><br/>';
+            rwhHdr += htmlTagPrefix + '<b>From:</b> ' + pHeader.from + htmlTagSuffix;
 
-            if (pHeader.cc) {
-                rwhHdr += htmlTagPrefix + '<b>Cc:</b> '+ pHeader.cc + '</font></span><br/>';
-                this.hdrCnt += 2; // incrementing for Cc header + br tag
+            if (headerQuotLblSeq == 0) {
+                rwhHdr += htmlTagPrefix + '<b>Subject:</b> '+ pHeader.subject + htmlTagSuffix;
+                rwhHdr += htmlTagPrefix + '<b>Date:</b> ' + pHeader.date + htmlTagSuffix;
+                rwhHdr += htmlTagPrefix + '<b>To:</b> '+ pHeader.to + htmlTagSuffix;
+
+                if (pHeader.cc) {
+                    rwhHdr += htmlTagPrefix + '<b>Cc:</b> '+ pHeader.cc + htmlTagSuffix;
+                    this.hdrCnt += 2; // incrementing for Cc header + br tag
+                }
+            } else if (headerQuotLblSeq == 1) {
+                rwhHdr += htmlTagPrefix + '<b>Sent:</b> ' + pHeader.date + htmlTagSuffix;
+                rwhHdr += htmlTagPrefix + '<b>To:</b> '+ pHeader.to + htmlTagSuffix;
+
+                if (pHeader.cc) {
+                    rwhHdr += htmlTagPrefix + '<b>Cc:</b> '+ pHeader.cc + htmlTagSuffix;
+                    this.hdrCnt += 2; // incrementing for Cc header + br tag
+                }
+
+                rwhHdr += htmlTagPrefix + '<b>Subject:</b> '+ pHeader.subject + htmlTagSuffix;
             }
 
-            rwhHdr += htmlTagPrefix + '<b>Subject:</b> '+ pHeader.subject + '</font></span><br/>';
         } else { // for plain/text emails
             rwhHdr += this.isForward ? '<br>-------- Forwarded Message --------<br>' : '<br>-------- Original Message --------<br>';
             rwhHdr += 'From: ' + pHeader.from + '<br/>';
-            rwhHdr += 'Sent: ' + pHeader.date + '<br/>';
-            rwhHdr += 'To: '+ pHeader.to + '<br/>';
 
-            if (pHeader.cc) {
-                rwhHdr += 'Cc: '+ pHeader.cc + '<br/>';
-                this.hdrCnt += 2;  // incrementing for Cc header + br tag
+            if (headerQuotLblSeq == 0) {
+                rwhHdr += 'Subject: '+ pHeader.subject + '<br/>';
+                rwhHdr += 'Date: ' + pHeader.date + '<br/>';
+                rwhHdr += 'To: '+ pHeader.to + '<br/>';
+
+                if (pHeader.cc) {
+                    rwhHdr += 'Cc: '+ pHeader.cc + '<br/>';
+                    this.hdrCnt += 2;  // incrementing for Cc header + br tag
+                }
+            } else if (headerQuotLblSeq == 1) {
+                rwhHdr += 'Sent: ' + pHeader.date + '<br/>';
+                rwhHdr += 'To: '+ pHeader.to + '<br/>';
+
+                if (pHeader.cc) {
+                    rwhHdr += 'Cc: '+ pHeader.cc + '<br/>';
+                    this.hdrCnt += 2;  // incrementing for Cc header + br tag
+                }
+
+                rwhHdr += 'Subject: '+ pHeader.subject + '<br/>';
             }
 
-            rwhHdr += 'Subject: '+ pHeader.subject + '<br/>';
         }
         let afterHdr = this.Prefs.afterHdrSpaceCnt;
         ReplyWithHeader.Log.debug('After Header Space: ' + afterHdr);
@@ -448,6 +477,18 @@ var ReplyWithHeader = {
         }
     },
 
+    handleSubjectPrefix: function() {
+        let msgSubject = document.getElementById('msgSubject');
+
+        if (this.isDefined(msgSubject)) {
+            if (this.isForward) {
+                msgSubject.value = msgSubject.value.replace(/^Fwd:/,'FW:');
+            } else {
+                msgSubject.value = msgSubject.value.replace(/^Re:/, 'RE:');
+            }
+        }
+    },
+
     handOverToUser: function() {
         ReplyWithHeader.Log.debug('handOverToUser()');
         gMsgCompose.editor.resetModificationCount();
@@ -495,6 +536,8 @@ var ReplyWithHeader = {
             } else {
                 this.handleReplyMessage();
             }
+
+            if (this.Prefs.isSubjectPrefixEnabled)  this.handleSubjectPrefix();
 
             this.handOverToUser();
 
