@@ -35,5 +35,5 @@ ReplyWithHeader Mozilla is released under [MIT License][4]
 [4]: https://github.com/jeevatkm/ReplyWithHeader/blob/master/ReplyWithHeaderMozilla/LICENSE.txt
 [5]: https://addons.mozilla.org/en-US/thunderbird/addon/replywithheader/
 [6]: https://github.com/jeevatkm
-[7]: http://myjeeva.com/replywithheadermozilla#faq
+[7]: http://myjeeva.com/replywithheader-mozilla#faq
 [8]: #report-issues
