@@ -293,6 +293,17 @@ var ReplyWithHeader = {
                      'date': this.parseDate(hdr.date),
                      'subject': this.escapeHtml(hdr.mime2DecodedSubject) };
 
+        // Cleanup numbers
+        if (header.cc) {
+            this.hdrCnt += 1;  // for Cc header
+        }
+
+        let replyTo = hdr.getStringProperty('replyTo').trim();
+        ReplyWithHeader.Log.debug('ReplyTo:: ' + replyTo);
+        if (replyTo) {
+            this.hdrCnt += 1; // for reply-to header
+        }
+
         ReplyWithHeader.Log.debug('\nFrom: ' + header.from
                                 + '\nTo: ' + header.to
                                 + '\nCC: '+ header.cc
@@ -340,7 +351,6 @@ var ReplyWithHeader = {
 
                 if (pHeader.cc) {
                     rwhHdr += htmlTagPrefix + '<b>Cc:</b> '+ pHeader.cc + htmlTagSuffix;
-                    this.hdrCnt += 2; // incrementing for Cc header + br tag
                 }
             } else if (headerQuotLblSeq == 1) {
                 rwhHdr += htmlTagPrefix + '<b>Sent:</b> ' + pHeader.date + htmlTagSuffix;
@@ -348,7 +358,6 @@ var ReplyWithHeader = {
 
                 if (pHeader.cc) {
                     rwhHdr += htmlTagPrefix + '<b>Cc:</b> '+ pHeader.cc + htmlTagSuffix;
-                    this.hdrCnt += 2; // incrementing for Cc header + br tag
                 }
 
                 rwhHdr += htmlTagPrefix + '<b>Subject:</b> '+ pHeader.subject + htmlTagSuffix;
@@ -365,7 +374,6 @@ var ReplyWithHeader = {
 
                 if (pHeader.cc) {
                     rwhHdr += 'Cc: '+ pHeader.cc + '<br/>';
-                    this.hdrCnt += 2;  // incrementing for Cc header + br tag
                 }
             } else if (headerQuotLblSeq == 1) {
                 rwhHdr += 'Sent: ' + pHeader.date + '<br/>';
@@ -373,7 +381,6 @@ var ReplyWithHeader = {
 
                 if (pHeader.cc) {
                     rwhHdr += 'Cc: '+ pHeader.cc + '<br/>';
-                    this.hdrCnt += 2;  // incrementing for Cc header + br tag
                 }
 
                 rwhHdr += 'Subject: '+ pHeader.subject + '<br/>';
@@ -397,6 +404,10 @@ var ReplyWithHeader = {
 
     byClassName: function(name) {
         return gMsgCompose.editor.rootElement.getElementsByClassName(name);
+    },
+
+    byTagName: function(name) {
+        return gMsgCompose.editor.rootElement.getElementsByTagName(name);
     },
 
     getElement: function(name) {
@@ -438,7 +449,15 @@ var ReplyWithHeader = {
         ReplyWithHeader.Log.debug('handleReplyMessage()');
 
         if (this.hostApp == 'Postbox') {
-            this.getElement('__pbConvHr').innerHTML = this.createRwhHeader;
+            let insertPoint = this.getElement('__pbConvHr');
+            if (insertPoint) {
+                insertPoint.innerHTML = this.createRwhHeader;
+            } else {
+                let tags = this.byTagName('span');
+                if (tags.length > 0) {
+                    tags[0].innerHTML = this.createRwhHeader;
+                }
+            }
         } else {
             this.getElement('moz-cite-prefix').innerHTML = this.createRwhHeader;
         }
@@ -464,8 +483,9 @@ var ReplyWithHeader = {
                 ReplyWithHeader.Log.debug('hdrCnt: ' + this.hdrCnt);
 
                 // Logically removing forward header elements
-                // TODO Currently known issue is, it doesn't clean few headers; Need improvements
-                let lc = this.hdrCnt + 3;
+                let lc = (this.hdrCnt * 2) + 1; // for br's
+                ReplyWithHeader.Log.debug('No of headers to cleanup (including BRs):: ' + lc);
+
                 for(var i = 0; i < lc; i++) {
                     this.deleteNode(this.getElement('moz-forward-container').firstChild);
                 }
@@ -524,12 +544,12 @@ var ReplyWithHeader = {
         /*
          * ReplyWithHeader has to be enabled; extensions.replywithheader.enable=true and
          * ReplyWithHeader.isOkayToMoveOn must return true
-         * Addon comes into play :)
+         * Add-on comes into play :)
          */
         if (ReplyWithHeader.isEnabled && ReplyWithHeader.isOkayToMoveOn) {
-            this.hdrCnt = 4;
+            this.hdrCnt = 4; // From, To, Subject, Date
 
-            ReplyWithHeader.Log.debug('BEFORE:: ' + gMsgCompose.editor.rootElement.innerHTML);
+            ReplyWithHeader.Log.debug('BEFORE Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
 
             if (this.isForward) {
                 this.handleForwardMessage();
@@ -541,7 +561,7 @@ var ReplyWithHeader = {
 
             this.handOverToUser();
 
-            ReplyWithHeader.Log.debug('AFTER:: ' + gMsgCompose.editor.rootElement.innerHTML);
+            ReplyWithHeader.Log.debug('AFTER Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
         } else {
             ReplyWithHeader.Log.info('ReplyWithHeader is not enabled, also message composeType is not supported.'
                      + '\n kindly enable it from Add-on Preferences.');
