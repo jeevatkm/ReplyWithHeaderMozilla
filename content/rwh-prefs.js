@@ -39,16 +39,24 @@ ReplyWithHeader.Prefs = {
         return this.getBool('extensions.replywithheader.debug');
     },
 
+    get fromLabelStyle() {
+        return this.getInt('extensions.replywithheader.header.from.style');
+    },
+
+    get toccLabelStyle() {
+        return this.getInt('extensions.replywithheader.header.tocc.style');
+    },
+
     get beforeSepSpaceCnt() {
-        return (this.getInt('extensions.replywithheader.header.separator.space.before') || 1);
+        return this.getInt('extensions.replywithheader.header.separator.space.before');
     },
 
     get beforeHdrSpaceCnt() {
-        return (this.getInt('extensions.replywithheader.header.space.before') || 0);
+        return this.getInt('extensions.replywithheader.header.space.before');
     },
 
     get afterHdrSpaceCnt() {
-        return (this.getInt('extensions.replywithheader.header.space.after') || 1);
+        return this.getInt('extensions.replywithheader.header.space.after');
     },
 
     get dateFormat() {

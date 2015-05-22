@@ -204,6 +204,7 @@ var ReplyWithHeader = {
             tags += '<br/>'
         }
 
+        ReplyWithHeader.Log.debug('Created BRs:: ' + tags);
         return tags;
     },
 
@@ -216,7 +217,7 @@ var ReplyWithHeader = {
          * 1 = Outlook Simple (From: Name)
          * 2 = Outlook Extended (From: Name [mailto:email-address])
          */
-        let fromLblStyle = this.Prefs.getInt('extensions.replywithheader.header.from.style');
+        let fromLblStyle = this.Prefs.fromLabelStyle;
 
         author = this.cleanEmail(author);
         if (author && fromLblStyle != 0) {
@@ -263,7 +264,7 @@ var ReplyWithHeader = {
          * 0 = Default (To: Name1 <email-address1>, ...)
          * 1 = Outlook (To: Name1; Name2; ...)
          */
-        let toccLblStyle = this.Prefs.getInt('extensions.replywithheader.header.tocc.style');
+        let toccLblStyle = this.Prefs.toccLabelStyle;
         recipients = this.cleanEmail(recipients);
 
         if (recipients && toccLblStyle == 1) {
@@ -317,6 +318,7 @@ var ReplyWithHeader = {
     get createRwhHeader() {
         let rawHdr = this.getMsgHeader(this.messageUri);
         let pHeader = this.parseMsgHeader(rawHdr);
+        let headerQuotLblSeq = this.Prefs.headerQuotLblSeq;
 
         var rwhHdr = '<div id="rwhMsgHeader">';
 
@@ -326,7 +328,11 @@ var ReplyWithHeader = {
             rwhHdr += this.createBrTags(beforeSep);
         }
 
-        let headerQuotLblSeq = this.Prefs.headerQuotLblSeq;
+        rwhHdr += '<hr style="border:none;border-top:solid #B5C4DF 1.0pt;padding:0;margin:10px 0 5px 0;width:100%;">';
+
+        let beforeHdr = this.Prefs.beforeHdrSpaceCnt;
+        ReplyWithHeader.Log.debug('Before Header Space: ' + beforeHdr);
+        rwhHdr += this.createBrTags(beforeHdr);
 
         // for HTML emails
         if (this.isHtmlMail) {
@@ -337,11 +343,6 @@ var ReplyWithHeader = {
 
             let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontFace + '" color="' + fontColor + '" style="font: ' + fontSize + '.0px ' + fontFace + '; color: ' + fontColor + ';">';
             let htmlTagSuffix = '</font></span><br/>';
-            rwhHdr += '<hr style="border:none;border-top:solid #B5C4DF 1.0pt;padding:0;margin:10px 0 5px 0;width:100%;">';
-
-            let beforeHdr = this.Prefs.beforeHdrSpaceCnt;
-            ReplyWithHeader.Log.debug('Before Header Space: ' + beforeHdr);
-            rwhHdr += this.createBrTags(beforeHdr);
 
             rwhHdr += htmlTagPrefix + '<b>From:</b> ' + pHeader.from + htmlTagSuffix;
 
