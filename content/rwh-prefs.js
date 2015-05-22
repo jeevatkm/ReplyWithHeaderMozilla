@@ -75,6 +75,14 @@ ReplyWithHeader.Prefs = {
         return this.getBool('extensions.replywithheader.trans.subject.prefix');
     },
 
+    get cleanBlockQuote() {
+        return this.getBool('extensions.replywithheader.clean.blockquote');
+    },
+
+    get cleanGreaterthanChar() {
+        return this.getBool('extensions.replywithheader.clean.char.greaterthan');
+    },
+
     openWebsite: function() {
         this.openUrlInDefaultBrowser(ReplyWithHeader.homepageUrl);
     },
@@ -152,7 +160,7 @@ ReplyWithHeader.Prefs = {
         let menuPopup = document.createElement('menupopup');
         let selectedIdx = 0;
 
-        for (var fontCount=allFonts.length, i=0; i<fontCount; i++) {
+        for (let fontCount=allFonts.length, i=0; i<fontCount; i++) {
             if (allFonts[i] == hdrFontface) {
                 selectedIdx = i;
             }
@@ -171,7 +179,7 @@ ReplyWithHeader.Prefs = {
         let menuPopup = document.createElement('menupopup');
         let selectedIdx = 0;
 
-        for (var i=10, j=0; i<35; i++, j++) {
+        for (let i=10, j=0; i<35; i++, j++) {
             if (i == hdrFontsize) {
                 selectedIdx = j;
             }
@@ -202,14 +210,15 @@ ReplyWithHeader.Prefs = {
                    'lblTypography', 'lblFontface', 'hdrFontface', 'lblFontsize', 'hdrFontsize', 'lblFontcolor',
                    'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr', 'lblAfterHeader',
                    'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle',
-                   'transSubjectPrefix', 'lblNotAppBeforeSeparator'];
+                   'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat', 'cleanBlockQuote',
+                   'cleanGreaterthanChar'];
 
         if (rwh.checked) {
-            for (var len=ids.length, i=0; i<len; i++) {
+            for (let len=ids.length, i=0; i<len; i++) {
                 this.toggle(ids[i], false);
             }
         } else {
-            for (var len=ids.length, i=0; i<len; i++) {
+            for (let len=ids.length, i=0; i<len; i++) {
                 this.toggle(ids[i], true);
             }
         }

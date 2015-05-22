@@ -22,10 +22,11 @@ pref('extensions.replywithheader.header.space.after', 1);
 pref('extensions.replywithheader.trans.subject.prefix', false);
 
 // As per http://momentjs.com/docs/#/displaying/format/
-pref('extensions.replywithheader.header.date.format', 'dddd, MMM DD, YYYY [at] HH:mm:ss [GMT] Z');
+pref('extensions.replywithheader.header.date.format', 'dddd, MMM DD, YYYY [at] HH:mm:ss [GMT]Z');
 
 // RWH Mail message
-// Upcoming things here!
+pref('extensions.replywithheader.clean.blockquote', true);
+pref('extensions.replywithheader.clean.char.greaterthan', true);
 
 // RWH Debug settings
 pref('extensions.replywithheader.debug', false);

@@ -21,6 +21,7 @@ var ReplyWithHeader = {
     btcAddress: '1FG6G5tCmFm7vrc7BzUyRxr3RBrMDJA6zp',
     paypalDonateUrl: 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=Jeevanandam%20M%2e&item_number=ReplyWithHeaderMozilla&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted',
     hdrCnt: 4,
+    bqStyleStr: 'border:none !important; margin-left:0px !important; margin-right:0px !important; padding-left:0px !important; padding-right:0px !important',
 
     Log: {
         service: RCc['@mozilla.org/consoleservice;1'].getService(RCi.nsIConsoleService),
@@ -486,7 +487,7 @@ var ReplyWithHeader = {
                 let lc = (this.hdrCnt * 2) + 1; // for br's
                 ReplyWithHeader.Log.debug('No of headers to cleanup (including BRs):: ' + lc);
 
-                for(var i = 0; i < lc; i++) {
+                for(let i=0; i < lc; i++) {
                     this.deleteNode(this.getElement('moz-forward-container').firstChild);
                 }
 
@@ -506,6 +507,25 @@ var ReplyWithHeader = {
             } else {
                 msgSubject.value = msgSubject.value.replace(/^Re:/, 'RE:');
             }
+        }
+    },
+
+    handleBlockQuote: function() {
+        ReplyWithHeader.Log.debug('handleBlockQuote()');
+        let blockquotes = this.byTagName('blockquote');
+
+        for (let i=0, len=blockquotes.length; i<len; i++) {
+            blockquotes[i].setAttribute('style', this.bqStyleStr);
+        }
+    },
+
+    handleGreaterthanChar: function() {
+        ReplyWithHeader.Log.debug('handleGreaterthanChar()');
+        let mailBody = gMsgCompose.editor.rootElement;  // alternate is gMsgCompose.editor.document.body
+
+        if (mailBody) {
+            mailBody.innerHTML = mailBody.innerHTML.replace(/<br>(&gt;)+ ?/g, '<br />')
+                                                   .replace(/(<\/?span [^>]+>)(&gt;)+ /g, '$1');
         }
     },
 
@@ -557,7 +577,17 @@ var ReplyWithHeader = {
                 this.handleReplyMessage();
             }
 
-            if (this.Prefs.isSubjectPrefixEnabled)  this.handleSubjectPrefix();
+            if (this.Prefs.isSubjectPrefixEnabled) {
+                this.handleSubjectPrefix();
+            }
+
+            if (this.Prefs.cleanBlockQuote) {
+                this.handleBlockQuote()
+            }
+
+            if (this.Prefs.cleanGreaterthanChar) {
+                this.handleGreaterthanChar();
+            }
 
             this.handOverToUser();
 
