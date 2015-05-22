@@ -328,12 +328,6 @@ var ReplyWithHeader = {
             rwhHdr += this.createBrTags(beforeSep);
         }
 
-        rwhHdr += '<hr style="border:none;border-top:solid #B5C4DF 1.0pt;padding:0;margin:10px 0 5px 0;width:100%;">';
-
-        let beforeHdr = this.Prefs.beforeHdrSpaceCnt;
-        ReplyWithHeader.Log.debug('Before Header Space: ' + beforeHdr);
-        rwhHdr += this.createBrTags(beforeHdr);
-
         // for HTML emails
         if (this.isHtmlMail) {
             let fontFace = this.Prefs.headerFontFace;
@@ -343,6 +337,12 @@ var ReplyWithHeader = {
 
             let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontFace + '" color="' + fontColor + '" style="font: ' + fontSize + '.0px ' + fontFace + '; color: ' + fontColor + ';">';
             let htmlTagSuffix = '</font></span><br/>';
+
+            rwhHdr += '<hr style="border:none;border-top:solid #B5C4DF 1.0pt;padding:0;margin:10px 0 5px 0;width:100%;">';
+
+            let beforeHdr = this.Prefs.beforeHdrSpaceCnt;
+            ReplyWithHeader.Log.debug('Before Header Space: ' + beforeHdr);
+            rwhHdr += this.createBrTags(beforeHdr);
 
             rwhHdr += htmlTagPrefix + '<b>From:</b> ' + pHeader.from + htmlTagSuffix;
 
@@ -366,7 +366,12 @@ var ReplyWithHeader = {
             }
 
         } else { // for plain/text emails
-            rwhHdr += this.isForward ? '<br>-------- Forwarded Message --------<br>' : '<br>-------- Original Message --------<br>';
+            rwhHdr += this.isForward ? '<br/>-------- Forwarded Message --------<br/>' : '<br/>-------- Original Message --------<br/>';
+
+            let beforeHdr = this.Prefs.beforeHdrSpaceCnt;
+            ReplyWithHeader.Log.debug('Before Header Space: ' + beforeHdr);
+            rwhHdr += this.createBrTags(beforeHdr);
+
             rwhHdr += 'From: ' + pHeader.from + '<br/>';
 
             if (headerQuotLblSeq == 0) {
