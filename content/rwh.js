@@ -14,7 +14,7 @@ const { classes: RCc, interfaces: RCi, utils: RCu } = Components;
 
 var ReplyWithHeader = {
     addonName: 'ReplyWithHeader',
-    version: '1.0',
+    version: '1.1',
     homepageUrl: 'http://myjeeva.com/replywithheader-mozilla',
     reviewsPageUrl: 'https://addons.mozilla.org/en-US/thunderbird/addon/replywithheader/',
     issuesPageUrl: 'https://github.com/jeevatkm/ReplyWithHeaderMozilla/issues',
