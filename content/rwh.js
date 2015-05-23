@@ -335,7 +335,7 @@ var ReplyWithHeader = {
             let fontColor = this.Prefs.headerFontColor;
             ReplyWithHeader.Log.debug('Font face: ' + fontFace + '\tFont size: ' + fontSize + '\tColor: ' + fontColor);
 
-            let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontFace + '" color="' + fontColor + '" style="font: ' + fontSize + '.0px ' + fontFace + '; color: ' + fontColor + ';">';
+            let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontFace + '" color="' + fontColor + '" style="font: ' + fontSize + 'px ' + fontFace + ' !important; color: ' + fontColor + ' !important;">';
             let htmlTagSuffix = '</font></span><br/>';
 
             rwhHdr += '<hr style="border:none;border-top:solid #B5C4DF 1.0pt;padding:0;margin:10px 0 5px 0;width:100%;">';
