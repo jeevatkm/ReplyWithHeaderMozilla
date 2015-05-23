@@ -87,7 +87,7 @@ ReplyWithHeader.Prefs = {
         return this.getBool('extensions.replywithheader.clean.blockquote');
     },
 
-    get cleanGreaterthanChar() {
+    get cleanGreaterThanChar() {
         return this.getBool('extensions.replywithheader.clean.char.greaterthan');
     },
 
@@ -158,7 +158,7 @@ ReplyWithHeader.Prefs = {
         return menuItem;
     },
 
-    loadFontfaces: function() {
+    loadFontFaces: function() {
         let allFonts = RCc['@mozilla.org/gfx/fontenumerator;1']
                             .createInstance(RCi.nsIFontEnumerator).EnumerateAllFonts({});
 
@@ -205,7 +205,7 @@ ReplyWithHeader.Prefs = {
         // Assigning values
         ReplyWithHeader.byId('abtRwhCaption').value = ReplyWithHeader.addonName + ' v' + ReplyWithHeader.version;
 
-        this.loadFontfaces();
+        this.loadFontFaces();
 
         this.loadFontSizes();
 
@@ -219,7 +219,7 @@ ReplyWithHeader.Prefs = {
                    'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr', 'lblAfterHeader',
                    'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle',
                    'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat', 'cleanBlockQuote',
-                   'cleanGreaterthanChar'];
+                   'cleanGreaterThanChar'];
 
         if (rwh.checked) {
             for (let len=ids.length, i=0; i<len; i++) {

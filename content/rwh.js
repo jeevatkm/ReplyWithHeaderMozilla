@@ -21,7 +21,7 @@ var ReplyWithHeader = {
     btcAddress: '1FG6G5tCmFm7vrc7BzUyRxr3RBrMDJA6zp',
     paypalDonateUrl: 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=Jeevanandam%20M%2e&item_number=ReplyWithHeaderMozilla&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted',
     hdrCnt: 4,
-    bqStyleStr: 'border:none !important; margin-left:0px !important; margin-right:0px !important; padding-left:0px !important; padding-right:0px !important',
+    bqStyleStr: 'border:none !important; margin-left:0px !important; margin-right:0px !important; margin-top:0px !important; padding-left:0px !important; padding-right:0px !important',
 
     Log: {
         service: RCc['@mozilla.org/consoleservice;1'].getService(RCi.nsIConsoleService),
@@ -409,6 +409,10 @@ var ReplyWithHeader = {
         return document.getElementById(id);
     },
 
+    byIdInMail: function(id) {
+        return gMsgCompose.editor.document.getElementById(id);
+    },
+
     byClassName: function(name) {
         return gMsgCompose.editor.rootElement.getElementsByClassName(name);
     },
@@ -423,6 +427,22 @@ var ReplyWithHeader = {
 
     deleteNode: function(node) {
         gMsgCompose.editor.deleteNode(node);
+    },
+
+    cleanBrAfterRwhHeader: function() {
+        ReplyWithHeader.Log.debug('cleanBrAfterRwhHeader()');
+
+        let rwhHdr = this.byIdInMail('rwhMsgHeader');
+        if (rwhHdr.nextSibling) {
+            this.cleanEmptyTags(rwhHdr.nextSibling);
+        } else if (rwhHdr.parentNode.nextSibling) {
+            this.cleanEmptyTags(rwhHdr.parentNode.nextSibling);
+        }
+
+        let pbhr = this.getElement('__pbConvHr');
+        if (pbhr) {
+            pbhr.setAttribute('style', 'margin-top:0px !important;');
+        }
     },
 
     cleanEmptyTags: function(node) {
@@ -463,18 +483,47 @@ var ReplyWithHeader = {
                 let tags = this.byTagName('span');
                 if (tags.length > 0) {
                     tags[0].innerHTML = this.createRwhHeader;
+                } else {
+                    ReplyWithHeader.Log.error('RWH is unable to insert headers, contact add-on author here ' + this.issuesPageUrl);
                 }
             }
         } else {
             this.getElement('moz-cite-prefix').innerHTML = this.createRwhHeader;
         }
+
+        this.cleanBrAfterRwhHeader();
     },
 
     handleForwardMessage: function() {
         ReplyWithHeader.Log.debug('handleForwardMessage()');
 
         if (this.hostApp == 'Postbox') {
-            this.getElement('__pbConvHr').innerHTML = this.createRwhHeader;
+            let insertPoint = this.getElement('__pbConvHr');
+            if (insertPoint) {
+                insertPoint.innerHTML = this.createRwhHeader;
+            } else {
+                insertPoint = this.getElement('moz-email-headers-table');
+                if (insertPoint) {
+                    let mBody = gMsgCompose.editor.rootElement;
+
+                    this.cleanEmptyTags(mBody.firstChild);
+
+                    // Logically removing text node header elements
+                    ReplyWithHeader.Log.debug('Cleaning text node')
+                    this.deleteNode(mBody.firstChild);
+
+                    let hdrNode = this.parseHtml(this.createRwhHeader);
+                    mBody.replaceChild(hdrNode, insertPoint);
+
+                    let beforeSep = this.Prefs.beforeSepSpaceCnt;
+                    if (beforeSep == 0) {
+                        for (let i=0; i<2; i++)
+                            mBody.insertBefore(this.parseHtml(this.createBrTags(1)) , mBody.firstChild);
+                    }
+                } else {
+                    ReplyWithHeader.Log.error('RWH is unable to insert headers, contact add-on author here ' + this.issuesPageUrl);
+                }
+            }
         } else { // For Thunderbird
             this.cleanEmptyTags(this.getElement('moz-forward-container').firstChild);
 
@@ -499,9 +548,9 @@ var ReplyWithHeader = {
 
                 this.getElement('moz-forward-container').replaceChild(hdrNode, this.getElement('moz-forward-container').firstChild);
             }
-
-            this.cleanEmptyTags(gMsgCompose.editor.document.getElementById('rwhMsgHeader').nextSibling);
         }
+
+        this.cleanBrAfterRwhHeader();
     },
 
     handleSubjectPrefix: function() {
@@ -525,8 +574,8 @@ var ReplyWithHeader = {
         }
     },
 
-    handleGreaterthanChar: function() {
-        ReplyWithHeader.Log.debug('handleGreaterthanChar()');
+    handleGreaterThanChar: function() {
+        ReplyWithHeader.Log.debug('handleGreaterThanChar()');
         let mailBody = gMsgCompose.editor.rootElement;  // alternate is gMsgCompose.editor.document.body
 
         if (mailBody) {
@@ -591,8 +640,8 @@ var ReplyWithHeader = {
                 this.handleBlockQuote()
             }
 
-            if (this.Prefs.cleanGreaterthanChar) {
-                this.handleGreaterthanChar();
+            if (this.Prefs.cleanGreaterThanChar) {
+                this.handleGreaterThanChar();
             }
 
             this.handOverToUser();

@@ -34,7 +34,7 @@
             <preference id="pref-spaceAfterHdr" name="extensions.replywithheader.header.space.after" type="int" instantApply="true" />
             <preference id="pref-transSubjectPrefix" name="extensions.replywithheader.trans.subject.prefix" type="bool" instantApply="true" />
             <preference id="pref-cleanBlockQuote" name="extensions.replywithheader.clean.blockquote" type="bool" instantApply="true" />
-            <preference id="pref-cleanGreaterthanChar" name="extensions.replywithheader.clean.char.greaterthan" type="bool" instantApply="true" />
+            <preference id="pref-cleanGreaterThanChar" name="extensions.replywithheader.clean.char.greaterthan" type="bool" instantApply="true" />
         </preferences>
 
         <hbox align="center">
@@ -151,7 +151,7 @@
                         <checkbox id="cleanBlockQuote" label="Cleanup the blockquote colors" preference="pref-cleanBlockQuote" />
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
-                        <checkbox id="cleanGreaterthanChar" label="Cleanup the quote character '>'" preference="pref-cleanGreaterthanChar" />
+                        <checkbox id="cleanGreaterThanChar" label="Cleanup the quote character '>'" preference="pref-cleanGreaterThanChar" />
                     </hbox>
                 </tabpanel>
                 <tabpanel orient="vertical">
@@ -162,10 +162,10 @@
                         <label id="abtRwhCopyrights" value="&#169; 2015 Jeevanandam M."
                                style="font-size:12px; margin-top:40px;margin-left:-152px" />
                     </hbox>
-                    <hbox align="center" style="margin: 40px 0 0 70px">
+                    <hbox align="center" style="margin: 40px 0 0 55px">
                         <button label="Website" oncommand="ReplyWithHeader.Prefs.openWebsite();" />
-                        <button label="Reviews" oncommand="ReplyWithHeader.Prefs.openReviews();" />
-                        <button label="Report Issues" oncommand="ReplyWithHeader.Prefs.reportIssues();" />
+                        <button label="Write a Review" oncommand="ReplyWithHeader.Prefs.openReviews();" />
+                        <button label="Need Support" oncommand="ReplyWithHeader.Prefs.reportIssues();" />
                     </hbox>
                     <hbox align="center" style="margin-top:150px;">
                         <groupbox id="abtGrpBoxRwhDonate" style="width:430px;padding-bottom:10px;margin:0">
