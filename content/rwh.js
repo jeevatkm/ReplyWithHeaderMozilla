@@ -484,7 +484,7 @@ var ReplyWithHeader = {
                 if (tags.length > 0) {
                     tags[0].innerHTML = this.createRwhHeader;
                 } else {
-                    ReplyWithHeader.Log.error('RWH is unable to insert headers, contact add-on author here ' + this.issuesPageUrl);
+                    ReplyWithHeader.Log.error('RWH is unable to insert headers, contact add-on author here - ' + this.issuesPageUrl);
                 }
             }
         } else {
@@ -503,25 +503,39 @@ var ReplyWithHeader = {
                 insertPoint.innerHTML = this.createRwhHeader;
             } else {
                 insertPoint = this.getElement('moz-email-headers-table');
-                if (insertPoint) {
-                    let mBody = gMsgCompose.editor.rootElement;
 
-                    this.cleanEmptyTags(mBody.firstChild);
+                let mBody = gMsgCompose.editor.rootElement;
+                this.cleanEmptyTags(mBody.firstChild);
 
-                    // Logically removing text node header elements
-                    ReplyWithHeader.Log.debug('Cleaning text node')
-                    this.deleteNode(mBody.firstChild);
+                // Logically removing text node header elements
+                ReplyWithHeader.Log.debug('Cleaning text node')
+                this.deleteNode(mBody.firstChild);
 
-                    let hdrNode = this.parseHtml(this.createRwhHeader);
+                let hdrNode = this.parseHtml(this.createRwhHeader);
+
+                if (insertPoint && this.isHtmlMail) {
                     mBody.replaceChild(hdrNode, insertPoint);
 
-                    let beforeSep = this.Prefs.beforeSepSpaceCnt;
-                    if (beforeSep == 0) {
+                    if (this.Prefs.beforeSepSpaceCnt == 0) {
                         for (let i=0; i<2; i++)
                             mBody.insertBefore(this.parseHtml(this.createBrTags(1)) , mBody.firstChild);
                     }
                 } else {
-                    ReplyWithHeader.Log.error('RWH is unable to insert headers, contact add-on author here ' + this.issuesPageUrl);
+                    ReplyWithHeader.Log.debug('hdrCnt: ' + this.hdrCnt);
+
+                    // Logically removing forward header elements
+                    let lc = (this.hdrCnt * 2) + 1; // for br's
+                    ReplyWithHeader.Log.debug('No of headers to cleanup (including BRs):: ' + lc);
+
+                    for(let i=0; i < lc; i++) {
+                        this.deleteNode(mBody.firstChild);
+                    }
+
+                    mBody.replaceChild(hdrNode, mBody.firstChild);
+
+                    if (this.Prefs.beforeSepSpaceCnt == 0) {
+                        mBody.insertBefore(this.parseHtml(this.createBrTags(1)) , mBody.firstChild);
+                    }
                 }
             }
         } else { // For Thunderbird
