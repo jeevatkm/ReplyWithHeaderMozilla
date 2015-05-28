@@ -14,7 +14,7 @@ const { classes: RCc, interfaces: RCi, utils: RCu } = Components;
 
 var ReplyWithHeader = {
     addonName: 'ReplyWithHeader',
-    version: '1.1',
+    version: '1.2',
     homepageUrl: 'http://myjeeva.com/replywithheader-mozilla',
     reviewsPageUrl: 'https://addons.mozilla.org/en-US/thunderbird/addon/replywithheader/',
     issuesPageUrl: 'https://github.com/jeevatkm/ReplyWithHeaderMozilla/issues',
@@ -662,8 +662,13 @@ var ReplyWithHeader = {
 
             ReplyWithHeader.Log.debug('AFTER Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
         } else {
-            ReplyWithHeader.Log.info('ReplyWithHeader is not enabled, also message composeType is not supported.'
-                     + '\n kindly enable it from Add-on Preferences.');
+            if (ReplyWithHeader.isEnabled) {
+                if (this.composeType == 10 || this.composeType == 15) { // Resend=10, Redirect=15
+                    ReplyWithHeader.Log.debug('Email composeType [' + this.composeType + '] is not supported.');
+                }
+            } else {
+                ReplyWithHeader.Log.info('ReplyWithHeader is not enabled, you can enable it in the Add-On Preferences.');
+            }
         }
     }
 };
