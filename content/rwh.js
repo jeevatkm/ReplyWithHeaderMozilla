@@ -91,7 +91,7 @@ var ReplyWithHeader = {
         let mct = RCi.nsIMsgCompType;
         let ct = this.composeType;
 
-        var reply = (ct == mct.Reply || ct == mct.ReplyAll || mct.ReplyToSender) ? true : false;
+        var reply = (ct == mct.Reply || ct == mct.ReplyAll || ct == mct.ReplyToSender) ? true : false;
         ReplyWithHeader.Log.debug('isReply: ' + reply);
 
         return reply;
@@ -571,10 +571,10 @@ var ReplyWithHeader = {
         let msgSubject = document.getElementById('msgSubject');
 
         if (this.isDefined(msgSubject)) {
-            if (this.isForward) {
-                msgSubject.value = msgSubject.value.replace(/^Fwd:/,'FW:');
-            } else {
+            if (this.isReply){
                 msgSubject.value = msgSubject.value.replace(/^Re:/, 'RE:');
+            } else if (this.isForward) {
+                msgSubject.value = msgSubject.value.replace(/^Fwd:/,'FW:');
             }
         }
     },
@@ -602,7 +602,7 @@ var ReplyWithHeader = {
         ReplyWithHeader.Log.debug('handOverToUser()');
         gMsgCompose.editor.resetModificationCount();
 
-        if (!this.isForward) {
+        if (this.isReply) {
             let rot = gCurrentIdentity.replyOnTop;
             ReplyWithHeader.Log.debug('gCurrentIdentity.replyOnTop: ' + rot);
 
@@ -640,10 +640,10 @@ var ReplyWithHeader = {
 
             ReplyWithHeader.Log.debug('BEFORE Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
 
-            if (this.isForward) {
-                this.handleForwardMessage();
-            } else {
+            if (this.isReply){
                 this.handleReplyMessage();
+            } else if (this.isForward) {
+                this.handleForwardMessage();
             }
 
             if (this.Prefs.isSubjectPrefixEnabled) {
