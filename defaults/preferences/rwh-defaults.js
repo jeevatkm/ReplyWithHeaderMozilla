@@ -22,7 +22,9 @@ pref('extensions.replywithheader.header.space.after', 1);
 pref('extensions.replywithheader.trans.subject.prefix', false);
 
 // As per http://momentjs.com/docs/#/displaying/format/
-pref('extensions.replywithheader.header.date.format', 'dddd, MMM DD, YYYY [at] HH:mm:ss [GMT]Z');
+// 0 - Locale date format
+// 1 - International date format - GMT
+pref('extensions.replywithheader.header.date.format', 0);
 
 // RWH Mail message
 pref('extensions.replywithheader.clean.blockquote', true);

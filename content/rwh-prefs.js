@@ -60,7 +60,7 @@ ReplyWithHeader.Prefs = {
     },
 
     get dateFormat() {
-        return this.getString('extensions.replywithheader.header.date.format');
+        return this.getInt('extensions.replywithheader.header.date.format');
     },
 
     get headerFontFace() {

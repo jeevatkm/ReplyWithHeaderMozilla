@@ -10,11 +10,14 @@
 
 var EXPORTED_SYMBOLS = ['ReplyWithHeader'];
 
-const { classes: RCc, interfaces: RCi, utils: RCu } = Components;
+//const { classes: RCc, interfaces: RCi, utils: RCu } = Components;
+const RCc = Components.classes;
+const RCi = Components.interfaces;
+const RCu = Components.utils;
 
 var ReplyWithHeader = {
     addonName: 'ReplyWithHeader',
-    version: '1.2',
+    version: '1.3-beta',
     homepageUrl: 'http://myjeeva.com/replywithheader-mozilla',
     reviewsPageUrl: 'https://addons.mozilla.org/en-US/thunderbird/addon/replywithheader/',
     issuesPageUrl: 'https://github.com/jeevatkm/ReplyWithHeaderMozilla/issues',
@@ -22,18 +25,18 @@ var ReplyWithHeader = {
     paypalDonateUrl: 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=Jeevanandam%20M%2e&item_number=ReplyWithHeaderMozilla&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted',
     hdrCnt: 4,
     bqStyleStr: 'border:none !important; margin-left:0px !important; margin-right:0px !important; margin-top:0px !important; padding-left:0px !important; padding-right:0px !important',
-
+    dateFormatString: 'ddd, MMM d, yyyy h:mm:ss a',
     Log: {
-        service: RCc['@mozilla.org/consoleservice;1'].getService(RCi.nsIConsoleService),
+        conService: RCc['@mozilla.org/consoleservice;1'].getService(RCi.nsIConsoleService),
 
         rwhInfo: function() {
             var rInfo = ReplyWithHeader.addonName + ' ' + ReplyWithHeader.version
                 + ' Loaded successfully.';
-            this.service.logStringMessage(rInfo);
+            this.conService.logStringMessage(rInfo);
         },
 
         toConsole: function(l, m) {
-            this.service.logStringMessage(ReplyWithHeader.timeNow + '\t' + l + '\tRWH\t' + m);
+            this.conService.logStringMessage(ReplyWithHeader.timeNow + '\t' + l + '\tRWH\t' + m);
         },
 
         info: function(msg) {
@@ -67,7 +70,7 @@ var ReplyWithHeader = {
 
             // Addon generates this error, it is better to use warningFlag = 0x1
             scriptError.init(msg + '\n' + ex.message, srcName, stack, ex.lineNumber, 0, 0x1, group);
-            this.service.logMessage(scriptError);
+            this.conService.logMessage(scriptError);
         }
     },
 
@@ -174,11 +177,44 @@ var ReplyWithHeader = {
         }
     },
 
+    // Reference: https://gist.github.com/redoPop/3915761
+    tzAbbr: function (dateInput) {
+        var dateObject = dateInput || new Date(),
+            dateString = dateObject + "",
+            tzAbbr = (
+                      // Works for the majority of modern browsers
+                      dateString.match(/\(([^\)]+)\)$/) ||
+                      // IE outputs date strings in a different format:
+                      dateString.match(/([A-Z]+) [\d]{4}$/)
+                     );
+        if (tzAbbr) {
+            // Old Firefox uses the long timezone name (e.g., "Central
+            // Daylight Time" instead of "CDT")
+            tzAbbr = tzAbbr[1].match(/[A-Z]/g).join("");
+        }
+        // Uncomment these lines to return a GMT offset for browsers
+        // that don't include the user's zone abbreviation (e.g.,
+        // "GMT-0500".) I prefer to have `null` in this case, but
+        // you may not!
+        // First seen on: http://stackoverflow.com/a/12496442
+         if (!tzAbbr && /(GMT\W*\d{4}|GMT)/.test(dateString)) {
+            return RegExp.$1;
+         }
+        return tzAbbr;
+    },
+
     parseDate: function(prTime) {
         // Input is PR time
         let d = new Date(prTime / 1000);
-        var nd = moment(d).format(this.Prefs.dateFormat);
-        ReplyWithHeader.Log.debug('Parsed date: ' + nd);
+        var nd = '';
+        if (this.Prefs.dateFormat == 0) {
+            ReplyWithHeader.Log.debug('Locale format');
+            nd = DateFormat.format.date(d, this.dateFormatString) + ' ' + this.tzAbbr(d);
+        } else {
+            ReplyWithHeader.Log.debug('GMT format');
+            var utc = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
+            nd = DateFormat.format.date(utc, this.dateFormatString) + ' ' + this.tzAbbr(d.toUTCString());
+        }
 
         return nd;
     },
@@ -446,7 +482,7 @@ var ReplyWithHeader = {
     },
 
     cleanEmptyTags: function(node) {
-        ReplyWithHeader.Log.debug('Cleaning consecutive Empty Tags')
+        ReplyWithHeader.Log.debug('Cleaning consecutive Empty Tags');
 
         let toDelete = true;
         while (node && toDelete) {
