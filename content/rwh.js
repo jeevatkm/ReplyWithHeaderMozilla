@@ -10,7 +10,6 @@
 
 var EXPORTED_SYMBOLS = ['ReplyWithHeader'];
 
-//const { classes: RCc, interfaces: RCi, utils: RCu } = Components;
 const RCc = Components.classes;
 const RCi = Components.interfaces;
 const RCu = Components.utils;
@@ -227,13 +226,6 @@ var ReplyWithHeader = {
         return (str || '').replace(/\\/g, '').replace(/\"/g, '');
     },
 
-    parseHtml: function(hs) {
-        var d = gMsgCompose.editor.document.createElement('div');
-        d.innerHTML = hs;
-
-        return d.firstChild;
-    },
-
     createBrTags: function(cnt) {
         var tags = '';
         for (let i=0; i<cnt; i++) {
@@ -242,6 +234,36 @@ var ReplyWithHeader = {
 
         ReplyWithHeader.Log.debug('Created BRs:: ' + tags);
         return tags;
+    },
+
+    /**
+     * Source: https://developer.mozilla.org/en-US/Add-ons/Overlay_Extensions/XUL_School/DOM_Building_and_HTML_Insertion#Safely_Using_Remote_HTML
+     *
+     * Safely parse an HTML fragment, removing any executable
+     * JavaScript, and return a document fragment.
+     *
+     * @param {Document} doc The document in which to create the returned DOM tree.
+     * @param {string} html The HTML fragment to parse.
+     * @param {boolean} allowStyle If true, allow <style> nodes and
+     *     style attributes in the parsed fragment. Gecko 14+ only.
+     * @param {nsIURI} baseURI The base URI relative to which resource
+     *     URLs should be processed. Note that this will not work for XML fragments.
+     * @param {boolean} isXML If true, parse the fragment as XML.
+     */
+     parseFragment: function(doc, html, allowStyle, baseURI, isXML) {
+        const PARSER_UTILS = '@mozilla.org/parserutils;1';
+
+        // User the newer nsIParserUtils on versions that support it.
+        if (PARSER_UTILS in RCc) {
+            let parser = RCc[PARSER_UTILS].getService(RCi.nsIParserUtils);
+            if ('parseFragment' in parser)
+                return parser.parseFragment(html, allowStyle ? parser.SanitizerAllowStyle : 0,
+                                            !!isXML, baseURI, doc.documentElement);
+        }
+
+        return RCc['@mozilla.org/feed-unescapehtml;1']
+                         .getService(RCi.nsIScriptableUnescapeHTML)
+                         .parseFragment(html, !!isXML, baseURI, doc.documentElement);
     },
 
     prepareFromHdr: function(author) {
@@ -511,67 +533,76 @@ var ReplyWithHeader = {
     handleReplyMessage: function() {
         ReplyWithHeader.Log.debug('handleReplyMessage()');
 
+        let hdrNode;
         if (this.hostApp == 'Postbox') {
-            let insertPoint = this.getElement('__pbConvHr');
-            if (insertPoint) {
-                insertPoint.innerHTML = this.createRwhHeader;
-            } else {
+            hdrNode = this.getElement('__pbConvHr');
+            if (!hdrNode) {
                 let tags = this.byTagName('span');
                 if (tags.length > 0) {
-                    tags[0].innerHTML = this.createRwhHeader;
-                } else {
-                    ReplyWithHeader.Log.error('RWH is unable to insert headers, contact add-on author here - ' + this.issuesPageUrl);
+                    hdrNode = tags[0];
                 }
             }
         } else {
-            this.getElement('moz-cite-prefix').innerHTML = this.createRwhHeader;
+            hdrNode = this.getElement('moz-cite-prefix');
         }
+
+        if (!hdrNode) {
+            ReplyWithHeader.Log.error('RWH is unable to insert headers, contact add-on author here - ' + this.issuesPageUrl);
+            return;
+        }
+
+        while (hdrNode.firstChild) {
+            hdrNode.removeChild(hdrNode.firstChild);
+        }
+
+        hdrNode.appendChild(this.parseFragment(gMsgCompose.editor.document, this.createRwhHeader, true));
 
         this.cleanBrAfterRwhHeader();
     },
 
     handleForwardMessage: function() {
         ReplyWithHeader.Log.debug('handleForwardMessage()');
-
         if (this.hostApp == 'Postbox') {
-            let insertPoint = this.getElement('__pbConvHr');
-            if (insertPoint) {
-                insertPoint.innerHTML = this.createRwhHeader;
+            let hdrNode = this.getElement('__pbConvHr');
+            if (!insertPoint) {
+                hdrNode = this.getElement('moz-email-headers-table');
+            }
+
+            while (hdrNode.firstChild) {
+                hdrNode.removeChild(hdrNode.firstChild);
+            }
+
+            let mBody = gMsgCompose.editor.rootElement;
+            this.cleanEmptyTags(mBody.firstChild);
+
+            // Logically removing text node header elements
+            ReplyWithHeader.Log.debug('Cleaning text node')
+            this.deleteNode(mBody.firstChild);
+
+            let hdrRwhNode = this.parseFragment(gMsgCompose.editor.document, this.createRwhHeader, true);
+
+            if (hdrNode && this.isHtmlMail) {
+                mBody.replaceChild(hdrRwhNode, hdrNode);
+
+                if (this.Prefs.beforeSepSpaceCnt == 0) {
+                    for (let i=0; i<2; i++)
+                        mBody.insertBefore(gMsgCompose.editor.document.createElement('br'), mBody.firstChild);
+                }
             } else {
-                insertPoint = this.getElement('moz-email-headers-table');
+                ReplyWithHeader.Log.debug('hdrCnt: ' + this.hdrCnt);
 
-                let mBody = gMsgCompose.editor.rootElement;
-                this.cleanEmptyTags(mBody.firstChild);
+                // Logically removing forward header elements
+                let lc = (this.hdrCnt * 2) + 1; // for br's
+                ReplyWithHeader.Log.debug('No of headers to cleanup (including BRs):: ' + lc);
 
-                // Logically removing text node header elements
-                ReplyWithHeader.Log.debug('Cleaning text node')
-                this.deleteNode(mBody.firstChild);
+                for(let i=0; i < lc; i++) {
+                    this.deleteNode(mBody.firstChild);
+                }
 
-                let hdrNode = this.parseHtml(this.createRwhHeader);
+                mBody.replaceChild(hdrRwhNode, mBody.firstChild);
 
-                if (insertPoint && this.isHtmlMail) {
-                    mBody.replaceChild(hdrNode, insertPoint);
-
-                    if (this.Prefs.beforeSepSpaceCnt == 0) {
-                        for (let i=0; i<2; i++)
-                            mBody.insertBefore(this.parseHtml(this.createBrTags(1)) , mBody.firstChild);
-                    }
-                } else {
-                    ReplyWithHeader.Log.debug('hdrCnt: ' + this.hdrCnt);
-
-                    // Logically removing forward header elements
-                    let lc = (this.hdrCnt * 2) + 1; // for br's
-                    ReplyWithHeader.Log.debug('No of headers to cleanup (including BRs):: ' + lc);
-
-                    for(let i=0; i < lc; i++) {
-                        this.deleteNode(mBody.firstChild);
-                    }
-
-                    mBody.replaceChild(hdrNode, mBody.firstChild);
-
-                    if (this.Prefs.beforeSepSpaceCnt == 0) {
-                        mBody.insertBefore(this.parseHtml(this.createBrTags(1)) , mBody.firstChild);
-                    }
+                if (this.Prefs.beforeSepSpaceCnt == 0) {
+                    mBody.insertBefore(gMsgCompose.editor.document.createElement('br'), mBody.firstChild);
                 }
             }
         } else { // For Thunderbird
@@ -581,7 +612,7 @@ var ReplyWithHeader = {
             ReplyWithHeader.Log.debug('Cleaning text node')
             this.deleteNode(this.getElement('moz-forward-container').firstChild);
 
-            let hdrNode = this.parseHtml(this.createRwhHeader);
+            let hdrNode = this.parseFragment(gMsgCompose.editor.document, this.createRwhHeader, true);
 
             if (this.isHtmlMail) {
                 this.getElement('moz-forward-container').replaceChild(hdrNode, this.getElement('moz-email-headers-table'));
