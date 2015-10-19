@@ -10,11 +10,13 @@
 
 var EXPORTED_SYMBOLS = ['ReplyWithHeader'];
 
-const { classes: RCc, interfaces: RCi, utils: RCu } = Components;
+const RCc = Components.classes;
+const RCi = Components.interfaces;
+const RCu = Components.utils;
 
 var ReplyWithHeader = {
     addonName: 'ReplyWithHeader',
-    version: '1.2',
+    version: '1.3',
     homepageUrl: 'http://myjeeva.com/replywithheader-mozilla',
     reviewsPageUrl: 'https://addons.mozilla.org/en-US/thunderbird/addon/replywithheader/',
     issuesPageUrl: 'https://github.com/jeevatkm/ReplyWithHeaderMozilla/issues',
@@ -22,18 +24,18 @@ var ReplyWithHeader = {
     paypalDonateUrl: 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=Jeevanandam%20M%2e&item_number=ReplyWithHeaderMozilla&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted',
     hdrCnt: 4,
     bqStyleStr: 'border:none !important; margin-left:0px !important; margin-right:0px !important; margin-top:0px !important; padding-left:0px !important; padding-right:0px !important',
-
+    dateFormatString: 'ddd, MMM d, yyyy h:mm:ss a',
     Log: {
-        service: RCc['@mozilla.org/consoleservice;1'].getService(RCi.nsIConsoleService),
+        conService: RCc['@mozilla.org/consoleservice;1'].getService(RCi.nsIConsoleService),
 
         rwhInfo: function() {
             var rInfo = ReplyWithHeader.addonName + ' ' + ReplyWithHeader.version
                 + ' Loaded successfully.';
-            this.service.logStringMessage(rInfo);
+            this.conService.logStringMessage(rInfo);
         },
 
         toConsole: function(l, m) {
-            this.service.logStringMessage(ReplyWithHeader.timeNow + '\t' + l + '\tRWH\t' + m);
+            this.conService.logStringMessage(ReplyWithHeader.timeNow + '\t' + l + '\tRWH\t' + m);
         },
 
         info: function(msg) {
@@ -67,7 +69,7 @@ var ReplyWithHeader = {
 
             // Addon generates this error, it is better to use warningFlag = 0x1
             scriptError.init(msg + '\n' + ex.message, srcName, stack, ex.lineNumber, 0, 0x1, group);
-            this.service.logMessage(scriptError);
+            this.conService.logMessage(scriptError);
         }
     },
 
@@ -174,11 +176,44 @@ var ReplyWithHeader = {
         }
     },
 
+    // Reference: https://gist.github.com/redoPop/3915761
+    tzAbbr: function (dateInput) {
+        var dateObject = dateInput || new Date(),
+            dateString = dateObject + "",
+            tzAbbr = (
+                      // Works for the majority of modern browsers
+                      dateString.match(/\(([^\)]+)\)$/) ||
+                      // IE outputs date strings in a different format:
+                      dateString.match(/([A-Z]+) [\d]{4}$/)
+                     );
+        if (tzAbbr) {
+            // Old Firefox uses the long timezone name (e.g., "Central
+            // Daylight Time" instead of "CDT")
+            tzAbbr = tzAbbr[1].match(/[A-Z]/g).join("");
+        }
+        // Uncomment these lines to return a GMT offset for browsers
+        // that don't include the user's zone abbreviation (e.g.,
+        // "GMT-0500".) I prefer to have `null` in this case, but
+        // you may not!
+        // First seen on: http://stackoverflow.com/a/12496442
+         if (!tzAbbr && /(GMT\W*\d{4}|GMT)/.test(dateString)) {
+            return RegExp.$1;
+         }
+        return tzAbbr;
+    },
+
     parseDate: function(prTime) {
         // Input is PR time
         let d = new Date(prTime / 1000);
-        var nd = moment(d).format(this.Prefs.dateFormat);
-        ReplyWithHeader.Log.debug('Parsed date: ' + nd);
+        var nd = '';
+        if (this.Prefs.dateFormat == 0) {
+            ReplyWithHeader.Log.debug('Locale format');
+            nd = DateFormat.format.date(d, this.dateFormatString) + ' ' + this.tzAbbr(d);
+        } else {
+            ReplyWithHeader.Log.debug('GMT format');
+            var utc = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
+            nd = DateFormat.format.date(utc, this.dateFormatString) + ' ' + this.tzAbbr(d.toUTCString());
+        }
 
         return nd;
     },
@@ -191,13 +226,6 @@ var ReplyWithHeader = {
         return (str || '').replace(/\\/g, '').replace(/\"/g, '');
     },
 
-    parseHtml: function(hs) {
-        var d = gMsgCompose.editor.document.createElement('div');
-        d.innerHTML = hs;
-
-        return d.firstChild;
-    },
-
     createBrTags: function(cnt) {
         var tags = '';
         for (let i=0; i<cnt; i++) {
@@ -206,6 +234,36 @@ var ReplyWithHeader = {
 
         ReplyWithHeader.Log.debug('Created BRs:: ' + tags);
         return tags;
+    },
+
+    /**
+     * Source: https://developer.mozilla.org/en-US/Add-ons/Overlay_Extensions/XUL_School/DOM_Building_and_HTML_Insertion#Safely_Using_Remote_HTML
+     *
+     * Safely parse an HTML fragment, removing any executable
+     * JavaScript, and return a document fragment.
+     *
+     * @param {Document} doc The document in which to create the returned DOM tree.
+     * @param {string} html The HTML fragment to parse.
+     * @param {boolean} allowStyle If true, allow <style> nodes and
+     *     style attributes in the parsed fragment. Gecko 14+ only.
+     * @param {nsIURI} baseURI The base URI relative to which resource
+     *     URLs should be processed. Note that this will not work for XML fragments.
+     * @param {boolean} isXML If true, parse the fragment as XML.
+     */
+     parseFragment: function(doc, html, allowStyle, baseURI, isXML) {
+        const PARSER_UTILS = '@mozilla.org/parserutils;1';
+
+        // User the newer nsIParserUtils on versions that support it.
+        if (PARSER_UTILS in Components.classes) {
+            let parser = RCc[PARSER_UTILS].getService(RCi.nsIParserUtils);
+            if ('parseFragment' in parser)
+                return parser.parseFragment(html, allowStyle ? parser.SanitizerAllowStyle : 0,
+                                            !!isXML, baseURI, doc.documentElement);
+        }
+
+        return RCc['@mozilla.org/feed-unescapehtml;1']
+                         .getService(RCi.nsIScriptableUnescapeHTML)
+                         .parseFragment(html, !!isXML, baseURI, doc.documentElement);
     },
 
     prepareFromHdr: function(author) {
@@ -338,7 +396,7 @@ var ReplyWithHeader = {
             let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontFace + '" color="' + fontColor + '" style="font: ' + fontSize + 'px ' + fontFace + ' !important; color: ' + fontColor + ' !important;">';
             let htmlTagSuffix = '</font></span><br/>';
 
-            rwhHdr += '<hr style="border:none;border-top:solid #B5C4DF 1.0pt;padding:0;margin:10px 0 5px 0;width:100%;">';
+            rwhHdr += '<hr style="border:0;border-top:solid #B5C4DF 1.0pt;padding:0;margin:10px 0 5px 0;width:100%;">';
 
             let beforeHdr = this.Prefs.beforeHdrSpaceCnt;
             ReplyWithHeader.Log.debug('Before Header Space: ' + beforeHdr);
@@ -446,7 +504,7 @@ var ReplyWithHeader = {
     },
 
     cleanEmptyTags: function(node) {
-        ReplyWithHeader.Log.debug('Cleaning consecutive Empty Tags')
+        ReplyWithHeader.Log.debug('Cleaning consecutive Empty Tags');
 
         let toDelete = true;
         while (node && toDelete) {
@@ -475,21 +533,29 @@ var ReplyWithHeader = {
     handleReplyMessage: function() {
         ReplyWithHeader.Log.debug('handleReplyMessage()');
 
+        let hdrNode;
         if (this.hostApp == 'Postbox') {
-            let insertPoint = this.getElement('__pbConvHr');
-            if (insertPoint) {
-                insertPoint.innerHTML = this.createRwhHeader;
-            } else {
+            hdrNode = this.getElement('__pbConvHr');
+            if (!hdrNode) {
                 let tags = this.byTagName('span');
                 if (tags.length > 0) {
-                    tags[0].innerHTML = this.createRwhHeader;
-                } else {
-                    ReplyWithHeader.Log.error('RWH is unable to insert headers, contact add-on author here - ' + this.issuesPageUrl);
+                    hdrNode = tags[0];
                 }
             }
         } else {
-            this.getElement('moz-cite-prefix').innerHTML = this.createRwhHeader;
+            hdrNode = this.getElement('moz-cite-prefix');
         }
+
+        if (!hdrNode) {
+            ReplyWithHeader.Log.error('RWH is unable to insert headers, contact add-on author here - ' + this.issuesPageUrl);
+            return;
+        }
+
+        while (hdrNode.firstChild) {
+            hdrNode.removeChild(hdrNode.firstChild);
+        }
+
+        hdrNode.appendChild(this.parseFragment(gMsgCompose.editor.document, this.createRwhHeader, true));
 
         this.cleanBrAfterRwhHeader();
     },
@@ -497,45 +563,46 @@ var ReplyWithHeader = {
     handleForwardMessage: function() {
         ReplyWithHeader.Log.debug('handleForwardMessage()');
 
+        let hdrRwhNode = this.parseFragment(gMsgCompose.editor.document, this.createRwhHeader, true);
         if (this.hostApp == 'Postbox') {
-            let insertPoint = this.getElement('__pbConvHr');
-            if (insertPoint) {
-                insertPoint.innerHTML = this.createRwhHeader;
+            let hdrNode = this.getElement('__pbConvHr');
+            if (!hdrNode) {
+                hdrNode = this.getElement('moz-email-headers-table');
+            }
+
+            while (hdrNode.firstChild) {
+                hdrNode.removeChild(hdrNode.firstChild);
+            }
+
+            let mBody = gMsgCompose.editor.rootElement;
+            this.cleanEmptyTags(mBody.firstChild);
+
+            // Logically removing text node header elements
+            ReplyWithHeader.Log.debug('Cleaning text node')
+            this.deleteNode(mBody.firstChild);
+
+            if (hdrNode && this.isHtmlMail) {
+                hdrNode.appendChild(hdrRwhNode);
+
+                if (this.Prefs.beforeSepSpaceCnt == 0) {
+                    for (let i=0; i<2; i++)
+                        mBody.insertBefore(gMsgCompose.editor.document.createElement('br'), mBody.firstChild);
+                }
             } else {
-                insertPoint = this.getElement('moz-email-headers-table');
+                ReplyWithHeader.Log.debug('hdrCnt: ' + this.hdrCnt);
 
-                let mBody = gMsgCompose.editor.rootElement;
-                this.cleanEmptyTags(mBody.firstChild);
+                // Logically removing forward header elements
+                let lc = (this.hdrCnt * 2) + 1; // for br's
+                ReplyWithHeader.Log.debug('No of headers to cleanup (including BRs):: ' + lc);
 
-                // Logically removing text node header elements
-                ReplyWithHeader.Log.debug('Cleaning text node')
-                this.deleteNode(mBody.firstChild);
+                for(let i=0; i < lc; i++) {
+                    this.deleteNode(mBody.firstChild);
+                }
 
-                let hdrNode = this.parseHtml(this.createRwhHeader);
+                mBody.replaceChild(hdrRwhNode, mBody.firstChild);
 
-                if (insertPoint && this.isHtmlMail) {
-                    mBody.replaceChild(hdrNode, insertPoint);
-
-                    if (this.Prefs.beforeSepSpaceCnt == 0) {
-                        for (let i=0; i<2; i++)
-                            mBody.insertBefore(this.parseHtml(this.createBrTags(1)) , mBody.firstChild);
-                    }
-                } else {
-                    ReplyWithHeader.Log.debug('hdrCnt: ' + this.hdrCnt);
-
-                    // Logically removing forward header elements
-                    let lc = (this.hdrCnt * 2) + 1; // for br's
-                    ReplyWithHeader.Log.debug('No of headers to cleanup (including BRs):: ' + lc);
-
-                    for(let i=0; i < lc; i++) {
-                        this.deleteNode(mBody.firstChild);
-                    }
-
-                    mBody.replaceChild(hdrNode, mBody.firstChild);
-
-                    if (this.Prefs.beforeSepSpaceCnt == 0) {
-                        mBody.insertBefore(this.parseHtml(this.createBrTags(1)) , mBody.firstChild);
-                    }
+                if (this.Prefs.beforeSepSpaceCnt == 0) {
+                    mBody.insertBefore(gMsgCompose.editor.document.createElement('br'), mBody.firstChild);
                 }
             }
         } else { // For Thunderbird
@@ -545,10 +612,8 @@ var ReplyWithHeader = {
             ReplyWithHeader.Log.debug('Cleaning text node')
             this.deleteNode(this.getElement('moz-forward-container').firstChild);
 
-            let hdrNode = this.parseHtml(this.createRwhHeader);
-
             if (this.isHtmlMail) {
-                this.getElement('moz-forward-container').replaceChild(hdrNode, this.getElement('moz-email-headers-table'));
+                this.getElement('moz-forward-container').replaceChild(hdrRwhNode, this.getElement('moz-email-headers-table'));
             } else {
                 ReplyWithHeader.Log.debug('hdrCnt: ' + this.hdrCnt);
 
@@ -560,7 +625,7 @@ var ReplyWithHeader = {
                     this.deleteNode(this.getElement('moz-forward-container').firstChild);
                 }
 
-                this.getElement('moz-forward-container').replaceChild(hdrNode, this.getElement('moz-forward-container').firstChild);
+                this.getElement('moz-forward-container').replaceChild(hdrRwhNode, this.getElement('moz-forward-container').firstChild);
             }
         }
 
@@ -593,6 +658,8 @@ var ReplyWithHeader = {
         let mailBody = gMsgCompose.editor.rootElement;  // alternate is gMsgCompose.editor.document.body
 
         if (mailBody) {
+            // Here RWH does string find and replace.
+            // No external creation of HTML string
             mailBody.innerHTML = mailBody.innerHTML.replace(/<br>(&gt;)+ ?/g, '<br />')
                                                    .replace(/(<\/?span [^>]+>)(&gt;)+ /g, '$1');
         }
@@ -638,7 +705,7 @@ var ReplyWithHeader = {
         if (ReplyWithHeader.isEnabled && ReplyWithHeader.isOkayToMoveOn) {
             this.hdrCnt = 4; // From, To, Subject, Date
 
-            ReplyWithHeader.Log.debug('BEFORE Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
+            //ReplyWithHeader.Log.debug('BEFORE Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
 
             if (this.isReply){
                 this.handleReplyMessage();
@@ -660,7 +727,7 @@ var ReplyWithHeader = {
 
             this.handOverToUser();
 
-            ReplyWithHeader.Log.debug('AFTER Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
+            //ReplyWithHeader.Log.debug('AFTER Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
         } else {
             if (ReplyWithHeader.isEnabled) {
                 if (this.composeType == 10 || this.composeType == 15) { // Resend=10, Redirect=15

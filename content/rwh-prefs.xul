@@ -11,8 +11,8 @@
   Copyright (c) 2015 Jeevanandam M. (jeeva@myjeeva.com)
 
   This Source Code is subject to terms of MIT License.
-  Please refer to LICENSE.txt in the root folder of RWH extension.
-  You can download a copy of license at https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE.txt
+  Please refer to LICENSE in the root folder of RWH extension.
+  You can download a copy of license at https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
   -->
 
 <prefwindow id="rwhPrefsDialog"
@@ -35,6 +35,7 @@
             <preference id="pref-transSubjectPrefix" name="extensions.replywithheader.trans.subject.prefix" type="bool" instantApply="true" />
             <preference id="pref-cleanBlockQuote" name="extensions.replywithheader.clean.blockquote" type="bool" instantApply="true" />
             <preference id="pref-cleanGreaterThanChar" name="extensions.replywithheader.clean.char.greaterthan" type="bool" instantApply="true" />
+            <preference id="pref-quotDateAttributionStyle" name="extensions.replywithheader.header.date.format" type="int" instantApply="true" />
         </preferences>
 
         <hbox align="center">
@@ -61,7 +62,7 @@
                                    style="margin-top:-2px" />
                         </radiogroup>
                     </hbox>
-                    <hbox align="center" style="margin-top:5px">
+                    <hbox align="center">
                         <label id="lblHeaderToCcAttrib" value="Header 'To' &amp; 'Cc' attribution style" />
                     </hbox>
                     <hbox align="center">
@@ -71,7 +72,7 @@
                             <radio value="1" label="Outlook (To: Name1; Name2; ...)" style="margin-top:-2px" />
                         </radiogroup>
                     </hbox>
-                    <hbox align="center" style="margin-top:5px">
+                    <hbox align="center">
                         <label id="lblHeaderQuotSeq" value="Header quoting sequence and labels" />
                     </hbox>
                     <hbox align="center">
@@ -81,7 +82,17 @@
                             <radio value="1" label="Outlook (From, Sent, To, Cc, Subject)" style="margin-top:-2px" />
                         </radiogroup>
                     </hbox>
-                    <hbox align="center" style="margin-top:5px">
+                    <hbox align="center">
+                        <label id="lblHdrDate" value="Header date format" />
+                    </hbox>
+                    <hbox align="center">
+                        <radiogroup id="quotDateAttributionStyle" preference="pref-quotDateAttributionStyle"
+                                    style="margin-left:30px">
+                            <radio value="0" label="Locale date format" />
+                            <radio value="1" label="International date format (GMT)" style="margin-top:-2px" />
+                        </radiogroup>
+                    </hbox>
+                    <hbox align="center">
                         <label id="lblTypography" value="Header typography" />
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
@@ -96,7 +107,7 @@
                         <colorpicker id="hdrFontColor" type="button" value="" style="max-width:35px;max-height:17px;"
                                      preference="pref-hdrFontcolor" />
                     </hbox>
-                    <hbox align="center" style="margin-top:5px">
+                    <hbox align="center">
                         <label id="lblSpace" value="Header line spaces" />
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
@@ -139,7 +150,7 @@
                         </menulist>
                         <label id="lblNotAppBeforeSeparator" value="(not applicable for Postbox)" style="font-size:11px;" />
                     </hbox>
-                    <hbox align="center" style="margin-top:5px">
+                    <hbox align="center" style="margin-top:-2px">
                         <checkbox id="transSubjectPrefix" label="Transform subject prefix (Re -> RE and Fwd -> FW)" preference="pref-transSubjectPrefix" />
                     </hbox>
                 </tabpanel>
