@@ -254,7 +254,7 @@ var ReplyWithHeader = {
         const PARSER_UTILS = '@mozilla.org/parserutils;1';
 
         // User the newer nsIParserUtils on versions that support it.
-        if (PARSER_UTILS in RCc) {
+        if (PARSER_UTILS in Components.classes) {
             let parser = RCc[PARSER_UTILS].getService(RCi.nsIParserUtils);
             if ('parseFragment' in parser)
                 return parser.parseFragment(html, allowStyle ? parser.SanitizerAllowStyle : 0,
@@ -396,7 +396,7 @@ var ReplyWithHeader = {
             let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontFace + '" color="' + fontColor + '" style="font: ' + fontSize + 'px ' + fontFace + ' !important; color: ' + fontColor + ' !important;">';
             let htmlTagSuffix = '</font></span><br/>';
 
-            rwhHdr += '<hr style="border:none;border-top:solid #B5C4DF 1.0pt;padding:0;margin:10px 0 5px 0;width:100%;">';
+            rwhHdr += '<hr style="border:0;border-top:solid #B5C4DF 1.0pt;padding:0;margin:10px 0 5px 0;width:100%;">';
 
             let beforeHdr = this.Prefs.beforeHdrSpaceCnt;
             ReplyWithHeader.Log.debug('Before Header Space: ' + beforeHdr);
@@ -562,9 +562,11 @@ var ReplyWithHeader = {
 
     handleForwardMessage: function() {
         ReplyWithHeader.Log.debug('handleForwardMessage()');
+
+        let hdrRwhNode = this.parseFragment(gMsgCompose.editor.document, this.createRwhHeader, true);
         if (this.hostApp == 'Postbox') {
             let hdrNode = this.getElement('__pbConvHr');
-            if (!insertPoint) {
+            if (!hdrNode) {
                 hdrNode = this.getElement('moz-email-headers-table');
             }
 
@@ -579,10 +581,8 @@ var ReplyWithHeader = {
             ReplyWithHeader.Log.debug('Cleaning text node')
             this.deleteNode(mBody.firstChild);
 
-            let hdrRwhNode = this.parseFragment(gMsgCompose.editor.document, this.createRwhHeader, true);
-
             if (hdrNode && this.isHtmlMail) {
-                mBody.replaceChild(hdrRwhNode, hdrNode);
+                hdrNode.appendChild(hdrRwhNode);
 
                 if (this.Prefs.beforeSepSpaceCnt == 0) {
                     for (let i=0; i<2; i++)
@@ -612,10 +612,8 @@ var ReplyWithHeader = {
             ReplyWithHeader.Log.debug('Cleaning text node')
             this.deleteNode(this.getElement('moz-forward-container').firstChild);
 
-            let hdrNode = this.parseFragment(gMsgCompose.editor.document, this.createRwhHeader, true);
-
             if (this.isHtmlMail) {
-                this.getElement('moz-forward-container').replaceChild(hdrNode, this.getElement('moz-email-headers-table'));
+                this.getElement('moz-forward-container').replaceChild(hdrRwhNode, this.getElement('moz-email-headers-table'));
             } else {
                 ReplyWithHeader.Log.debug('hdrCnt: ' + this.hdrCnt);
 
@@ -627,7 +625,7 @@ var ReplyWithHeader = {
                     this.deleteNode(this.getElement('moz-forward-container').firstChild);
                 }
 
-                this.getElement('moz-forward-container').replaceChild(hdrNode, this.getElement('moz-forward-container').firstChild);
+                this.getElement('moz-forward-container').replaceChild(hdrRwhNode, this.getElement('moz-forward-container').firstChild);
             }
         }
 
@@ -660,6 +658,8 @@ var ReplyWithHeader = {
         let mailBody = gMsgCompose.editor.rootElement;  // alternate is gMsgCompose.editor.document.body
 
         if (mailBody) {
+            // Here RWH does string find and replace.
+            // No external creation of HTML string
             mailBody.innerHTML = mailBody.innerHTML.replace(/<br>(&gt;)+ ?/g, '<br />')
                                                    .replace(/(<\/?span [^>]+>)(&gt;)+ /g, '$1');
         }
@@ -705,7 +705,7 @@ var ReplyWithHeader = {
         if (ReplyWithHeader.isEnabled && ReplyWithHeader.isOkayToMoveOn) {
             this.hdrCnt = 4; // From, To, Subject, Date
 
-            ReplyWithHeader.Log.debug('BEFORE Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
+            //ReplyWithHeader.Log.debug('BEFORE Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
 
             if (this.isReply){
                 this.handleReplyMessage();
@@ -727,7 +727,7 @@ var ReplyWithHeader = {
 
             this.handOverToUser();
 
-            ReplyWithHeader.Log.debug('AFTER Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
+            //ReplyWithHeader.Log.debug('AFTER Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
         } else {
             if (ReplyWithHeader.isEnabled) {
                 if (this.composeType == 10 || this.composeType == 15) { // Resend=10, Redirect=15
