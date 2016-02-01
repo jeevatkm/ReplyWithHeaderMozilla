@@ -648,7 +648,7 @@ var ReplyWithHeader = {
         ReplyWithHeader.Log.debug('handleBlockQuote()');
         let blockquotes = this.byTagName('blockquote');
 
-        for (let i=0, len=blockquotes.length; i<len; i++) {
+        for (let i=0, len=this.Prefs.cleanNewBlockQuote ? 1 : blockquotes.length; i<len; i++) {
             blockquotes[i].setAttribute('style', this.bqStyleStr);
         }
     },
