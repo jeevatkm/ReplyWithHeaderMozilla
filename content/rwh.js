@@ -329,14 +329,19 @@ var ReplyWithHeader = {
 
       if (fstCharIdx == -1) {
         recipients = this.parseToCcEmailAddress(recipients, toccLblStyle);
-      } else {
+      } else if (fstCharIdx > 0) {
         let emlAdds = recipients.split('>, ');
-        recipients = '';
-        for (let eml in emlAdds) {
-          recipients += '; ' + this.parseToCcEmailAddress(eml, toccLblStyle);
+
+        let recipientList = [];
+        for (let i=0; i<emlAdds.length; i++) {
+          ReplyWithHeader.Log.info('-> ' + emlAdds[i]);
+          recipientList.push(this.parseToCcEmailAddress(emlAdds[i], toccLblStyle));
         }
+
+        recipients = recipientList.join('; ');
       }
     }
+
     recipients = this.escapeHtml(recipients);
     ReplyWithHeader.Log.debug('Prepared To/Cc Header value: ' + recipients);
 
