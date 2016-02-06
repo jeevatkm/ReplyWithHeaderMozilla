@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  Copyright (c) 2015 Jeevanandam M. (jeeva@myjeeva.com)
+  Copyright (c) 2015-2016 Jeevanandam M. (jeeva@myjeeva.com)
 
   This Source Code is subject to terms of MIT License.
   Please refer to LICENSE.txt in the root folder of RWH extension.
@@ -13,7 +13,7 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>replywithheader@myjeeva.com</em:id>
     <em:name>ReplyWithHeader</em:name>
-    <em:version>1.3</em:version>
+    <em:version>1.4</em:version>
     <em:type>2</em:type>
     <em:unpack>false</em:unpack>
     <em:creator>Jeevanandam M.</em:creator>
@@ -38,5 +38,5 @@
         <em:maxVersion>4.*</em:maxVersion>
       </Description>
     </em:targetApplication>
-  </Description>      
+  </Description>
 </RDF>
