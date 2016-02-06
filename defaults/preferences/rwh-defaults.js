@@ -32,6 +32,7 @@ pref('extensions.replywithheader.header.date.format', 0);
 pref('extensions.replywithheader.clean.blockquote', true);
 pref('extensions.replywithheader.clean.new.blockquote', false);
 pref('extensions.replywithheader.clean.char.greaterthan', true);
+pref('extensions.replywithheader.clean.pln.hdr.prefix', false);
 
 // RWH Debug settings
 pref('extensions.replywithheader.debug', false);

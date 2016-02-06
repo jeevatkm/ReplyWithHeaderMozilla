@@ -34,7 +34,6 @@ ReplyWithHeader.Prefs = {
   },
 
   getString: function(p) {
-    ReplyWithHeader.Log.info("key: " + p);
     return this.service.getCharPref(p);
   },
 
@@ -96,6 +95,10 @@ ReplyWithHeader.Prefs = {
 
   get cleanGreaterThanChar() {
     return this.getBool('extensions.replywithheader.clean.char.greaterthan');
+  },
+
+  get excludePlainTxtHdrPrefix() {
+    return this.getBool('extensions.replywithheader.clean.pln.hdr.prefix');
   },
 
   openWebsite: function() {

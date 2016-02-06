@@ -36,6 +36,7 @@
             <preference id="pref-cleanBlockQuote" name="extensions.replywithheader.clean.blockquote" type="bool" instantApply="true" />
             <preference id="pref-cleanNewBlockQuote" name="extensions.replywithheader.clean.new.blockquote" type="bool" instantApply="true" />
             <preference id="pref-cleanGreaterThanChar" name="extensions.replywithheader.clean.char.greaterthan" type="bool" instantApply="true" />
+            <preference id="pref-excludePlainTextHdrPrefix" name="extensions.replywithheader.clean.pln.hdr.prefix" type="bool" instantApply="true" />
             <preference id="pref-quotDateAttributionStyle" name="extensions.replywithheader.header.date.format" type="int" instantApply="true" />
         </preferences>
 
@@ -168,6 +169,9 @@
                     </hbox>
                     <hbox align="center" style="margin-left:15px">
                         <checkbox id="cleanGreaterThanChar" label="Cleanup the quote character '>'" preference="pref-cleanGreaterThanChar" />
+                    </hbox>
+                    <hbox align="center" style="margin-left:15px">
+                        <checkbox id="excludePlainTextHdrPrefix" label="Don't include plain text header prefix" preference="pref-excludePlainTextHdrPrefix" />
                     </hbox>
                 </tabpanel>
                 <tabpanel orient="vertical">

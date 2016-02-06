@@ -425,7 +425,14 @@ var ReplyWithHeader = {
       }
 
     } else { // for plain/text emails
-      rwhHdr += this.isForward ? '<br/>-------- Forwarded Message --------<br/>' : '<br/>-------- Original Message --------<br/>';
+      ReplyWithHeader.Log.debug('Exclude Plain Text Header Prefix: ' + this.Prefs.excludePlainTxtHdrPrefix);
+      if (!this.Prefs.excludePlainTxtHdrPrefix) {
+        rwhHdr += this.isForward ? '<br/>-------- Forwarded Message --------<br/>' : '<br/>-------- Original Message --------<br/>';
+      } else {
+        if (this.isForward) {
+          rwhHdr += '<br/>';
+        }
+      }
 
       let beforeHdr = this.Prefs.beforeHdrSpaceCnt;
       ReplyWithHeader.Log.debug('Before Header Space: ' + beforeHdr);
