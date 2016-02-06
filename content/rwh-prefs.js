@@ -87,6 +87,10 @@ ReplyWithHeader.Prefs = {
         return this.getBool('extensions.replywithheader.clean.blockquote');
     },
 
+    get cleanNewBlockQuote() {
+        return this.getBool('extensions.replywithheader.clean.new.blockquote');
+    },
+
     get cleanGreaterThanChar() {
         return this.getBool('extensions.replywithheader.clean.char.greaterthan');
     },
@@ -219,7 +223,7 @@ ReplyWithHeader.Prefs = {
                    'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr', 'lblAfterHeader',
                    'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle',
                    'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat', 'cleanBlockQuote',
-                   'cleanGreaterThanChar'];
+                   'cleanNewBlockQuote', 'cleanGreaterThanChar'];
 
         if (rwh.checked) {
             for (let len=ids.length, i=0; i<len; i++) {

@@ -34,6 +34,7 @@
             <preference id="pref-spaceAfterHdr" name="extensions.replywithheader.header.space.after" type="int" instantApply="true" />
             <preference id="pref-transSubjectPrefix" name="extensions.replywithheader.trans.subject.prefix" type="bool" instantApply="true" />
             <preference id="pref-cleanBlockQuote" name="extensions.replywithheader.clean.blockquote" type="bool" instantApply="true" />
+            <preference id="pref-cleanNewBlockQuote" name="extensions.replywithheader.clean.new.blockquote" type="bool" instantApply="true" />
             <preference id="pref-cleanGreaterThanChar" name="extensions.replywithheader.clean.char.greaterthan" type="bool" instantApply="true" />
             <preference id="pref-quotDateAttributionStyle" name="extensions.replywithheader.header.date.format" type="int" instantApply="true" />
         </preferences>
@@ -160,6 +161,9 @@
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <checkbox id="cleanBlockQuote" label="Cleanup the blockquote colors" preference="pref-cleanBlockQuote" />
+                    </hbox>
+                    <hbox align="center" style="margin-left:30px">
+                        <checkbox id="cleanNewBlockQuote" label="Cleanup only new blockquote" preference="pref-cleanNewBlockQuote" />
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <checkbox id="cleanGreaterThanChar" label="Cleanup the quote character '>'" preference="pref-cleanGreaterThanChar" />

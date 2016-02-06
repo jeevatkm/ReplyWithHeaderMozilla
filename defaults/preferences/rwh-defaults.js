@@ -28,6 +28,7 @@ pref('extensions.replywithheader.header.date.format', 0);
 
 // RWH Mail message
 pref('extensions.replywithheader.clean.blockquote', true);
+pref('extensions.replywithheader.clean.new.blockquote', true);
 pref('extensions.replywithheader.clean.char.greaterthan', true);
 
 // RWH Debug settings
