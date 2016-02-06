@@ -8,7 +8,7 @@
         " type="text/css"?>
 
 <!--
-  Copyright (c) 2015 Jeevanandam M. (jeeva@myjeeva.com)
+  Copyright (c) 2015-2016 Jeevanandam M. (jeeva@myjeeva.com)
 
   This Source Code is subject to terms of MIT License.
   Please refer to LICENSE in the root folder of RWH extension.
@@ -159,13 +159,14 @@
                     <hbox align="center">
                         <label id="lblCntFormat" value="Content formatting and cleanups" />
                     </hbox>
-                    <hbox align="center" style="margin-left:30px">
-                        <checkbox id="cleanBlockQuote" label="Cleanup the blockquote colors" preference="pref-cleanBlockQuote" />
+                    <hbox align="center" style="margin-left:15px">
+                        <checkbox id="cleanBlockQuote" label="Cleanup the blockquote colors" preference="pref-cleanBlockQuote"
+                          oncommand="ReplyWithHeader.Prefs.toggleBlockQuote();" />
                     </hbox>
-                    <hbox align="center" style="margin-left:30px">
-                        <checkbox id="cleanNewBlockQuote" label="Cleanup only new blockquote" preference="pref-cleanNewBlockQuote" />
+                    <hbox align="center" style="margin-left:35px">
+                        <checkbox id="cleanNewBlockQuote" label="Cleanup only new blockquote color" preference="pref-cleanNewBlockQuote" />
                     </hbox>
-                    <hbox align="center" style="margin-left:30px">
+                    <hbox align="center" style="margin-left:15px">
                         <checkbox id="cleanGreaterThanChar" label="Cleanup the quote character '>'" preference="pref-cleanGreaterThanChar" />
                     </hbox>
                 </tabpanel>
