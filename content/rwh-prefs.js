@@ -1,252 +1,254 @@
 'use strict';
 
 /*
- * Copyright (c) 2015 Jeevanandam M. (jeeva@myjeeva.com)
+ * Copyright (c) 2015-2016 Jeevanandam M. (jeeva@myjeeva.com)
  *
  * This Source Code is subject to terms of MIT License.
  * Please refer to LICENSE.txt in the root folder of RWH extension.
  * You can download a copy of license at https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE.txt
  */
 
-ReplyWithHeader.Prefs = {
-    service: RCc['@mozilla.org/preferences-service;1'].getService(RCi.nsIPrefBranch),
+ /* globals ReplyWithHeader, RCc, RCi */
 
-    getInt: function(p) {
-        return this.service.getIntPref(p);
-    },
+ ReplyWithHeader.Prefs = {
+   service: RCc['@mozilla.org/preferences-service;1'].getService(RCi.nsIPrefBranch),
 
-    setInt: function(p, v) {
-        return this.service.setIntPref(p, v);
-    },
+   getInt: function(p) {
+     return this.service.getIntPref(p);
+   },
 
-    getBool: function(p) {
-        return this.service.getBoolPref(p);
-    },
+   setInt: function(p, v) {
+     return this.service.setIntPref(p, v);
+   },
 
-    setBool: function(p, v) {
-        return this.service.setBoolPref(p, v);
-    },
+   getBool: function(p) {
+     return this.service.getBoolPref(p);
+   },
 
-    setString: function(p, v) {
-        return this.service.setCharPref(p, v);
-    },
+   setBool: function(p, v) {
+     return this.service.setBoolPref(p, v);
+   },
 
-    getString: function(p) {
-        return this.service.getCharPref(p);
-    },
+   setString: function(p, v) {
+     return this.service.setCharPref(p, v);
+   },
 
-    get isDebugEnabled() {
-        return this.getBool('extensions.replywithheader.debug');
-    },
+   getString: function(p) {
+     return this.service.getCharPref(p);
+   },
 
-    get fromLabelStyle() {
-        return this.getInt('extensions.replywithheader.header.from.style');
-    },
+   get isDebugEnabled() {
+     return this.getBool('extensions.replywithheader.debug');
+   },
 
-    get toccLabelStyle() {
-        return this.getInt('extensions.replywithheader.header.tocc.style');
-    },
+   get fromLabelStyle() {
+     return this.getInt('extensions.replywithheader.header.from.style');
+   },
 
-    get beforeSepSpaceCnt() {
-        return this.getInt('extensions.replywithheader.header.separator.space.before');
-    },
+   get toccLabelStyle() {
+     return this.getInt('extensions.replywithheader.header.tocc.style');
+   },
 
-    get beforeHdrSpaceCnt() {
-        return this.getInt('extensions.replywithheader.header.space.before');
-    },
+   get beforeSepSpaceCnt() {
+     return this.getInt('extensions.replywithheader.header.separator.space.before');
+   },
 
-    get afterHdrSpaceCnt() {
-        return this.getInt('extensions.replywithheader.header.space.after');
-    },
+   get beforeHdrSpaceCnt() {
+     return this.getInt('extensions.replywithheader.header.space.before');
+   },
 
-    get dateFormat() {
-        return this.getInt('extensions.replywithheader.header.date.format');
-    },
+   get afterHdrSpaceCnt() {
+     return this.getInt('extensions.replywithheader.header.space.after');
+   },
 
-    get headerFontFace() {
-        return this.getString('extensions.replywithheader.header.font.face');
-    },
+   get dateFormat() {
+     return this.getInt('extensions.replywithheader.header.date.format');
+   },
 
-    get headerFontSize() {
-        return this.getInt('extensions.replywithheader.header.font.size');
-    },
+   get headerFontFace() {
+     return this.getString('extensions.replywithheader.header.font.face');
+   },
 
-    get headerFontColor() {
-        return this.getString('extensions.replywithheader.header.font.color');
-    },
+   get headerFontSize() {
+     return this.getInt('extensions.replywithheader.header.font.size');
+   },
 
-    get headerQuotLblSeq() {
-        return this.getInt('extensions.replywithheader.header.lblseq.style');
-    },
+   get headerFontColor() {
+     return this.getString('extensions.replywithheader.header.font.color');
+   },
 
-    get isSubjectPrefixEnabled() {
-        return this.getBool('extensions.replywithheader.trans.subject.prefix');
-    },
+   get headerQuotLblSeq() {
+     return this.getInt('extensions.replywithheader.header.lblseq.style');
+   },
 
-    get cleanBlockQuote() {
-        return this.getBool('extensions.replywithheader.clean.blockquote');
-    },
+   get isSubjectPrefixEnabled() {
+     return this.getBool('extensions.replywithheader.trans.subject.prefix');
+   },
 
-    get cleanNewBlockQuote() {
-        return this.getBool('extensions.replywithheader.clean.new.blockquote');
-    },
+   get cleanBlockQuote() {
+     return this.getBool('extensions.replywithheader.clean.blockquote');
+   },
 
-    get cleanGreaterThanChar() {
-        return this.getBool('extensions.replywithheader.clean.char.greaterthan');
-    },
+   get cleanNewBlockQuote() {
+     return this.getBool('extensions.replywithheader.clean.new.blockquote');
+   },
 
-    openWebsite: function() {
-        this.openUrlInDefaultBrowser(ReplyWithHeader.homepageUrl);
-    },
+   get cleanGreaterThanChar() {
+     return this.getBool('extensions.replywithheader.clean.char.greaterthan');
+   },
 
-    openReviews: function() {
-        this.openUrlInDefaultBrowser(ReplyWithHeader.reviewsPageUrl);
-    },
+   openWebsite: function() {
+     this.openUrlInDefaultBrowser(ReplyWithHeader.homepageUrl);
+   },
 
-    reportIssues: function() {
-        this.openUrlInDefaultBrowser(ReplyWithHeader.issuesPageUrl);
-    },
+   openReviews: function() {
+     this.openUrlInDefaultBrowser(ReplyWithHeader.reviewsPageUrl);
+   },
 
-    openPaypal: function() {
-        this.showAlert('Opening PayPal Service. Thanks for supporting ReplyWithHeader.');
-        this.openUrlInDefaultBrowser(ReplyWithHeader.paypalDonateUrl);
-    },
+   reportIssues: function() {
+     this.openUrlInDefaultBrowser(ReplyWithHeader.issuesPageUrl);
+   },
 
-    copyBtcAddress: function() {
-        this.copyToClipboard(ReplyWithHeader.btcAddress);
-        this.showAlert('BTC address is copied. Thanks for supporting ReplyWithHeader.');
-    },
+   openPaypal: function() {
+     this.showAlert('Opening PayPal Service. Thanks for supporting ReplyWithHeader.');
+     this.openUrlInDefaultBrowser(ReplyWithHeader.paypalDonateUrl);
+   },
 
-    copyToClipboard: function(str) {
-        if (str) {
-            let clipboardHelper = RCc['@mozilla.org/widget/clipboardhelper;1'].getService(RCi.nsIClipboardHelper);
-            clipboardHelper.copyString(str);
-        }
-    },
+   copyBtcAddress: function() {
+     this.copyToClipboard(ReplyWithHeader.btcAddress);
+     this.showAlert('BTC address is copied. Thanks for supporting ReplyWithHeader.');
+   },
 
-    showAlert: function(str) {
-        if (str) {
-            let alertsService = RCc['@mozilla.org/alerts-service;1'].getService(RCi.nsIAlertsService);
-            try {
-                alertsService.showAlertNotification('chrome://replywithheader/skin/icon-64.png',
-                                                    ReplyWithHeader.addonName, str, false, '', null, '');
-            } catch(ex) {
-                ReplyWithHeader.Log.errorWithException('Unable to show RWH notify alert.', ex);
-            }
-        }
-    },
+   copyToClipboard: function(str) {
+     if (str) {
+       let clipboardHelper = RCc['@mozilla.org/widget/clipboardhelper;1'].getService(RCi.nsIClipboardHelper);
+       clipboardHelper.copyString(str);
+     }
+   },
 
-    openUrlInDefaultBrowser: function(url) {
-        let messenger = RCc['@mozilla.org/messenger;1'].createInstance(RCi.nsIMessenger);
-        try {
-            messenger.launchExternalURL(url);
-        } catch(ex) {
-            ReplyWithHeader.Log.errorWithException('Unable to open RWH URL.', ex);
-        }
-    },
+   showAlert: function(str) {
+     if (str) {
+       let alertsService = RCc['@mozilla.org/alerts-service;1'].getService(RCi.nsIAlertsService);
+       try {
+         alertsService.showAlertNotification('chrome://replywithheader/skin/icon-64.png',
+         ReplyWithHeader.addonName, str, false, '', null, '');
+       } catch(ex) {
+         ReplyWithHeader.Log.errorWithException('Unable to show RWH notify alert.', ex);
+       }
+     }
+   },
 
-    fixCursorBlink: function() {
-        // Ref: Due this Bug 567240 - Cursor does not blink when replying (https://bugzilla.mozilla.org/show_bug.cgi?id=567240)
-        // RWH is setting this 'mail.compose.max_recycled_windows' value to 0
-        let maxRecycledWindows = this.getInt('mail.compose.max_recycled_windows');
-        if (maxRecycledWindows == 1) {
-            ReplyWithHeader.Log.info('Setting "mail.compose.max_recycled_windows" value to 0');
-            this.setInt('mail.compose.max_recycled_windows', 0);
-        }
-    },
+   openUrlInDefaultBrowser: function(url) {
+     let messenger = RCc['@mozilla.org/messenger;1'].createInstance(RCi.nsIMessenger);
+     try {
+       messenger.launchExternalURL(url);
+     } catch(ex) {
+       ReplyWithHeader.Log.errorWithException('Unable to open RWH URL.', ex);
+     }
+   },
 
-    createMenuItem: function(v, l) {
-        var menuItem = document.createElement('menuitem');
-        menuItem.setAttribute('value', v);
-        menuItem.setAttribute('label', l);
-        return menuItem;
-    },
+   fixCursorBlink: function() {
+     // Ref: Due this Bug 567240 - Cursor does not blink when replying (https://bugzilla.mozilla.org/show_bug.cgi?id=567240)
+     // RWH is setting this 'mail.compose.max_recycled_windows' value to 0
+     let maxRecycledWindows = this.getInt('mail.compose.max_recycled_windows');
+     if (maxRecycledWindows == 1) {
+       ReplyWithHeader.Log.info('Setting "mail.compose.max_recycled_windows" value to 0');
+       this.setInt('mail.compose.max_recycled_windows', 0);
+     }
+   },
 
-    loadFontFaces: function() {
-        let allFonts = RCc['@mozilla.org/gfx/fontenumerator;1']
-                            .createInstance(RCi.nsIFontEnumerator).EnumerateAllFonts({});
+   createMenuItem: function(v, l) {
+     var menuItem = document.createElement('menuitem');
+     menuItem.setAttribute('value', v);
+     menuItem.setAttribute('label', l);
+     return menuItem;
+   },
 
-        let hdrFontface = this.headerFontFace;
-        ReplyWithHeader.Log.debug('Header Font Face: ' + hdrFontface);
+   loadFontFaces: function() {
+     let allFonts = RCc['@mozilla.org/gfx/fontenumerator;1']
+     .createInstance(RCi.nsIFontEnumerator).EnumerateAllFonts({});
 
-        let menuPopup = document.createElement('menupopup');
-        let selectedIdx = 0;
+     let hdrFontface = this.headerFontFace;
+     ReplyWithHeader.Log.debug('Header Font Face: ' + hdrFontface);
 
-        for (let fontCount=allFonts.length, i=0; i<fontCount; i++) {
-            if (allFonts[i] == hdrFontface) {
-                selectedIdx = i;
-            }
-            menuPopup.appendChild(this.createMenuItem(allFonts[i], allFonts[i]));
-        }
+     let menuPopup = document.createElement('menupopup');
+     let selectedIdx = 0;
 
-        let hdrFontfaceObj = ReplyWithHeader.byId('hdrFontface');
-        hdrFontfaceObj.appendChild(menuPopup);
-        hdrFontfaceObj.selectedIndex = selectedIdx;
-    },
+     for (let fontCount=allFonts.length, i=0; i<fontCount; i++) {
+       if (allFonts[i] == hdrFontface) {
+         selectedIdx = i;
+       }
+       menuPopup.appendChild(this.createMenuItem(allFonts[i], allFonts[i]));
+     }
 
-    loadFontSizes: function() {
-        let hdrFontsize = this.headerFontSize;
-        ReplyWithHeader.Log.debug('Header Font Size: ' + hdrFontsize);
+     let hdrFontfaceObj = ReplyWithHeader.byId('hdrFontface');
+     hdrFontfaceObj.appendChild(menuPopup);
+     hdrFontfaceObj.selectedIndex = selectedIdx;
+   },
 
-        let menuPopup = document.createElement('menupopup');
-        let selectedIdx = 0;
+   loadFontSizes: function() {
+     let hdrFontsize = this.headerFontSize;
+     ReplyWithHeader.Log.debug('Header Font Size: ' + hdrFontsize);
 
-        for (let i=10, j=0; i<35; i++, j++) {
-            if (i == hdrFontsize) {
-                selectedIdx = j;
-            }
-            menuPopup.appendChild(this.createMenuItem(i, i + 'px'));
-        }
+     let menuPopup = document.createElement('menupopup');
+     let selectedIdx = 0;
 
-        let hdrFontsizeObj = ReplyWithHeader.byId('hdrFontsize');
-        hdrFontsizeObj.appendChild(menuPopup);
-        hdrFontsizeObj.selectedIndex = selectedIdx;
-    },
+     for (let i=10, j=0; i<35; i++, j++) {
+       if (i == hdrFontsize) {
+         selectedIdx = j;
+       }
+       menuPopup.appendChild(this.createMenuItem(i, i + 'px'));
+     }
 
-    init: function() {
-        this.toggleRwh();
+     let hdrFontsizeObj = ReplyWithHeader.byId('hdrFontsize');
+     hdrFontsizeObj.appendChild(menuPopup);
+     hdrFontsizeObj.selectedIndex = selectedIdx;
+   },
 
-        // Assigning values
-        ReplyWithHeader.byId('abtRwhCaption').value = ReplyWithHeader.addonName + ' v' + ReplyWithHeader.version;
+   init: function() {
+     this.toggleRwh();
 
-        this.loadFontFaces();
+     // Assigning values
+     ReplyWithHeader.byId('abtRwhCaption').value = ReplyWithHeader.addonName + ' v' + ReplyWithHeader.version;
 
-        this.loadFontSizes();
+     this.loadFontFaces();
 
-        this.forPostbox(true);
-    },
+     this.loadFontSizes();
 
-    toggleRwh: function() {
-        let rwh = document.getElementById('enableRwh');
-        var ids = ['lblFromAttribution', 'fromAttributionStyle', 'lblHeaderToCcAttrib', 'toccAttributionStyle',
-                   'lblTypography', 'lblFontface', 'hdrFontface', 'lblFontsize', 'hdrFontsize', 'lblFontcolor',
-                   'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr', 'lblAfterHeader',
-                   'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle',
-                   'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat', 'cleanBlockQuote',
-                   'cleanNewBlockQuote', 'cleanGreaterThanChar'];
+     this.forPostbox(true);
+   },
 
-        if (rwh.checked) {
-            for (let len=ids.length, i=0; i<len; i++) {
-                this.toggle(ids[i], false);
-            }
-        } else {
-            for (let len=ids.length, i=0; i<len; i++) {
-                this.toggle(ids[i], true);
-            }
-        }
+   toggleRwh: function() {
+     let rwh = document.getElementById('enableRwh');
+     var ids = ['lblFromAttribution', 'fromAttributionStyle', 'lblHeaderToCcAttrib', 'toccAttributionStyle',
+     'lblTypography', 'lblFontface', 'hdrFontface', 'lblFontsize', 'hdrFontsize', 'lblFontcolor',
+     'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr', 'lblAfterHeader',
+     'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle',
+     'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat', 'cleanBlockQuote',
+     'cleanNewBlockQuote', 'cleanGreaterThanChar'];
 
-        this.forPostbox(true);
-    },
+     if (rwh.checked) {
+       for (let len=ids.length, i=0; i<len; i++) {
+         this.toggle(ids[i], false);
+       }
+     } else {
+       for (let len=ids.length, i=0; i<len; i++) {
+         this.toggle(ids[i], true);
+       }
+     }
 
-    toggle: function(id, v) {
-        ReplyWithHeader.byId(id).disabled = v;
-    },
+     this.forPostbox(true);
+   },
 
-    forPostbox: function(v) {
-        if (ReplyWithHeader.hostApp == 'Postbox') {
-            this.toggle('lblBeforeSeparator', v);
-            this.toggle('spaceBeforeSep', v);
-            this.toggle('lblNotAppBeforeSeparator', v);
-        }
-    }
-};
+   toggle: function(id, v) {
+     ReplyWithHeader.byId(id).disabled = v;
+   },
+
+   forPostbox: function(v) {
+     if (ReplyWithHeader.hostApp == 'Postbox') {
+       this.toggle('lblBeforeSeparator', v);
+       this.toggle('spaceBeforeSep', v);
+       this.toggle('lblNotAppBeforeSeparator', v);
+     }
+   }
+ };

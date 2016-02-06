@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * Copyright (c) 2015 Jeevanandam M. (jeeva@myjeeva.com)
  *
