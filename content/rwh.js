@@ -16,7 +16,7 @@ const RCu = Components.utils;
 
 var ReplyWithHeader = {
   addonName: 'ReplyWithHeader',
-  version: '1.4',
+  version: '1.4-beta',
   homepageUrl: 'http://myjeeva.com/replywithheader-mozilla',
   reviewsPageUrl: 'https://addons.mozilla.org/en-US/thunderbird/addon/replywithheader/',
   issuesPageUrl: 'https://github.com/jeevatkm/ReplyWithHeaderMozilla/issues',
