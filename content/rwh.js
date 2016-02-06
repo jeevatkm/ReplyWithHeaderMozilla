@@ -333,7 +333,7 @@ var ReplyWithHeader = {
         let emlAdds = recipients.split('>, ');
 
         let recipientList = [];
-        for (let i=0; i<emlAdds.length; i++) {
+        for (let i = 0; i < emlAdds.length; i++) {
           ReplyWithHeader.Log.info('-> ' + emlAdds[i]);
           recipientList.push(this.parseToCcEmailAddress(emlAdds[i], toccLblStyle));
         }
@@ -661,8 +661,10 @@ var ReplyWithHeader = {
     ReplyWithHeader.Log.debug('handleBlockQuote()');
     let blockquotes = this.byTagName('blockquote');
 
-    for (let i = 0, len = this.Prefs.cleanNewBlockQuote ? 1 : blockquotes.length; i < len; i++) {
-      blockquotes[i].setAttribute('style', this.bqStyleStr);
+    if (blockquotes.length > 0) {
+      for (let i = 0, len = this.Prefs.cleanNewBlockQuote ? 1 : blockquotes.length; i < len; i++) {
+        blockquotes[i].setAttribute('style', this.bqStyleStr);
+      }
     }
   },
 
