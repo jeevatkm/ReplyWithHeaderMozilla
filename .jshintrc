@@ -1,0 +1,16 @@
+{
+  "moz": true,
+  "strict": "global",
+  "predef" : [
+    "Components",
+    "gMsgCompose",
+    "gMessenger",
+    "gCurrentIdentity",
+    "DateFormat",
+    "Node",
+    "document",
+    "window",
+    "pref",
+    "GetSelectedMessages"
+  ]
+}
