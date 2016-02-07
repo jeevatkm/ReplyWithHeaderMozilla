@@ -156,6 +156,14 @@ var ReplyWithHeader = {
     return isSignature;
   },
 
+  get isPostbox() {
+    return (this.hostApp == 'Postbox');
+  },
+
+  get isThunderbird() {
+    return (this.hostApp == 'Thunderbird');
+  },
+
   get hostApp() {
     let appInfo = RCc['@mozilla.org/xre/app-info;1'].getService(RCi.nsIXULAppInfo);
 
@@ -423,7 +431,7 @@ var ReplyWithHeader = {
         }
       }
 
-      rwhHdr += '<hr style="border:0;border-top:solid #B5C4DF 1.0pt;padding:0;margin:10px 0 5px 0;width:100%;">';
+      rwhHdr += '<hr style="border:0;border-top:1px solid #B5C4DF;padding:0;margin:10px 0 5px 0;width:100%;">';
 
       let beforeHdr = this.Prefs.beforeHdrSpaceCnt;
       ReplyWithHeader.Log.debug('Before Header Space: ' + beforeHdr);
@@ -535,9 +543,16 @@ var ReplyWithHeader = {
       this.cleanEmptyTags(rwhHdr.parentNode.nextSibling);
     }
 
-    let pbhr = this.getElement('__pbConvHr');
-    if (pbhr) {
-      pbhr.setAttribute('style', 'margin-top:0px !important;');
+    if (this.isPostbox) {
+      let pbhr = this.getElement('__pbConvHr');
+      if (pbhr) {
+        pbhr.setAttribute('style', 'margin:0 !important;');
+      }
+
+      // Signature
+      if (this.isSignaturePresent) {
+        this.cleanEmptyTags(this.getElement('moz-signature').nextSibling);
+      }
     }
   },
 
@@ -552,6 +567,11 @@ var ReplyWithHeader = {
         case Node.ELEMENT_NODE:
           if (node.nodeName && node.nodeName.toLowerCase() == 'br') {
             toDelete = true;
+          }
+          if (node.nodeName && node.nodeName.toLowerCase() == 'span') {
+            if (node.textContent.trim() === '') {
+              toDelete = true;
+            }
           }
           break;
         case Node.TEXT_NODE:
@@ -572,7 +592,7 @@ var ReplyWithHeader = {
     ReplyWithHeader.Log.debug('handleReplyMessage()');
 
     let hdrNode;
-    if (this.hostApp == 'Postbox') {
+    if (this.isPostbox) {
       hdrNode = this.getElement('__pbConvHr');
       if (!hdrNode) {
         let tags = this.byTagName('span');
@@ -606,25 +626,43 @@ var ReplyWithHeader = {
     //
     // Postbox
     //
-    if (this.hostApp == 'Postbox') {
+    if (this.isPostbox) {
       let hdrNode = this.getElement('__pbConvHr');
       if (!hdrNode) {
         hdrNode = this.getElement('moz-email-headers-table');
       }
 
-      while (hdrNode.firstChild) {
-        hdrNode.removeChild(hdrNode.firstChild);
-      }
-
       let mBody = gMsgCompose.editor.rootElement;
-      this.cleanEmptyTags(mBody.firstChild);
-
-      // Logically removing text node header elements
-      ReplyWithHeader.Log.debug('Cleaning text node');
-      this.deleteNode(mBody.firstChild);
 
       if (hdrNode && this.isHtmlMail) {
+        let isSignature = this.isSignaturePresent;
+        ReplyWithHeader.Log.debug('Postbox isSignature:  ' + isSignature);
+        let sigNode;
+        if (isSignature) {
+          sigNode = this.getElement('moz-signature').cloneNode(true);
+          ReplyWithHeader.Log.debug('Postbox Signature innerHTML:  ' + sigNode.innerHTML);
+        }
+
+        while (hdrNode.firstChild) {
+          hdrNode.removeChild(hdrNode.firstChild);
+        }
+
+        this.cleanEmptyTags(mBody.firstChild);
+
+        // Logically removing text node header elements
+        ReplyWithHeader.Log.debug('Cleaning text node');
+        this.deleteNode(mBody.firstChild);
+
+        if (isSignature) {
+          this.cleanEmptyTags(mBody.firstChild);
+          ReplyWithHeader.Log.debug('Postbox Body innerHTML:  ' + mBody.innerHTML);
+        }
+
         hdrNode.appendChild(hdrRwhNode);
+
+        if (isSignature) {
+          mBody.insertBefore(sigNode, mBody.firstChild);
+        }
 
         if (this.Prefs.beforeSepSpaceCnt == 0) { // jshint ignore:line
           for (let i = 0; i < 2; i++)
@@ -633,15 +671,40 @@ var ReplyWithHeader = {
       } else {
         ReplyWithHeader.Log.debug('hdrCnt: ' + this.hdrCnt);
 
-        // Logically removing forward header elements
-        let lc = (this.hdrCnt * 2) + 1; // for br's
-        ReplyWithHeader.Log.debug('No of headers to cleanup (including BRs):: ' + lc);
-
-        for (let i = 0; i < lc; i++) {
-          this.deleteNode(mBody.firstChild);
+        let pos = 0;
+        for (let i = 0; i < mBody.childNodes.length; i++) {
+          let node = mBody.childNodes[i];
+          if (Node.TEXT_NODE == node.nodeType &&
+            node.nodeValue == '-------- Original Message --------') {
+            pos = i;
+            break;
+          }
         }
 
-        mBody.replaceChild(hdrRwhNode, mBody.firstChild);
+        ReplyWithHeader.Log.debug('Found original position: ' + pos);
+
+        // TODO clean up before release
+        // Logically removing forward header elements
+        // let lc = (this.hdrCnt * 2) + 1; // for br's
+        // if (isSignature) {
+        //   lc = lc + 1; // for signature div
+        // }
+        // ReplyWithHeader.Log.debug('No of headers to cleanup (including BRs):: ' + lc);
+
+        for (let i = pos; i <= (pos + this.hdrCnt); i++) {
+          mBody.removeChild(mBody.childNodes[i]);
+        }
+
+        mBody.insertBefore(hdrRwhNode, mBody.childNodes[pos - 1]);
+
+        // TODO clean up before release
+        //mBody.replaceChild(hdrRwhNode, mBody.firstChild);
+
+        // ReplyWithHeader.Log.debug('after Body innerHTML:  ' + mBody.innerHTML);
+
+        // if (isSignature) {
+        //   mBody.insertBefore(sigNode, mBody.firstChild);
+        // }
 
         if (this.Prefs.beforeSepSpaceCnt == 0) { // jshint ignore:line
           mBody.insertBefore(this.createElement('br'), mBody.firstChild);
@@ -694,6 +757,7 @@ var ReplyWithHeader = {
 
         fwdContainer.replaceChild(hdrRwhNode, fwdContainer.firstChild);
 
+        // TODO clean up before release
         // // Logically removing text node header elements
         // ReplyWithHeader.Log.debug('Cleaning text node');
         // this.deleteNode(this.getElement('moz-forward-container').firstChild);
@@ -711,7 +775,8 @@ var ReplyWithHeader = {
 
       // put signature back to the place
       if (sigNode) {
-//        let fwdContainer = this.getElement('moz-forward-container');
+        // TODO clean up before release
+        //        let fwdContainer = this.getElement('moz-forward-container');
         //fwdContainer.insertBefore(this.createElement('br'), fwdContainer.firstChild);
         fwdContainer.insertBefore(sigNode, fwdContainer.firstChild);
       }
@@ -721,7 +786,7 @@ var ReplyWithHeader = {
   },
 
   handleSubjectPrefix: function() {
-    let msgSubject = document.getElementById('msgSubject');
+    let msgSubject = this.byId('msgSubject');
 
     if (this.isDefined(msgSubject)) {
       if (this.isReply) {
@@ -739,6 +804,17 @@ var ReplyWithHeader = {
     if (blockquotes.length > 0) {
       for (let i = 0, len = this.Prefs.cleanNewBlockQuote ? 1 : blockquotes.length; i < len; i++) {
         blockquotes[i].setAttribute('style', this.bqStyleStr);
+      }
+    }
+
+    if (this.isPostbox) {
+      let pbBody = this.getElement('__pbConvBody');
+      if (pbBody) {
+        pbBody.style.color = '#000000';
+        pbBody.style.marginLeft = '0px';
+        pbBody.style.marginRight = '0px';
+        // TODO clean up before release
+        //pbBody.setAttribute('style', 'color:#000000;margin-left:0;margin-right:0;');
       }
     }
   },

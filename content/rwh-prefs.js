@@ -252,7 +252,7 @@ ReplyWithHeader.Prefs = {
   },
 
   forPostbox: function(v) {
-    if (ReplyWithHeader.hostApp == 'Postbox') {
+    if (ReplyWithHeader.isPostbox) {
       this.toggle('lblBeforeSeparator', v);
       this.toggle('spaceBeforeSep', v);
       this.toggle('lblNotAppBeforeSeparator', v);
