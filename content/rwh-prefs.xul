@@ -38,6 +38,7 @@
             <preference id="pref-cleanGreaterThanChar" name="extensions.replywithheader.clean.char.greaterthan" type="bool" instantApply="true" />
             <preference id="pref-excludePlainTextHdrPrefix" name="extensions.replywithheader.clean.pln.hdr.prefix" type="bool" instantApply="true" />
             <preference id="pref-quotDateAttributionStyle" name="extensions.replywithheader.header.date.format" type="int" instantApply="true" />
+            <preference id="pref-enableRwhDebugMode" name="extensions.replywithheader.debug" type="bool" instantApply="true" />
         </preferences>
 
         <hbox align="center">
@@ -185,7 +186,11 @@
                     <hbox align="center" style="margin: 40px 0 0 55px">
                         <button label="Website" oncommand="ReplyWithHeader.Prefs.openWebsite();" />
                         <button label="Write a Review" oncommand="ReplyWithHeader.Prefs.openReviews();" />
-                        <button label="Need Support" oncommand="ReplyWithHeader.Prefs.reportIssues();" />
+                        <button label="Report Issues" oncommand="ReplyWithHeader.Prefs.reportIssues();" />
+                    </hbox>
+                    <hbox align="center" style="margin: 15px 0 0 150px">
+                        <checkbox id="enableRwhDebugMode" label="Enable debug mode" preference="pref-enableRwhDebugMode"
+                          tooltiptext="Add-on logs useful debug details in the Error Console (Ctrl+Shift+J)" />
                     </hbox>
                     <hbox align="center" style="margin-top:150px;">
                         <groupbox id="abtGrpBoxRwhDonate" style="width:430px;padding-bottom:10px;margin:0">

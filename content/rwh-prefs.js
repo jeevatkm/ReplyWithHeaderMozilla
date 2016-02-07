@@ -225,13 +225,13 @@ ReplyWithHeader.Prefs = {
   },
 
   toggleRwh: function() {
-    let rwh = document.getElementById('enableRwh');
+    let rwh = ReplyWithHeader.byId('enableRwh');
     var ids = ['lblFromAttribution', 'fromAttributionStyle', 'lblHeaderToCcAttrib', 'toccAttributionStyle',
       'lblTypography', 'lblFontface', 'hdrFontface', 'lblFontsize', 'hdrFontsize', 'lblFontcolor',
       'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr', 'lblAfterHeader',
       'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle',
       'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat', 'cleanBlockQuote',
-      'cleanNewBlockQuote', 'cleanGreaterThanChar'
+      'cleanNewBlockQuote', 'cleanGreaterThanChar', 'enableRwhDebugMode'
     ];
 
     if (rwh.checked) {
@@ -260,7 +260,7 @@ ReplyWithHeader.Prefs = {
   },
 
   toggleBlockQuote: function() {
-    let cbq = document.getElementById('cleanBlockQuote');
+    let cbq = ReplyWithHeader.byId('cleanBlockQuote');
     this.toggle('cleanNewBlockQuote', !cbq.checked);
   }
 };
