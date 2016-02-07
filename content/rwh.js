@@ -149,6 +149,13 @@ var ReplyWithHeader = {
     return gMsgCompose.composeHTML;
   },
 
+  get isSignaturePresent() {
+    var isSignature = this.isDefined(this.getElement('moz-signature'));
+    ReplyWithHeader.Log.debug('is Signature present ==> ' + isSignature);
+
+    return isSignature;
+  },
+
   get hostApp() {
     let appInfo = RCc['@mozilla.org/xre/app-info;1'].getService(RCi.nsIXULAppInfo);
 
@@ -402,6 +409,20 @@ var ReplyWithHeader = {
       let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontFace + '" color="' + fontColor + '" style="font: ' + fontSize + 'px ' + fontFace + ' !important; color: ' + fontColor + ' !important;">';
       let htmlTagSuffix = '</font></span><br/>';
 
+      if (this.isSignaturePresent) {
+        let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom'),
+          sigOnFwd = gCurrentIdentity.getBoolAttribute('sig_on_fwd'),
+          sigOnReply = gCurrentIdentity.getBoolAttribute('sig_on_reply');
+
+        ReplyWithHeader.Log.debug('sigOnBtm ==> ' + sigOnBtm);
+        ReplyWithHeader.Log.debug('sigOnFwd ==> ' + sigOnFwd);
+        ReplyWithHeader.Log.debug('sigOnReply ==> ' + sigOnReply);
+
+        if ((sigOnReply || sigOnFwd) && !sigOnBtm) {
+          rwhHdr += this.createBrTags(1);
+        }
+      }
+
       rwhHdr += '<hr style="border:0;border-top:solid #B5C4DF 1.0pt;padding:0;margin:10px 0 5px 0;width:100%;">';
 
       let beforeHdr = this.Prefs.beforeHdrSpaceCnt;
@@ -500,6 +521,10 @@ var ReplyWithHeader = {
     gMsgCompose.editor.deleteNode(node);
   },
 
+  createElement: function(tagName) {
+    return gMsgCompose.editor.document.createElement(tagName);
+  },
+
   cleanBrAfterRwhHeader: function() {
     ReplyWithHeader.Log.debug('cleanBrAfterRwhHeader()');
 
@@ -577,6 +602,10 @@ var ReplyWithHeader = {
     ReplyWithHeader.Log.debug('handleForwardMessage()');
 
     let hdrRwhNode = this.parseFragment(gMsgCompose.editor.document, this.createRwhHeader, true);
+
+    //
+    // Postbox
+    //
     if (this.hostApp == 'Postbox') {
       let hdrNode = this.getElement('__pbConvHr');
       if (!hdrNode) {
@@ -599,7 +628,7 @@ var ReplyWithHeader = {
 
         if (this.Prefs.beforeSepSpaceCnt == 0) { // jshint ignore:line
           for (let i = 0; i < 2; i++)
-            mBody.insertBefore(gMsgCompose.editor.document.createElement('br'), mBody.firstChild);
+            mBody.insertBefore(this.createElement('br'), mBody.firstChild);
         }
       } else {
         ReplyWithHeader.Log.debug('hdrCnt: ' + this.hdrCnt);
@@ -615,30 +644,76 @@ var ReplyWithHeader = {
         mBody.replaceChild(hdrRwhNode, mBody.firstChild);
 
         if (this.Prefs.beforeSepSpaceCnt == 0) { // jshint ignore:line
-          mBody.insertBefore(gMsgCompose.editor.document.createElement('br'), mBody.firstChild);
+          mBody.insertBefore(this.createElement('br'), mBody.firstChild);
         }
       }
-    } else { // For Thunderbird
+    } else {
+      //
+      // For Thunderbird
+      //
       this.cleanEmptyTags(this.getElement('moz-forward-container').firstChild);
 
-      // Logically removing text node header elements
-      ReplyWithHeader.Log.debug('Cleaning text node');
-      this.deleteNode(this.getElement('moz-forward-container').firstChild);
+      let isSignature = this.isSignaturePresent;
+      let sigNode;
+      if (isSignature) {
+        sigNode = this.getElement('moz-signature').cloneNode(true);
+      }
+
+      let fwdContainer = this.getElement('moz-forward-container');
 
       if (this.isHtmlMail) {
-        this.getElement('moz-forward-container').replaceChild(hdrRwhNode, this.getElement('moz-email-headers-table'));
+        // let fwdContainer = this.getElement('moz-forward-container');
+        while (fwdContainer.firstChild) {
+          if (fwdContainer.firstChild.className == 'moz-email-headers-table') {
+            break;
+          }
+
+          fwdContainer.removeChild(fwdContainer.firstChild);
+        }
+
+        fwdContainer.replaceChild(hdrRwhNode, this.getElement('moz-email-headers-table'));
+
+        //this.getElement('moz-forward-container').replaceChild(hdrRwhNode, this.getElement('moz-email-headers-table'));
       } else {
         ReplyWithHeader.Log.debug('hdrCnt: ' + this.hdrCnt);
 
+        // Logically removing text node header elements
+        ReplyWithHeader.Log.debug('Cleaning text node');
+        this.deleteNode(fwdContainer.firstChild);
+
         // Logically removing forward header elements
         let lc = (this.hdrCnt * 2) + 1; // for br's
+        if (isSignature) {
+          lc = lc + 1; // for signature div
+        }
         ReplyWithHeader.Log.debug('No of headers to cleanup (including BRs):: ' + lc);
 
         for (let i = 0; i < lc; i++) {
-          this.deleteNode(this.getElement('moz-forward-container').firstChild);
+          this.deleteNode(fwdContainer.firstChild);
         }
 
-        this.getElement('moz-forward-container').replaceChild(hdrRwhNode, this.getElement('moz-forward-container').firstChild);
+        fwdContainer.replaceChild(hdrRwhNode, fwdContainer.firstChild);
+
+        // // Logically removing text node header elements
+        // ReplyWithHeader.Log.debug('Cleaning text node');
+        // this.deleteNode(this.getElement('moz-forward-container').firstChild);
+        //
+        // // Logically removing forward header elements
+        // let lc = (this.hdrCnt * 2) + 1; // for br's
+        // ReplyWithHeader.Log.debug('No of headers to cleanup (including BRs):: ' + lc);
+        //
+        // for (let i = 0; i < lc; i++) {
+        //   this.deleteNode(this.getElement('moz-forward-container').firstChild);
+        // }
+        //
+        // this.getElement('moz-forward-container').replaceChild(hdrRwhNode, this.getElement('moz-forward-container').firstChild);
+      }
+
+      // put signature back to the place
+      if (sigNode) {
+//        let fwdContainer = this.getElement('moz-forward-container');
+        //fwdContainer.insertBefore(this.createElement('br'), fwdContainer.firstChild);
+        fwdContainer.insertBefore(sigNode, fwdContainer.firstChild);
       }
     }
 
@@ -720,7 +795,7 @@ var ReplyWithHeader = {
     if (ReplyWithHeader.isEnabled && ReplyWithHeader.isOkayToMoveOn) {
       this.hdrCnt = 4; // From, To, Subject, Date
 
-      //ReplyWithHeader.Log.debug('BEFORE Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
+      ReplyWithHeader.Log.debug('BEFORE Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
 
       if (this.isReply) {
         this.handleReplyMessage();
@@ -742,7 +817,7 @@ var ReplyWithHeader = {
 
       this.handOverToUser();
 
-      //ReplyWithHeader.Log.debug('AFTER Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
+      ReplyWithHeader.Log.debug('AFTER Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
     } else {
       if (ReplyWithHeader.isEnabled) {
         if (this.composeType == 10 || this.composeType == 15) { // Resend=10, Redirect=15
