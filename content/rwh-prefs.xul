@@ -171,6 +171,9 @@
                     <hbox align="center" style="margin-left:15px">
                         <checkbox id="cleanGreaterThanChar" label="Cleanup the quote character '>'" preference="pref-cleanGreaterThanChar" />
                     </hbox>
+                    <hbox align="center" style="margin-top:5px">
+                        <label id="lblHeaderFormat" value="Header cleanups" />
+                    </hbox>
                     <hbox align="center" style="margin-left:15px">
                         <checkbox id="excludePlainTextHdrPrefix" label="Don't include plain text header prefix" preference="pref-excludePlainTextHdrPrefix" />
                     </hbox>

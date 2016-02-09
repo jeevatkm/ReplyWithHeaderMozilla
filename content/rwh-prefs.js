@@ -187,7 +187,7 @@ ReplyWithHeader.Prefs = {
 
     this.toggleBlockQuote();
 
-    this.forPostbox(true);    
+    this.forPostbox(true);
   },
 
   toggleRwh: function() {
@@ -197,8 +197,8 @@ ReplyWithHeader.Prefs = {
       'hdrFontsize', 'lblFontcolor', 'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr',
       'lblAfterHeader', 'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblHeaderQuotSeq',
       'quotSeqAttributionStyle', 'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat',
-      'cleanBlockQuote', 'cleanNewBlockQuote', 'cleanGreaterThanChar', 'excludePlainTextHdrPrefix',
-      'enableRwhDebugMode'
+      'cleanBlockQuote', 'cleanNewBlockQuote', 'cleanGreaterThanChar', 'lblHeaderFormat',
+      'excludePlainTextHdrPrefix', 'enableRwhDebugMode'
     ];
 
     for (let len = ids.length, i = 0; i < len; i++) {
