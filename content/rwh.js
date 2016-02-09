@@ -486,10 +486,6 @@ var ReplyWithHeader = {
     gMsgCompose.editor.deleteNode(node);
   },
 
-  createElement: function(tagName) {
-    return gMsgCompose.editor.document.createElement(tagName);
-  },
-
   cleanBrAfterRwhHeader: function() {
     let rwhHdr = this.byIdInMail('rwhMsgHeader');
 
@@ -572,7 +568,7 @@ var ReplyWithHeader = {
     if (!this.isPostbox) {
       if (!gCurrentIdentity.getBoolAttribute('sig_bottom') && this.isSignaturePresent) {
         let rootElement = gMsgCompose.editor.rootElement;
-        rootElement.insertBefore(this.createElement('br'), rootElement.firstChild);
+        rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
       }
     }
 
@@ -621,7 +617,7 @@ var ReplyWithHeader = {
 
         if (this.Prefs.beforeSepSpaceCnt == 0) { // jshint ignore:line
           for (let i = 0; i < 2; i++)
-            mBody.insertBefore(this.createElement('br'), mBody.firstChild);
+            mBody.insertBefore(gMsgCompose.editor.document.createElement('br'), mBody.firstChild);
         }
       } else {
         this.Log.debug('hdrCnt: ' + this.hdrCnt);
@@ -643,7 +639,7 @@ var ReplyWithHeader = {
         mBody.insertBefore(hdrRwhNode, mBody.childNodes[pos - 1]);
 
         if (this.Prefs.beforeSepSpaceCnt == 0) { // jshint ignore:line
-          mBody.insertBefore(this.createElement('br'), mBody.firstChild);
+          mBody.insertBefore(gMsgCompose.editor.document.createElement('br'), mBody.firstChild);
         }
       }
     } else {
@@ -679,7 +675,7 @@ var ReplyWithHeader = {
           fwdContainer.insertBefore(sigNode, this.byIdInMail('rwhMsgHeader'));
 
           let rootElement = gMsgCompose.editor.rootElement;
-          rootElement.insertBefore(this.createElement('br'), rootElement.firstChild);
+          rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
         }
       } else {
         this.Log.debug('hdrCnt: ' + this.hdrCnt);
@@ -744,8 +740,7 @@ var ReplyWithHeader = {
     let mailBody = gMsgCompose.editor.rootElement; // alternate is gMsgCompose.editor.document.body
 
     if (mailBody) {
-      // Here RWH Add-On does string find and replace.
-      // No external creation of HTML string
+      // Here RWH Add-On does string find and replace. No external creation of HTML string
       mailBody.innerHTML = mailBody.innerHTML.replace(/<br>(&gt;)+ ?/g, '<br />')
         .replace(/(<\/?span [^>]+>)(&gt;)+ /g, '$1');
     }
