@@ -205,7 +205,11 @@ var ReplyWithHeader = {
    * @param {boolean} isXML If true, parse the fragment as XML.
    */
   parseFragment: function(doc, html, allowStyle, baseURI, isXML) {
-    return this.parser.parseFragment(html, allowStyle ? this.parser.SanitizerAllowStyle : 0, !!isXML, baseURI, doc.documentElement);
+    if (this.parser) {
+      return this.parser.parseFragment(html, allowStyle ? this.parser.SanitizerAllowStyle : 0, !!isXML, baseURI, doc.documentElement);
+    }
+
+    return this.legacyParser.parseFragment(html, !!isXML, baseURI, doc.documentElement);
   },
 
   prepareFromHdr: function(author) {
@@ -343,9 +347,7 @@ var ReplyWithHeader = {
           sigOnFwd = gCurrentIdentity.getBoolAttribute('sig_on_fwd'),
           sigOnReply = gCurrentIdentity.getBoolAttribute('sig_on_reply');
 
-        this.Log.debug('sigOnBtm ==> ' + sigOnBtm);
-        this.Log.debug('sigOnFwd ==> ' + sigOnFwd);
-        this.Log.debug('sigOnReply ==> ' + sigOnReply);
+        this.Log.debug('sigOnBtm: ' + sigOnBtm + '\tsigOnReply: ' + sigOnReply + '\tsigOnFwd: ' + sigOnFwd);
 
         if ((sigOnReply || sigOnFwd) && !sigOnBtm) {
           rwhHdr += this.createBrTags(1);
@@ -888,10 +890,19 @@ XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'messenger',
                                    '@mozilla.org/messenger;1',
                                    'nsIMessenger');
 
-XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'parser',
-                                  '@mozilla.org/parserutils;1',
-                                  'nsIParserUtils');
-
 XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader.Log, 'console',
                                    '@mozilla.org/consoleservice;1',
                                    'nsIConsoleService');
+
+// based available service, initialize one
+(function() {
+  if ('@mozilla.org/parserutils;1' in Components.classes) {
+    XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'parser',
+                                       '@mozilla.org/parserutils;1',
+                                       'nsIParserUtils');
+  } else {
+    XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'legacyParser',
+                                       '@mozilla.org/feed-unescapehtml;1',
+                                       'nsIScriptableUnescapeHTML');
+  }
+})();
