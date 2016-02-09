@@ -36,32 +36,21 @@ var ReplyWithHeader = {
     let mct = Components.interfaces.nsIMsgCompType;
     let ct = this.composeType;
 
-    // var reply = (ct == mct.Reply || ct == mct.ReplyAll || ct == mct.ReplyToSender) ? true : false;
-    // this.Log.debug('isReply: ' + reply);
-
     return (ct == mct.Reply || ct == mct.ReplyAll || ct == mct.ReplyToSender);
   },
 
   get isForward() {
-    // var forward = (ReplyWithHeader.composeType == Components.interfaces.nsIMsgCompType.ForwardInline);
-    // this.Log.debug('isForward: ' + forward);
-
     return (this.composeType == Components.interfaces.nsIMsgCompType.ForwardInline);
   },
 
   get isOkayToMoveOn() {
-    // Compose type have to be 1=Reply, 2=ReplyAll, 4=ForwardInline, 6=ReplyToSender then
-    // var isOkay = (this.isReply || this.isForward) ? true : false;
-    // this.Log.debug('isOkayToMoveOn: ' + isOkay);
-
+    // Compose type have to be 1=Reply, 2=ReplyAll, 4=ForwardInline, 6=ReplyToSender
+    // then okay to move on
     return (this.isReply || this.isForward);
   },
 
   get composeType() {
     // gComposeType can be used, will try later
-    // var ct = gMsgCompose.type;
-    // this.Log.debug('Message composeType: ' + ct);
-
     return gMsgCompose.type;
   },
 
@@ -86,17 +75,59 @@ var ReplyWithHeader = {
   },
 
   get isHtmlMail() {
-    // var isHtml = gMsgCompose.composeHTML;
-    // this.Log.debug('is HTML email ==> ' + isHtml);
-
     return gMsgCompose.composeHTML;
   },
 
+  // This is applicable only to HTML emails
   get isSignaturePresent() {
-    // var isSignature = this.isDefined(this.getElement('moz-signature'));
-    // this.Log.debug('is Signature present ==> ' + isSignature);
+    if (!this.isHtmlMail) {
+      return false;
+    }
 
-    return this.isDefined(this.getElement('moz-signature'));
+    let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom'),
+      sigOnFwd = gCurrentIdentity.getBoolAttribute('sig_on_fwd'),
+      sigOnReply = gCurrentIdentity.getBoolAttribute('sig_on_reply');
+
+    let mBody = gMsgCompose.editor.rootElement;
+    let found = false;
+    if (sigOnBtm) {
+      this.Log.debug('signatue in the bottom');
+
+      for (let i = mBody.childNodes.length - 1; i >= 0; i--) {
+        let node = mBody.childNodes[i];
+        this.Log.debug(node.nodeName);
+
+        if (node.hasAttribute('class') &&
+          (node.getAttribute('class') == 'moz-signature')) {
+          found = true;
+          break;
+        }
+
+        if (node.nodeName.toLowerCase() == 'blockquote') {
+          this.Log.debug('reached blockquote, so no signature');
+          break;
+        }
+      }
+    } else {
+      this.Log.debug('signatue is at top');
+      let fc = mBody.firstChild;
+      while (fc) {
+        if (fc.hasAttribute('class') &&
+          (fc.getAttribute('class') == 'moz-signature')) {
+          found = true;
+          break;
+        }
+
+        if (fc.nodeName.toLowerCase() == 'blockquote') {
+          this.Log.debug('reached blockquote, so no signature');
+          break;
+        }
+
+        fc = fc.nextSibling;
+      }
+    }
+
+    return ((sigOnFwd || sigOnReply) && found);
   },
 
   get isPostbox() {
@@ -275,7 +306,6 @@ var ReplyWithHeader = {
 
         let recipientList = [];
         for (let i = 0; i < emlAdds.length; i++) {
-          this.Log.info('-> ' + emlAdds[i]);
           recipientList.push(this.parseToCcEmailAddress(emlAdds[i], toccLblStyle));
         }
 
@@ -327,8 +357,6 @@ var ReplyWithHeader = {
     var rwhHdr = '<div id="rwhMsgHeader">';
 
     if (this.isThunderbird) {
-      // let beforeSep = this.Prefs.beforeSepSpaceCnt;
-      // this.Log.debug('Before Separator Space: ' + beforeSep);
       rwhHdr += this.createBrTags(this.Prefs.beforeSepSpaceCnt);
     }
 
@@ -356,8 +384,6 @@ var ReplyWithHeader = {
 
       rwhHdr += '<hr style="border:0;border-top:1px solid #B5C4DF;padding:0;margin:10px 0 5px 0;width:100%;">';
 
-      // let beforeHdr = this.Prefs.beforeHdrSpaceCnt;
-      // this.Log.debug('Before Header Space: ' + beforeHdr);
       rwhHdr += this.createBrTags(this.Prefs.beforeHdrSpaceCnt);
 
       rwhHdr += htmlTagPrefix + '<b>From:</b> ' + pHeader.from + htmlTagSuffix;
@@ -382,7 +408,6 @@ var ReplyWithHeader = {
       }
 
     } else { // for plain/text emails
-      // this.Log.debug('Exclude Plain Text Header Prefix: ' + this.Prefs.excludePlainTxtHdrPrefix);
       if (!this.Prefs.excludePlainTxtHdrPrefix) {
         rwhHdr += this.isForward ? '<br/>-------- Forwarded Message --------<br/>' : '<br/>-------- Original Message --------<br/>';
       } else {
@@ -391,8 +416,6 @@ var ReplyWithHeader = {
         }
       }
 
-      // let beforeHdr = this.Prefs.beforeHdrSpaceCnt;
-      // this.Log.debug('Before Header Space: ' + beforeHdr);
       rwhHdr += this.createBrTags(this.Prefs.beforeHdrSpaceCnt);
 
       rwhHdr += 'From: ' + pHeader.from + '<br/>';
@@ -417,13 +440,12 @@ var ReplyWithHeader = {
       }
 
     }
-    // let afterHdr = this.Prefs.afterHdrSpaceCnt;
-    // this.Log.debug('After Header Space: ' + afterHdr);
+
     rwhHdr += this.createBrTags(this.Prefs.afterHdrSpaceCnt);
 
     rwhHdr += '</div>';
 
-    this.Log.debug('RWH header html: ' + rwhHdr);
+    this.Log.debug('Header HTML: ' + rwhHdr);
 
     return rwhHdr;
   },
@@ -483,7 +505,9 @@ var ReplyWithHeader = {
     while (node && toDelete) {
       let nextNode = node.nextSibling;
       toDelete = false;
-      switch (node.nodeType) { // Ref: https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
+
+      // Ref: https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
+      switch (node.nodeType) {
         case Node.ELEMENT_NODE:
           if (node.nodeName && node.nodeName.toLowerCase() == 'br') {
             toDelete = true;
@@ -551,29 +575,27 @@ var ReplyWithHeader = {
       let mBody = gMsgCompose.editor.rootElement;
 
       if (hdrNode && this.isHtmlMail) {
+        let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
         let isSignature = this.isSignaturePresent;
+        this.Log.debug('isSignature: ' + isSignature);
 
         let sigNode;
-        if (isSignature) {
+
+        // signature present and location above quoted email (top)
+        if (!sigOnBtm && isSignature) {
           sigNode = this.getElement('moz-signature').cloneNode(true);
+          gMsgCompose.editor.rootElement.removeChild(this.getElement('moz-signature'));
         }
+        this.Log.debug('sigNode: ' + sigNode);
 
         while (hdrNode.firstChild) {
           hdrNode.removeChild(hdrNode.firstChild);
         }
 
         this.cleanEmptyTags(mBody.firstChild);
-
-        // Logically removing text node header elements
-        this.deleteNode(mBody.firstChild);
-
-        if (isSignature) {
-          this.cleanEmptyTags(mBody.firstChild);
-        }
-
         hdrNode.appendChild(hdrRwhNode);
 
-        if (isSignature) {
+        if (!sigOnBtm && isSignature) {
           mBody.insertBefore(sigNode, mBody.firstChild);
         }
 
@@ -594,28 +616,11 @@ var ReplyWithHeader = {
           }
         }
 
-        // TODO clean up before release
-        // Logically removing forward header elements
-        // let lc = (this.hdrCnt * 2) + 1; // for br's
-        // if (isSignature) {
-        //   lc = lc + 1; // for signature div
-        // }
-        // ReplyWithHeader.Log.debug('No of headers to cleanup (including BRs):: ' + lc);
-
         for (let i = pos; i <= (pos + this.hdrCnt); i++) {
           mBody.removeChild(mBody.childNodes[i]);
         }
 
         mBody.insertBefore(hdrRwhNode, mBody.childNodes[pos - 1]);
-
-        // TODO clean up before release
-        //mBody.replaceChild(hdrRwhNode, mBody.firstChild);
-
-        // ReplyWithHeader.Log.debug('after Body innerHTML:  ' + mBody.innerHTML);
-
-        // if (isSignature) {
-        //   mBody.insertBefore(sigNode, mBody.firstChild);
-        // }
 
         if (this.Prefs.beforeSepSpaceCnt == 0) { // jshint ignore:line
           mBody.insertBefore(this.createElement('br'), mBody.firstChild);
@@ -729,7 +734,7 @@ var ReplyWithHeader = {
     let mailBody = gMsgCompose.editor.rootElement; // alternate is gMsgCompose.editor.document.body
 
     if (mailBody) {
-      // Here RWH does string find and replace.
+      // Here RWH Add-On does string find and replace.
       // No external creation of HTML string
       mailBody.innerHTML = mailBody.innerHTML.replace(/<br>(&gt;)+ ?/g, '<br />')
         .replace(/(<\/?span [^>]+>)(&gt;)+ /g, '$1');
@@ -741,7 +746,9 @@ var ReplyWithHeader = {
 
     if (this.isReply) {
       let rot = gCurrentIdentity.replyOnTop;
-      this.Log.debug('gCurrentIdentity.replyOnTop: ' + rot);
+      this.Log.debug('ReplyOnTop: ' + rot);
+      this.Log.debug('ReplyOnTop try 1: ' + !rot);
+      this.Log.debug('ReplyOnTop try 2: ' + !!rot);
 
       if (rot == 1) {
         gMsgCompose.editor.beginningOfDocument();
@@ -769,14 +776,14 @@ var ReplyWithHeader = {
     /*
      * ReplyWithHeader has to be enabled; extensions.replywithheader.enable=true and
      * ReplyWithHeader.isOkayToMoveOn must return true
-     * Add-on comes into play :)
+     * Add-On comes into play :)
      */
-    if (this.Prefs.isEnabled && this.isOkayToMoveOn) {
+    let prefs = this.Prefs;
+    if (prefs.isEnabled && this.isOkayToMoveOn) {
       this.hdrCnt = 4; // From, To, Subject, Date
 
-      //this.Log.debug('BEFORE Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
-
-      this.Log.debug('HTML email: ' + this.isHtmlMail);
+      this.Log.debug('BEFORE Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
+      this.Log.debug('Is HTML compose: ' + this.isHtmlMail);
 
       if (this.isReply) {
         this.Log.debug('Reply/ReplyAll mode');
@@ -788,28 +795,28 @@ var ReplyWithHeader = {
         this.handleForwardMessage();
       }
 
-      if (this.Prefs.isSubjectPrefixEnabled) {
+      if (prefs.isSubjectPrefixEnabled) {
         this.handleSubjectPrefix();
       }
 
-      if (this.Prefs.cleanBlockQuote) {
+      if (prefs.cleanBlockQuote) {
         this.handleBlockQuote();
       }
 
-      if (this.Prefs.cleanGreaterThanChar) {
+      if (prefs.cleanGreaterThanChar) {
         this.handleGreaterThanChar();
       }
 
       this.handOverToUser();
 
-      //this.Log.debug('AFTER Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
+      this.Log.debug('AFTER Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
     } else {
-      if (this.Prefs.isEnabled) {
+      if (prefs.isEnabled) {
         if (this.composeType == 10 || this.composeType == 15) { // Resend=10, Redirect=15
-          this.Log.debug('Email composeType [' + this.composeType + '] is not supported.');
+          this.Log.info('Email composeType [' + this.composeType + '] is not supported.');
         }
       } else {
-        this.Log.info('ReplyWithHeader is not enabled, you can enable it in the Add-On Preferences.');
+        this.Log.info('ReplyWithHeader add-on is not enabled, you can enable it in the Add-On Preferences.');
       }
     }
   },
