@@ -14,7 +14,7 @@ Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 Components.utils.import('resource://gre/modules/AddonManager.jsm');
 
 // ReplyWithHeader Add-On ID
-const ReplyWithHeaderAddonID = 'replywithheader@myjeeva.com';
+const ReplyWithHeaderAddOnID = 'replywithheader@myjeeva.com';
 
 var ReplyWithHeader = {
   addonVersion: '',
@@ -80,21 +80,33 @@ var ReplyWithHeader = {
 
   // This is applicable only to HTML emails
   get isSignaturePresent() {
-    if (!this.isHtmlMail) {
-      return false;
+    let rootElement;
+    if (this.isPostbox) {
+      // This is only for Postbox,
+      // since it compose email structure is different
+      if (!this.isHtmlMail) {
+        return false;
+      }
+
+      rootElement = gMsgCompose.editor.rootElement;
+    } else {
+      if (this.isForward) {
+        rootElement = this.getElement('moz-forward-container');
+      } else {
+        rootElement = gMsgCompose.editor.rootElement;
+      }
     }
 
-    let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom'),
-      sigOnFwd = gCurrentIdentity.getBoolAttribute('sig_on_fwd'),
-      sigOnReply = gCurrentIdentity.getBoolAttribute('sig_on_reply');
-
-    let mBody = gMsgCompose.editor.rootElement;
+    let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
+    let sigOnFwd = gCurrentIdentity.getBoolAttribute('sig_on_fwd');
+    let sigOnReply = gCurrentIdentity.getBoolAttribute('sig_on_reply');
     let found = false;
+
     if (sigOnBtm) {
       this.Log.debug('signatue in the bottom');
 
-      for (let i = mBody.childNodes.length - 1; i >= 0; i--) {
-        let node = mBody.childNodes[i];
+      for (let i = rootElement.childNodes.length - 1; i >= 0; i--) {
+        let node = rootElement.childNodes[i];
         this.Log.debug(node.nodeName);
 
         if (node.hasAttribute('class') &&
@@ -110,7 +122,7 @@ var ReplyWithHeader = {
       }
     } else {
       this.Log.debug('signatue is at top');
-      let fc = mBody.firstChild;
+      let fc = rootElement.firstChild;
       while (fc) {
         if (fc.hasAttribute('class') &&
           (fc.getAttribute('class') == 'moz-signature')) {
@@ -557,6 +569,13 @@ var ReplyWithHeader = {
 
     hdrNode.appendChild(this.parseFragment(gMsgCompose.editor.document, this.createRwhHeader, true));
 
+    if (!this.isPostbox) {
+      if (!gCurrentIdentity.getBoolAttribute('sig_bottom') && this.isSignaturePresent) {
+        let rootElement = gMsgCompose.editor.rootElement;
+        rootElement.insertBefore(this.createElement('br'), rootElement.firstChild);
+      }
+    }
+
     this.cleanBrAfterRwhHeader();
   },
 
@@ -595,6 +614,7 @@ var ReplyWithHeader = {
         this.cleanEmptyTags(mBody.firstChild);
         hdrNode.appendChild(hdrRwhNode);
 
+        // put signature back to the place
         if (!sigOnBtm && isSignature) {
           mBody.insertBefore(sigNode, mBody.firstChild);
         }
@@ -630,29 +650,37 @@ var ReplyWithHeader = {
       //
       // For Thunderbird
       //
-      this.cleanEmptyTags(this.getElement('moz-forward-container').firstChild);
-
+      let fwdContainer = this.getElement('moz-forward-container');
+      let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
       let isSignature = this.isSignaturePresent;
       let sigNode;
-      if (isSignature) {
-        sigNode = this.getElement('moz-signature').cloneNode(true);
-      }
 
-      let fwdContainer = this.getElement('moz-forward-container');
+      this.Log.debug('isSignature: ' + isSignature);
+
+      // signature present and location above quoted email (top)
+      if (!sigOnBtm && isSignature) {
+        sigNode = this.getElement('moz-signature').cloneNode(true);
+        fwdContainer.removeChild(this.getElement('moz-signature'));
+      }
+      this.Log.debug('sigNode: ' + sigNode);
 
       if (this.isHtmlMail) {
-        // let fwdContainer = this.getElement('moz-forward-container');
         while (fwdContainer.firstChild) {
           if (fwdContainer.firstChild.className == 'moz-email-headers-table') {
             break;
           }
-
           fwdContainer.removeChild(fwdContainer.firstChild);
         }
 
         fwdContainer.replaceChild(hdrRwhNode, this.getElement('moz-email-headers-table'));
 
-        //this.getElement('moz-forward-container').replaceChild(hdrRwhNode, this.getElement('moz-email-headers-table'));
+        // put signature back to the place
+        if (!sigOnBtm && isSignature) {
+          fwdContainer.insertBefore(sigNode, this.byIdInMail('rwhMsgHeader'));
+
+          let rootElement = gMsgCompose.editor.rootElement;
+          rootElement.insertBefore(this.createElement('br'), rootElement.firstChild);
+        }
       } else {
         this.Log.debug('hdrCnt: ' + this.hdrCnt);
 
@@ -671,28 +699,10 @@ var ReplyWithHeader = {
 
         fwdContainer.replaceChild(hdrRwhNode, fwdContainer.firstChild);
 
-        // TODO clean up before release
-        // // Logically removing text node header elements
-        // ReplyWithHeader.Log.debug('Cleaning text node');
-        // this.deleteNode(this.getElement('moz-forward-container').firstChild);
-        //
-        // // Logically removing forward header elements
-        // let lc = (this.hdrCnt * 2) + 1; // for br's
-        // ReplyWithHeader.Log.debug('No of headers to cleanup (including BRs):: ' + lc);
-        //
-        // for (let i = 0; i < lc; i++) {
-        //   this.deleteNode(this.getElement('moz-forward-container').firstChild);
-        // }
-        //
-        // this.getElement('moz-forward-container').replaceChild(hdrRwhNode, this.getElement('moz-forward-container').firstChild);
-      }
-
-      // put signature back to the place
-      if (sigNode) {
-        // TODO clean up before release
-        //        let fwdContainer = this.getElement('moz-forward-container');
-        //fwdContainer.insertBefore(this.createElement('br'), fwdContainer.firstChild);
-        fwdContainer.insertBefore(sigNode, fwdContainer.firstChild);
+        // put signature back to the place
+        if (!sigOnBtm && isSignature) {
+          fwdContainer.insertBefore(sigNode, fwdContainer.firstChild);
+        }
       }
     }
 
@@ -880,7 +890,7 @@ ReplyWithHeader.Log = {
 };
 
 // Getting Add-On version #
-AddonManager.getAddonByID(ReplyWithHeaderAddonID, function(addon) {
+AddonManager.getAddonByID(ReplyWithHeaderAddOnID, function(addon) {
   ReplyWithHeader.addonVersion = addon.version;
 });
 
