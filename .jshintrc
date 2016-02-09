@@ -3,6 +3,8 @@
   "strict": "global",
   "predef" : [
     "Components",
+    "XPCOMUtils",
+    "AddonManager",
     "gMsgCompose",
     "gMessenger",
     "gCurrentIdentity",
