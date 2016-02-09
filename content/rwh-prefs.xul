@@ -180,7 +180,7 @@
                         <image src='chrome://replywithheader/skin/icon-64.png' width='64' height='64'
                                style="margin-left:100px"/>
                         <label id="abtRwhCaption" value="ReplyWithHeader" style="font-weight:bold;" />
-                        <label id="abtRwhCopyrights" value="&#169; 2015 Jeevanandam M."
+                        <label id="abtRwhCopyrights" value="&#169; 2016 Jeevanandam M."
                                style="font-size:12px; margin-top:40px;margin-left:-152px" />
                     </hbox>
                     <hbox align="center" style="margin: 40px 0 0 55px">
