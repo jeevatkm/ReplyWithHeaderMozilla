@@ -57,6 +57,10 @@ ReplyWithHeader.Prefs = {
     return this.getIntPref('header.date.format');
   },
 
+  get timeFormat() {
+    return this.getIntPref('header.time.format');
+  },
+
   get headerFontFace() {
     return this.getStringPref('header.font.face');
   },

@@ -23,10 +23,14 @@ pref('extensions.replywithheader.header.space.before', 0);
 pref('extensions.replywithheader.header.space.after', 1);
 pref('extensions.replywithheader.trans.subject.prefix', false);
 
-// As per http://momentjs.com/docs/#/displaying/format/
+// RWH Date & Time
 // 0 - Locale date format
 // 1 - International date format - GMT
 pref('extensions.replywithheader.header.date.format', 0);
+
+// 0 - 12 hours AM/PM
+// 1 - 24 hours
+pref('extensions.replywithheader.header.time.format', 0);
 
 // RWH Mail message
 pref('extensions.replywithheader.clean.blockquote', true);

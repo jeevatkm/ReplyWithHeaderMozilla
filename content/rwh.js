@@ -26,7 +26,8 @@ var ReplyWithHeader = {
   paypalDonateUrl: 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=Jeevanandam%20M%2e&item_number=ReplyWithHeaderMozilla&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted',
   hdrCnt: 4,
   bqStyleStr: 'border:none !important; margin-left:0px !important; margin-right:0px !important; margin-top:0px !important; padding-left:0px !important; padding-right:0px !important',
-  dateFormatString: 'ddd, MMM d, yyyy h:mm:ss a',
+  dateFormat12hrs: 'ddd, MMM d, yyyy h:mm:ss a',
+  dateFormat24hrs: 'ddd, MMM d, yyyy HH:mm:ss',
 
   get isMacOSX() {
     return (this.appRuntime.OS == 'Darwin');
@@ -209,13 +210,19 @@ var ReplyWithHeader = {
     // Input is PR time
     let d = new Date(prTime / 1000);
     var nd = '';
+
+    let dateFmtStr = this.dateFormat12hrs;
+    if (this.Prefs.timeFormat == 1) {
+      dateFmtStr = this.dateFormat24hrs;
+    }
+
     if (this.Prefs.dateFormat == 0) { // jshint ignore:line
       this.Log.debug('Locale date format');
-      nd = DateFormat.format.date(d, this.dateFormatString) + ' ' + this.tzAbbr(d);
+      nd = DateFormat.format.date(d, dateFmtStr) + ' ' + this.tzAbbr(d);
     } else {
       this.Log.debug('GMT date format');
       var utc = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
-      nd = DateFormat.format.date(utc, this.dateFormatString) + ' ' + this.tzAbbr(d.toUTCString());
+      nd = DateFormat.format.date(utc, dateFmtStr) + ' ' + this.tzAbbr(d.toUTCString());
     }
 
     return nd;
@@ -755,12 +762,7 @@ var ReplyWithHeader = {
     gMsgCompose.editor.resetModificationCount();
 
     if (this.isReply) {
-      let rot = gCurrentIdentity.replyOnTop;
-      this.Log.debug('ReplyOnTop: ' + rot);
-      this.Log.debug('ReplyOnTop try 1: ' + !rot);
-      this.Log.debug('ReplyOnTop try 2: ' + !!rot);
-
-      if (rot == 1) {
+      if (gCurrentIdentity.replyOnTop == 1) {
         gMsgCompose.editor.beginningOfDocument();
       } else {
         gMsgCompose.editor.endOfDocument();

@@ -38,6 +38,7 @@
             <preference id="pref-cleanGreaterThanChar" name="extensions.replywithheader.clean.char.greaterthan" type="bool" instantApply="true" />
             <preference id="pref-excludePlainTextHdrPrefix" name="extensions.replywithheader.clean.pln.hdr.prefix" type="bool" instantApply="true" />
             <preference id="pref-quotDateAttributionStyle" name="extensions.replywithheader.header.date.format" type="int" instantApply="true" />
+            <preference id="pref-quotTimeAttributionStyle" name="extensions.replywithheader.header.time.format" type="int" instantApply="true" />
             <preference id="pref-enableRwhDebugMode" name="extensions.replywithheader.debug" type="bool" instantApply="true" />
         </preferences>
 
@@ -94,6 +95,13 @@
                             <radio value="0" label="Locale date format" />
                             <radio value="1" label="International date format (GMT)" style="margin-top:-2px" />
                         </radiogroup>
+                    </hbox>
+                    <hbox align="center" style="margin-left:30px;margin-top:-7px;">
+                      <radiogroup id="quotTimeAttributionStyle" preference="pref-quotTimeAttributionStyle"
+                                  style="display:inline;">
+                          <radio value="0" label="12 hours format (AM/PM)" />
+                          <radio value="1" label="24 hours format" style="margin-left:20px" />
+                      </radiogroup>
                     </hbox>
                     <hbox align="center">
                         <label id="lblTypography" value="Header typography" />
