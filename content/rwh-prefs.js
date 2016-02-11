@@ -188,6 +188,12 @@ ReplyWithHeader.Prefs = {
     this.toggleBlockQuote();
 
     this.forPostbox(true);
+
+    // Alignment
+    if (ReplyWithHeader.isMacOSX) {
+      ReplyWithHeader.byId('hboxFromAttribution').style.marginTop = '-10px';
+      ReplyWithHeader.byId('hboxCntFormat').style.marginTop = '-10px';
+    }
   },
 
   toggleRwh: function() {
@@ -217,6 +223,8 @@ ReplyWithHeader.Prefs = {
       this.toggle('lblBeforeSeparator', v);
       this.toggle('spaceBeforeSep', v);
       this.toggle('lblNotAppBeforeSeparator', v);
+    } else {
+      ReplyWithHeader.byId('lblNotAppBeforeSeparator').style.display = 'none';
     }
   },
 

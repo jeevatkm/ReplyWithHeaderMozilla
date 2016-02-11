@@ -27,9 +27,27 @@ var ReplyWithHeader = {
   bqStyleStr: 'border:none !important; margin-left:0px !important; margin-right:0px !important; margin-top:0px !important; padding-left:0px !important; padding-right:0px !important',
   dateFormatString: 'ddd, MMM d, yyyy h:mm:ss a',
 
-  isDefined: function(o) {
-    let defined = (typeof o === 'undefined');
-    return !defined;
+  get isMacOSX() {
+    return this.appRuntime.OS == 'Darwin';    
+  },
+
+  get isPostbox() {
+    return (this.hostApp == 'Postbox');
+  },
+
+  get isThunderbird() {
+    return (this.hostApp == 'Thunderbird');
+  },
+
+  get hostApp() {
+    var app = 'Unknown';
+    if (this.appInfo.ID == '{3550f703-e582-4d05-9a08-453d09bdfdc6}') {
+      app = 'Thunderbird';  // this.appInfo.name
+    } else if (this.appInfo.ID == 'postbox@postbox-inc.com') {
+      app = 'Postbox';
+    }
+
+    return app;
   },
 
   get isReply() {
@@ -142,23 +160,9 @@ var ReplyWithHeader = {
     return ((sigOnFwd || sigOnReply) && found);
   },
 
-  get isPostbox() {
-    return (this.hostApp == 'Postbox');
-  },
-
-  get isThunderbird() {
-    return (this.hostApp == 'Thunderbird');
-  },
-
-  get hostApp() {
-    var app = 'Unknown';
-    if (this.appInfo.ID == '{3550f703-e582-4d05-9a08-453d09bdfdc6}') {
-      app = 'Thunderbird';  // this.appInfo.name
-    } else if (this.appInfo.ID == 'postbox@postbox-inc.com') {
-      app = 'Postbox';
-    }
-
-    return app;
+  isDefined: function(o) {
+    let defined = (typeof o === 'undefined');
+    return !defined;
   },
 
   getMsgHeader: function(mUri) {
@@ -890,18 +894,27 @@ AddonManager.getAddonByID(ReplyWithHeaderAddOnID, function(addon) {
 });
 
 // Initializing Services
+// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIXULAppInfo
 XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'appInfo',
                                    '@mozilla.org/xre/app-info;1',
                                    'nsIXULAppInfo');
 
+// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIXULRuntime
+XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'appRuntime',
+                                  '@mozilla.org/xre/app-info;1',
+                                  'nsIXULRuntime');
+
+// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIAlertsService
 XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'alerts',
                                    '@mozilla.org/alerts-service;1',
                                    'nsIAlertsService');
 
+// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMessenger
 XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'messenger',
                                    '@mozilla.org/messenger;1',
                                    'nsIMessenger');
 
+// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIConsoleService
 XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader.Log, 'console',
                                    '@mozilla.org/consoleservice;1',
                                    'nsIConsoleService');
@@ -909,10 +922,12 @@ XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader.Log, 'console',
 // based available service, initialize one
 (function() {
   if ('@mozilla.org/parserutils;1' in Components.classes) {
+    // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIParserUtils
     XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'parser',
                                        '@mozilla.org/parserutils;1',
                                        'nsIParserUtils');
   } else {
+    // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIScriptableUnescapeHTML
     XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'legacyParser',
                                        '@mozilla.org/feed-unescapehtml;1',
                                        'nsIScriptableUnescapeHTML');

@@ -53,7 +53,7 @@
             </tabs>
             <tabpanels>
                 <tabpanel orient="vertical">
-                    <hbox align="center">
+                    <hbox id="hboxFromAttribution" align="center">
                         <label id="lblFromAttribution" value="Header 'From' attribution style" />
                     </hbox>
                     <hbox align="center">
@@ -153,12 +153,9 @@
                         </menulist>
                         <label id="lblNotAppBeforeSeparator" value="(not applicable for Postbox)" style="font-size:11px;" />
                     </hbox>
-                    <hbox align="center" style="margin-top:-2px">
-                        <checkbox id="transSubjectPrefix" label="Transform subject prefix (Re -> RE and Fwd -> FW)" preference="pref-transSubjectPrefix" />
-                    </hbox>
                 </tabpanel>
                 <tabpanel orient="vertical">
-                    <hbox align="center">
+                    <hbox id="hboxCntFormat" align="center">
                         <label id="lblCntFormat" value="Content formatting and cleanups" />
                     </hbox>
                     <hbox align="center" style="margin-left:15px">
@@ -170,6 +167,12 @@
                     </hbox>
                     <hbox align="center" style="margin-left:15px">
                         <checkbox id="cleanGreaterThanChar" label="Cleanup the quote character '>'" preference="pref-cleanGreaterThanChar" />
+                    </hbox>
+                    <hbox align="center" style="margin-top:5px">
+                        <label id="lblHeaderFormat" value="Subject reformatting" />
+                    </hbox>
+                    <hbox align="center" style="margin-left:15px">
+                        <checkbox id="transSubjectPrefix" label="Transform subject prefix (Re -> RE and Fwd -> FW)" preference="pref-transSubjectPrefix" />
                     </hbox>
                     <hbox align="center" style="margin-top:5px">
                         <label id="lblHeaderFormat" value="Header cleanups" />
