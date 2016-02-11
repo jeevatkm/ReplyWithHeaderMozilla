@@ -13,7 +13,7 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>replywithheader@myjeeva.com</em:id>
     <em:name>ReplyWithHeader</em:name>
-    <em:version>1.4-beta</em:version>
+    <em:version>1.4</em:version>
     <em:type>2</em:type>
     <em:unpack>false</em:unpack>
     <!-- <em:bootstrap>true</em:bootstrap> -->
@@ -39,5 +39,13 @@
         <em:maxVersion>4.*</em:maxVersion>
       </Description>
     </em:targetApplication>
+
+    <!-- <em:localized>
+  		<Description>
+  			<em:locale>en-US</em:locale>
+  			<em:name>ReplyWithHeader</em:name>
+  			<em:description>Outlook style headers and few goodies for Thunderbird &amp; Postbox.</em:description>
+  		</Description>
+  	</em:localized> -->
   </Description>
 </RDF>
