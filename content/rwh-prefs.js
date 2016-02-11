@@ -178,8 +178,8 @@ ReplyWithHeader.Prefs = {
   init: function() {
     this.toggleRwh();
 
-    // Assigning values
-    ReplyWithHeader.byId('abtRwhCaption').value = 'ReplyWithHeader v' + ReplyWithHeader.addonVersion;
+    // Assigning RWH name and version #
+    ReplyWithHeader.byId('abtRwhCaption').value = ReplyWithHeader.addOnName + ' v' + ReplyWithHeader.addOnVersion;
 
     this.loadFontFaces();
 

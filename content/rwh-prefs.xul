@@ -187,7 +187,7 @@
                                style="margin-left:100px"/>
                         <label id="abtRwhCaption" value="ReplyWithHeader" style="font-weight:bold;" />
                         <label id="abtRwhCopyrights" value="&#169; 2016 Jeevanandam M."
-                               style="font-size:12px; margin-top:40px;margin-left:-152px" />
+                               style="font-size:12px; margin-top:40px;margin-left:-145px" />
                     </hbox>
                     <hbox align="center" style="margin: 40px 0 0 55px">
                         <button label="Website" oncommand="ReplyWithHeader.Prefs.openWebsite();" />

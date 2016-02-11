@@ -17,7 +17,8 @@ Components.utils.import('resource://gre/modules/AddonManager.jsm');
 const ReplyWithHeaderAddOnID = 'replywithheader@myjeeva.com';
 
 var ReplyWithHeader = {
-  addonVersion: '',
+  addOnName: '',
+  addOnVersion: '',
   homepageUrl: 'http://myjeeva.com/replywithheader-mozilla',
   reviewsPageUrl: 'https://addons.mozilla.org/en-US/thunderbird/addon/replywithheader/',
   issuesPageUrl: 'https://github.com/jeevatkm/ReplyWithHeaderMozilla/issues',
@@ -28,7 +29,7 @@ var ReplyWithHeader = {
   dateFormatString: 'ddd, MMM d, yyyy h:mm:ss a',
 
   get isMacOSX() {
-    return this.appRuntime.OS == 'Darwin';    
+    return (this.appRuntime.OS == 'Darwin');
   },
 
   get isPostbox() {
@@ -791,7 +792,7 @@ var ReplyWithHeader = {
     if (prefs.isEnabled && this.isOkayToMoveOn) {
       this.hdrCnt = 4; // From, To, Subject, Date
 
-      this.Log.debug('BEFORE Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
+      // this.Log.debug('BEFORE Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
       this.Log.debug('Is HTML compose: ' + this.isHtmlMail);
 
       if (this.isReply) {
@@ -818,10 +819,11 @@ var ReplyWithHeader = {
 
       this.handOverToUser();
 
-      this.Log.debug('AFTER Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
+      // this.Log.debug('AFTER Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
     } else {
       if (prefs.isEnabled) {
-        if (this.composeType == 10 || this.composeType == 15) { // Resend=10, Redirect=15
+        // Resend=10, Redirect=15
+        if (this.composeType == 10 || this.composeType == 15) {
           this.Log.info('Email composeType [' + this.composeType + '] is not supported.');
         }
       } else {
@@ -888,9 +890,10 @@ ReplyWithHeader.Log = {
   }
 };
 
-// Getting Add-On version #
-AddonManager.getAddonByID(ReplyWithHeaderAddOnID, function(addon) {
-  ReplyWithHeader.addonVersion = addon.version;
+// Getting Add-On name & version #
+AddonManager.getAddonByID(ReplyWithHeaderAddOnID, function(addOn) {
+  ReplyWithHeader.addOnName = addOn.name;
+  ReplyWithHeader.addOnVersion = addOn.version;
 });
 
 // Initializing Services
@@ -919,7 +922,7 @@ XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader.Log, 'console',
                                    '@mozilla.org/consoleservice;1',
                                    'nsIConsoleService');
 
-// based available service, initialize one
+// based on available service, initialize one
 (function() {
   if ('@mozilla.org/parserutils;1' in Components.classes) {
     // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIParserUtils
