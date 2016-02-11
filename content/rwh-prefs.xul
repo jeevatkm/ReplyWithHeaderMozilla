@@ -96,7 +96,7 @@
                             <radio value="1" label="International date format (GMT)" style="margin-top:-2px" />
                         </radiogroup>
                     </hbox>
-                    <hbox align="center" style="margin-left:30px;margin-top:-7px;">
+                    <hbox id="hboxQuotTimeAttributionStyle" align="center" style="margin-left:30px;margin-top:-6px;">
                       <radiogroup id="quotTimeAttributionStyle" preference="pref-quotTimeAttributionStyle"
                                   style="display:inline;">
                           <radio value="0" label="12 hours format (AM/PM)" />
@@ -112,10 +112,10 @@
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblFontsize" value="Font size:" />
-                        <menulist id="hdrFontsize" style="width:90px" preference="pref-hdrFontsize" />
+                        <menulist id="hdrFontsize" style="width:80px;margin-left:.35em;" preference="pref-hdrFontsize" />
                         <spacer width="20px" />
                         <label id="lblFontcolor" value="Color:" />
-                        <colorpicker id="hdrFontColor" type="button" value="" style="max-width:35px;max-height:17px;"
+                        <colorpicker id="hdrFontColor" type="button" value="" style="max-width:35px;"
                                      preference="pref-hdrFontcolor" />
                     </hbox>
                     <hbox align="center">
@@ -149,7 +149,7 @@
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblBeforeSeparator" value="Before separator:" />
-                        <menulist id="spaceBeforeSep" style="width:55px" preference="pref-spaceBeforeSep">
+                        <menulist id="spaceBeforeSep" style="width:55px;margin-left:.25em;" preference="pref-spaceBeforeSep">
                             <menupopup>
                                 <menuitem label="0" value="0" />
                                 <menuitem label="1" value="1" />

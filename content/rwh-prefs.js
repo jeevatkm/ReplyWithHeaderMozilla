@@ -163,20 +163,16 @@ ReplyWithHeader.Prefs = {
   },
 
   loadFontSizes: function() {
-    let hdrFontsize = this.headerFontSize;
     let menuPopup = document.createElement('menupopup');
     let selectedIdx = 0;
 
     for (let i = 10, j = 0; i < 35; i++, j++) {
-      if (i == hdrFontsize) {
-        selectedIdx = j;
-      }
       menuPopup.appendChild(this.createMenuItem(i, i + 'px'));
     }
 
     let hdrFontsizeObj = ReplyWithHeader.byId('hdrFontsize');
     hdrFontsizeObj.appendChild(menuPopup);
-    hdrFontsizeObj.selectedIndex = selectedIdx;
+    hdrFontsizeObj.selectedIndex = this.headerFontSize - 10; // 10 - start size
   },
 
   init: function() {
@@ -193,11 +189,8 @@ ReplyWithHeader.Prefs = {
 
     this.forPostbox(true);
 
-    // Alignment
-    if (ReplyWithHeader.isMacOSX) {
-      ReplyWithHeader.byId('hboxFromAttribution').style.marginTop = '-10px';
-      ReplyWithHeader.byId('hboxCntFormat').style.marginTop = '-10px';
-    }
+    // Apply platform style
+    this.applyPlatformStyle();
   },
 
   toggleRwh: function() {
@@ -235,6 +228,17 @@ ReplyWithHeader.Prefs = {
   toggleBlockQuote: function() {
     let cbq = ReplyWithHeader.byId('cleanBlockQuote');
     this.toggle('cleanNewBlockQuote', !cbq.checked);
+  },
+
+  applyPlatformStyle: function() {
+    if (ReplyWithHeader.isMacOSX) {
+      ReplyWithHeader.byId('hboxFromAttribution').style.marginTop = '-10px';
+      ReplyWithHeader.byId('hboxCntFormat').style.marginTop = '-10px';
+    } else { // Windows and Linux
+      ReplyWithHeader.byId('hboxQuotTimeAttributionStyle').style.marginTop = '-4px';
+      ReplyWithHeader.byId('hdrFontsize').style.marginLeft = '6px';
+      ReplyWithHeader.byId('spaceBeforeSep').style.marginLeft = '.63em';
+    }
   }
 };
 
