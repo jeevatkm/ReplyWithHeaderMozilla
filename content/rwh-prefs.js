@@ -238,6 +238,11 @@ ReplyWithHeader.Prefs = {
       ReplyWithHeader.byId('hboxQuotTimeAttributionStyle').style.marginTop = '-4px';
       ReplyWithHeader.byId('hdrFontsize').style.marginLeft = '6px';
       ReplyWithHeader.byId('spaceBeforeSep').style.marginLeft = '.63em';
+      ReplyWithHeader.byId('abtRwhLogo').style.marginLeft = '132px';
+      ReplyWithHeader.byId('abtRwhCopyrights').style.marginLeft = '-133px';
+      ReplyWithHeader.byId('hboxRwhBtn').style.marginLeft = '95px';
+      ReplyWithHeader.byId('hboxEnableRwhDebugMode').style.marginLeft = '170px';
+      ReplyWithHeader.byId('hboxDonateBtn').style.marginLeft = '16px';
     }
   }
 };
