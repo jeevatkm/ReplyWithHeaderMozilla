@@ -234,7 +234,7 @@ ReplyWithHeader.Prefs = {
     if (ReplyWithHeader.isMacOSX) {
       ReplyWithHeader.byId('hboxFromAttribution').style.marginTop = '-10px';
       ReplyWithHeader.byId('hboxCntFormat').style.marginTop = '-10px';
-    } else { // Windows and Linux
+    } else if (ReplyWithHeader.isWindows) {
       ReplyWithHeader.byId('hboxQuotTimeAttributionStyle').style.marginTop = '-4px';
       ReplyWithHeader.byId('hdrFontsize').style.marginLeft = '6px';
       ReplyWithHeader.byId('spaceBeforeSep').style.marginLeft = '.63em';
@@ -243,6 +243,14 @@ ReplyWithHeader.Prefs = {
       ReplyWithHeader.byId('hboxRwhBtn').style.marginLeft = '95px';
       ReplyWithHeader.byId('hboxEnableRwhDebugMode').style.marginLeft = '170px';
       ReplyWithHeader.byId('hboxDonateBtn').style.marginLeft = '16px';
+    } else if (ReplyWithHeader.isLinux) {
+      ReplyWithHeader.byId('hboxQuotTimeAttributionStyle').style.marginTop = '-4px';
+      ReplyWithHeader.byId('hdrFontsize').style.marginLeft = '7px';
+      ReplyWithHeader.byId('spaceBeforeSep').style.marginLeft = '0px';
+      ReplyWithHeader.byId('abtRwhLogo').style.marginLeft = '110px';
+      ReplyWithHeader.byId('abtRwhCopyrights').style.marginLeft = '-164px';
+      ReplyWithHeader.byId('hboxRwhBtn').style.marginLeft = '65px';
+      ReplyWithHeader.byId('hboxDonateBtn').style.marginLeft = '19px';
     }
   }
 };

@@ -33,6 +33,14 @@ var ReplyWithHeader = {
     return (this.appRuntime.OS == 'Darwin');
   },
 
+  get isLinux() {
+    return (this.appRuntime.OS == 'Linux');
+  },
+
+  get isWindows() {
+    return (this.appRuntime.OS == 'WINNT');
+  },
+
   get isPostbox() {
     return (this.hostApp == 'Postbox');
   },
