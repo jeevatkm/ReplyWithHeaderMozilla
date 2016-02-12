@@ -12,7 +12,6 @@ var EXPORTED_SYMBOLS = ['ReplyWithHeader'];
 
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 Components.utils.import('resource://gre/modules/AddonManager.jsm');
-Components.utils.import("resource:///modules/gloda/utils.js");
 
 // ReplyWithHeader Add-On ID
 const ReplyWithHeaderAddOnID = 'replywithheader@myjeeva.com';
@@ -349,7 +348,7 @@ var ReplyWithHeader = {
     var header = {
       'from': this.prepareFromHdr(hdr.mime2DecodedAuthor),
       'to': this.prepareToCcHdr(hdr.mime2DecodedRecipients),
-      'cc': this.prepareToCcHdr(GlodaUtils.deMime(hdr.ccList)),
+      'cc': this.prepareToCcHdr(this.decodeMime(hdr.ccList)),
       'date': this.parseDate(hdr.date),
       'subject': this.escapeHtml(hdr.mime2DecodedSubject)
     };
@@ -407,7 +406,7 @@ var ReplyWithHeader = {
         }
       }
 
-      rwhHdr += '<hr style="border:0;border-top:1px solid #B5C4DF;padding:0;margin:10px 0 5px 0;width:100%;">';
+      rwhHdr += '<hr id="rwhMsgHdrDivider" style="border:0;border-top:1px solid #B5C4DF;padding:0;margin:10px 0 5px 0;width:100%;">';
 
       rwhHdr += this.createBrTags(this.Prefs.beforeHdrSpaceCnt);
 
@@ -553,6 +552,14 @@ var ReplyWithHeader = {
     }
   },
 
+  decodeMime: function(str) {
+    if (this.isPostbox) {
+      return this.mimeConverter.decodeMimeHeaderStr(str, null, false, true);
+    }
+
+    return this.mimeConverter.decodeMimeHeader(str, null, false, true);
+  },
+
   handleReplyMessage: function() {
     let hdrNode;
     if (this.isPostbox) {
@@ -578,7 +585,11 @@ var ReplyWithHeader = {
 
     hdrNode.appendChild(this.parseFragment(gMsgCompose.editor.document, this.createRwhHeader, true));
 
-    if (!this.isPostbox) {
+    if (this.isPostbox) {
+      if (this.isHtmlMail) {
+        this.byIdInMail('rwhMsgHdrDivider').setAttribute('style', 'border:0;border-top:1px solid #B5C4DF;padding:0;margin:10px 0 5px 0;width:100%;');
+      }
+    } else {
       if (!gCurrentIdentity.getBoolAttribute('sig_bottom') && this.isSignaturePresent) {
         let rootElement = gMsgCompose.editor.rootElement;
         rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
@@ -632,6 +643,8 @@ var ReplyWithHeader = {
           for (let i = 0; i < 2; i++)
             mBody.insertBefore(gMsgCompose.editor.document.createElement('br'), mBody.firstChild);
         }
+
+        this.byIdInMail('rwhMsgHdrDivider').setAttribute('style', 'border:0;border-top:1px solid #B5C4DF;padding:0;margin:10px 0 5px 0;width:100%;');
       } else {
         this.Log.debug('hdrCnt: ' + this.hdrCnt);
 
@@ -919,6 +932,11 @@ XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'alerts',
 XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'messenger',
                                    '@mozilla.org/messenger;1',
                                    'nsIMessenger');
+
+// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMimeConverter
+XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'mimeConverter',
+                                  '@mozilla.org/messenger/mimeconverter;1',
+                                  'nsIMimeConverter');
 
 // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIConsoleService
 XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader.Log, 'console',
