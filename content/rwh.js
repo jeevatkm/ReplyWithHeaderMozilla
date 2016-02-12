@@ -12,6 +12,7 @@ var EXPORTED_SYMBOLS = ['ReplyWithHeader'];
 
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 Components.utils.import('resource://gre/modules/AddonManager.jsm');
+Components.utils.import("resource:///modules/gloda/utils.js");
 
 // ReplyWithHeader Add-On ID
 const ReplyWithHeaderAddOnID = 'replywithheader@myjeeva.com';
@@ -348,7 +349,7 @@ var ReplyWithHeader = {
     var header = {
       'from': this.prepareFromHdr(hdr.mime2DecodedAuthor),
       'to': this.prepareToCcHdr(hdr.mime2DecodedRecipients),
-      'cc': this.prepareToCcHdr(hdr.ccList), // this.prepareToCcHdr(hdr.getStringProperty('cc')),
+      'cc': this.prepareToCcHdr(GlodaUtils.deMime(hdr.ccList)),
       'date': this.parseDate(hdr.date),
       'subject': this.escapeHtml(hdr.mime2DecodedSubject)
     };

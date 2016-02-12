@@ -5,6 +5,7 @@
     "Components",
     "XPCOMUtils",
     "AddonManager",
+    "GlodaUtils",
     "gMsgCompose",
     "gMessenger",
     "gCurrentIdentity",
