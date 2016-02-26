@@ -21,6 +21,8 @@ pref('extensions.replywithheader.header.font.color', '#000000');
 pref('extensions.replywithheader.header.separator.space.before', 0);
 pref('extensions.replywithheader.header.space.before', 0);
 pref('extensions.replywithheader.header.space.after', 1);
+pref('extensions.replywithheader.header.separator.line.size', 1);
+pref('extensions.replywithheader.header.separator.line.color', '#B5C4DF');
 pref('extensions.replywithheader.trans.subject.prefix', false);
 
 // RWH Date & Time

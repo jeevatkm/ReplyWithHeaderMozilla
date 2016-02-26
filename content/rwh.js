@@ -414,7 +414,9 @@ var ReplyWithHeader = {
         }
       }
 
-      rwhHdr += '<hr id="rwhMsgHdrDivider" style="border:0;border-top:1px solid #B5C4DF;padding:0;margin:10px 0 5px 0;width:100%;">';
+      let lineColor = this.Prefs.headerSepLineColor;
+      let lineSize = this.Prefs.headerSepLineSize;
+      rwhHdr += '<hr id="rwhMsgHdrDivider" style="border:0;border-top:' + lineSize + 'px solid ' + lineColor + ';padding:0;margin:10px 0 5px 0;width:100%;">';
 
       rwhHdr += this.createBrTags(this.Prefs.beforeHdrSpaceCnt);
 
@@ -595,7 +597,9 @@ var ReplyWithHeader = {
 
     if (this.isPostbox) {
       if (this.isHtmlMail) {
-        this.byIdInMail('rwhMsgHdrDivider').setAttribute('style', 'border:0;border-top:1px solid #B5C4DF;padding:0;margin:10px 0 5px 0;width:100%;');
+        let lineColor = this.Prefs.headerSepLineColor;
+        let lineSize = this.Prefs.headerSepLineSize;
+        this.byIdInMail('rwhMsgHdrDivider').setAttribute('style', 'border:0;border-top:' + lineSize + 'px solid ' + lineColor + ';padding:0;margin:10px 0 5px 0;width:100%;');
       }
     } else {
       if (!gCurrentIdentity.getBoolAttribute('sig_bottom') && this.isSignaturePresent) {
@@ -652,7 +656,9 @@ var ReplyWithHeader = {
             mBody.insertBefore(gMsgCompose.editor.document.createElement('br'), mBody.firstChild);
         }
 
-        this.byIdInMail('rwhMsgHdrDivider').setAttribute('style', 'border:0;border-top:1px solid #B5C4DF;padding:0;margin:10px 0 5px 0;width:100%;');
+        let lineColor = this.Prefs.headerSepLineColor;
+        let lineSize = this.Prefs.headerSepLineSize;
+        this.byIdInMail('rwhMsgHdrDivider').setAttribute('style', 'border:0;border-top:' + lineSize + 'px solid ' + lineColor + ';padding:0;margin:10px 0 5px 0;width:100%;');
       } else {
         this.Log.debug('hdrCnt: ' + this.hdrCnt);
 

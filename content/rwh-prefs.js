@@ -53,6 +53,14 @@ ReplyWithHeader.Prefs = {
     return this.getIntPref('header.space.after');
   },
 
+  get headerSepLineSize() {
+    return this.getIntPref('header.separator.line.size');
+  },
+
+  get headerSepLineColor() {
+    return this.getStringPref('header.separator.line.color');
+  },
+
   get dateFormat() {
     return this.getIntPref('header.date.format');
   },
@@ -198,10 +206,10 @@ ReplyWithHeader.Prefs = {
     var ids = ['lblFromAttribution', 'fromAttributionStyle', 'lblHeaderToCcAttrib', 'toccAttributionStyle',
       'lblHdrDate', 'quotDateAttributionStyle', 'lblTypography', 'lblFontface', 'hdrFontface', 'lblFontsize',
       'hdrFontsize', 'lblFontcolor', 'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr',
-      'lblAfterHeader', 'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblHeaderQuotSeq',
-      'quotSeqAttributionStyle', 'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat',
-      'cleanBlockQuote', 'cleanNewBlockQuote', 'cleanGreaterThanChar', 'lblHeaderFormat',
-      'excludePlainTextHdrPrefix', 'enableRwhDebugMode'
+      'lblAfterHeader', 'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblSepLineSize', 'lblSepLineColor',
+      'hdrSepLineSize', 'hdrSepLineColor', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle', 'quotTimeAttributionStyle',
+      'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat', 'cleanBlockQuote', 'cleanNewBlockQuote',
+      'cleanGreaterThanChar', 'lblHeaderFormat', 'excludePlainTextHdrPrefix', 'enableRwhDebugMode'
     ];
 
     for (let len = ids.length, i = 0; i < len; i++) {
@@ -238,6 +246,7 @@ ReplyWithHeader.Prefs = {
       ReplyWithHeader.byId('hboxQuotTimeAttributionStyle').style.marginTop = '-4px';
       ReplyWithHeader.byId('hdrFontsize').style.marginLeft = '6px';
       ReplyWithHeader.byId('spaceBeforeSep').style.marginLeft = '.63em';
+      ReplyWithHeader.byId('hdrSepLineSize').style.marginLeft = '4.15em';
       ReplyWithHeader.byId('abtRwhLogo').style.marginLeft = '132px';
       ReplyWithHeader.byId('abtRwhCopyrights').style.marginLeft = '-133px';
       ReplyWithHeader.byId('hboxRwhBtn').style.marginLeft = '95px';
@@ -247,6 +256,7 @@ ReplyWithHeader.Prefs = {
       ReplyWithHeader.byId('hboxQuotTimeAttributionStyle').style.marginTop = '-4px';
       ReplyWithHeader.byId('hdrFontsize').style.marginLeft = '7px';
       ReplyWithHeader.byId('spaceBeforeSep').style.marginLeft = '0px';
+      ReplyWithHeader.byId('hdrSepLineSize').style.marginLeft = '4.05em';
       ReplyWithHeader.byId('abtRwhLogo').style.marginLeft = '110px';
       ReplyWithHeader.byId('abtRwhCopyrights').style.marginLeft = '-164px';
       ReplyWithHeader.byId('hboxRwhBtn').style.marginLeft = '65px';
