@@ -132,38 +132,45 @@ var ReplyWithHeader = {
 
     if (sigOnBtm) {
       this.Log.debug('signatue in the bottom');
-
       for (let i = rootElement.childNodes.length - 1; i >= 0; i--) {
-        let node = rootElement.childNodes[i];
-        this.Log.debug(node.nodeName);
+        let el = rootElement.childNodes[i];
 
-        if (node.hasAttribute('class') &&
-          (node.getAttribute('class') == 'moz-signature')) {
+        if (el.nodeType != 1) { // check is it Node.ELEMENT_NODE
+          continue;
+        }
+
+        if (el.hasAttribute('class') &&
+          (el.getAttribute('class') == 'moz-signature')) {
           found = true;
           break;
         }
 
-        if (node.nodeName.toLowerCase() == 'blockquote') {
+        if (el.nodeName.toLowerCase() == 'blockquote') {
           this.Log.debug('reached blockquote, so no signature');
           break;
         }
+
       }
     } else {
       this.Log.debug('signatue is at top');
-      let fc = rootElement.firstChild;
-      while (fc) {
-        if (fc.hasAttribute('class') &&
-          (fc.getAttribute('class') == 'moz-signature')) {
+      for (let i = 0; i < rootElement.childNodes.length; i++) {
+        let el = rootElement.childNodes[i];
+
+        if (el.nodeType != 1) { // check is it Node.ELEMENT_NODE
+          continue;
+        }
+
+        if (el.hasAttribute('class') &&
+          (el.getAttribute('class') == 'moz-signature')) {
           found = true;
           break;
         }
 
-        if (fc.nodeName.toLowerCase() == 'blockquote') {
+        if (el.nodeName.toLowerCase() == 'blockquote') {
           this.Log.debug('reached blockquote, so no signature');
           break;
         }
 
-        fc = fc.nextSibling;
       }
     }
 
