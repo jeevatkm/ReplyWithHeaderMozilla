@@ -409,17 +409,17 @@ var ReplyWithHeader = {
       let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontFace + '" color="' + fontColor + '" style="font: ' + fontSize + 'px ' + fontFace + ' !important; color: ' + fontColor + ' !important;">';
       let htmlTagSuffix = '</font></span><br/>';
 
-      if (this.isSignaturePresent) {
-        let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom'),
-          sigOnFwd = gCurrentIdentity.getBoolAttribute('sig_on_fwd'),
-          sigOnReply = gCurrentIdentity.getBoolAttribute('sig_on_reply');
-
-        this.Log.debug('sigOnBtm: ' + sigOnBtm + '\tsigOnReply: ' + sigOnReply + '\tsigOnFwd: ' + sigOnFwd);
-
-        if ((sigOnReply || sigOnFwd) && !sigOnBtm) {
-          rwhHdr += this.createBrTags(1);
-        }
-      }
+      // if (this.isSignaturePresent) {
+      //   let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom'),
+      //     sigOnFwd = gCurrentIdentity.getBoolAttribute('sig_on_fwd'),
+      //     sigOnReply = gCurrentIdentity.getBoolAttribute('sig_on_reply');
+      //
+      //   this.Log.debug('sigOnBtm: ' + sigOnBtm + '\tsigOnReply: ' + sigOnReply + '\tsigOnFwd: ' + sigOnFwd);
+      //
+      //   if ((sigOnReply || sigOnFwd) && !sigOnBtm) {
+      //     rwhHdr += this.createBrTags(1);
+      //   }
+      // }
 
       let lineColor = this.Prefs.headerSepLineColor;
       let lineSize = this.Prefs.headerSepLineSize;
@@ -450,7 +450,7 @@ var ReplyWithHeader = {
 
     } else { // for plain/text emails
       if (!this.Prefs.excludePlainTxtHdrPrefix) {
-        rwhHdr += this.isForward ? '<br/>-------- Forwarded Message --------<br/>' : '<br/>-------- Original Message --------<br/>';
+        rwhHdr += this.isForward ? '-------- Forwarded Message --------<br/>' : '-------- Original Message --------<br/>';
       } else {
         if (this.isForward) {
           rwhHdr += '<br/>';
@@ -596,11 +596,18 @@ var ReplyWithHeader = {
       return;
     }
 
+    let isSignature = this.isSignaturePresent;
+
     while (hdrNode.firstChild) {
       hdrNode.removeChild(hdrNode.firstChild);
     }
 
     hdrNode.appendChild(this.parseFragment(gMsgCompose.editor.document, this.createRwhHeader, true));
+
+    let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom'),
+      sigOnFwd = gCurrentIdentity.getBoolAttribute('sig_on_fwd'),
+      sigOnReply = gCurrentIdentity.getBoolAttribute('sig_on_reply');
+    let rootElement = gMsgCompose.editor.rootElement;
 
     if (this.isPostbox) {
       if (this.isHtmlMail) {
@@ -608,10 +615,18 @@ var ReplyWithHeader = {
         let lineSize = this.Prefs.headerSepLineSize;
         this.byIdInMail('rwhMsgHdrDivider').setAttribute('style', 'border:0;border-top:' + lineSize + 'px solid ' + lineColor + ';padding:0;margin:10px 0 5px 0;width:100%;');
       }
-    } else {
-      if (!gCurrentIdentity.getBoolAttribute('sig_bottom') && this.isSignaturePresent) {
-        let rootElement = gMsgCompose.editor.rootElement;
+
+      if ((sigOnReply || sigOnFwd) && !sigOnBtm && isSignature) {
         rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
+      }
+    } else {
+      if ((sigOnReply || sigOnFwd) && !sigOnBtm && isSignature) {
+        rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
+      } else {
+        let node = rootElement.firstChild;
+        if (node.nodeName && node.nodeName.toLowerCase() == 'br') {
+          rootElement.removeChild(node);
+        }
       }
     }
 
@@ -658,7 +673,7 @@ var ReplyWithHeader = {
           mBody.insertBefore(sigNode, mBody.firstChild);
         }
 
-        if (this.Prefs.beforeSepSpaceCnt == 0) { // jshint ignore:line
+        if (this.Prefs.beforeSepSpaceCnt == 1) {
           for (let i = 0; i < 2; i++)
             mBody.insertBefore(gMsgCompose.editor.document.createElement('br'), mBody.firstChild);
         }
@@ -684,10 +699,6 @@ var ReplyWithHeader = {
         }
 
         mBody.insertBefore(hdrRwhNode, mBody.childNodes[pos - 1]);
-
-        if (this.Prefs.beforeSepSpaceCnt == 0) { // jshint ignore:line
-          mBody.insertBefore(gMsgCompose.editor.document.createElement('br'), mBody.firstChild);
-        }
       }
     } else {
       //
@@ -856,7 +867,7 @@ var ReplyWithHeader = {
 
       this.handOverToUser();
 
-      // this.Log.debug('AFTER Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
+      this.Log.debug('AFTER Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
     } else {
       if (prefs.isEnabled) {
         // Resend=10, Redirect=15
