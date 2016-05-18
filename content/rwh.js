@@ -516,8 +516,13 @@ var ReplyWithHeader = {
   },
 
   cleanBrAfterRwhHeader: function() {
-    let rwhHdr = this.byIdInMail('rwhMsgHeader');
+    let firstNode = gMsgCompose.editor.rootElement.firstChild;
+    if (firstNode && firstNode.nodeName &&
+      firstNode.nodeName.toLowerCase() == 'p') {
+      gMsgCompose.editor.rootElement.removeChild(firstNode);
+    }
 
+    let rwhHdr = this.byIdInMail('rwhMsgHeader');
     if (rwhHdr.nextSibling) {
       this.cleanEmptyTags(rwhHdr.nextSibling);
     } else if (rwhHdr.parentNode.nextSibling) {
@@ -645,22 +650,22 @@ var ReplyWithHeader = {
         hdrNode = this.getElement('moz-email-headers-table');
       }
 
+      let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
+      let isSignature = this.isSignaturePresent;
+      this.Log.debug('isSignature: ' + isSignature);
+
+      let sigNode;
+
+      // signature present and location above quoted email (top)
+      if (!sigOnBtm && isSignature) {
+        sigNode = this.getElement('moz-signature').cloneNode(true);
+        gMsgCompose.editor.rootElement.removeChild(this.getElement('moz-signature'));
+      }
+      this.Log.debug('sigNode: ' + sigNode);
+
       let mBody = gMsgCompose.editor.rootElement;
 
       if (hdrNode && this.isHtmlMail) {
-        let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
-        let isSignature = this.isSignaturePresent;
-        this.Log.debug('isSignature: ' + isSignature);
-
-        let sigNode;
-
-        // signature present and location above quoted email (top)
-        if (!sigOnBtm && isSignature) {
-          sigNode = this.getElement('moz-signature').cloneNode(true);
-          gMsgCompose.editor.rootElement.removeChild(this.getElement('moz-signature'));
-        }
-        this.Log.debug('sigNode: ' + sigNode);
-
         while (hdrNode.firstChild) {
           hdrNode.removeChild(hdrNode.firstChild);
         }
@@ -694,7 +699,13 @@ var ReplyWithHeader = {
           }
         }
 
-        for (let i = pos; i <= (pos + this.hdrCnt); i++) {
+        // removing forward header elements from the position
+        let lc = this.hdrCnt * 2; // for br's
+        if (isSignature) {
+          lc = lc + 1; // for signature div
+        }
+
+        for (let i = pos; i <= (pos + lc); i++) {
           mBody.removeChild(mBody.childNodes[i]);
         }
 
@@ -867,7 +878,7 @@ var ReplyWithHeader = {
 
       this.handOverToUser();
 
-      this.Log.debug('AFTER Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
+      // this.Log.debug('AFTER Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
     } else {
       if (prefs.isEnabled) {
         // Resend=10, Redirect=15
