@@ -118,11 +118,12 @@ var ReplyWithHeader = {
 
       rootElement = gMsgCompose.editor.rootElement;
     } else {
-      if (this.isForward) {
-        rootElement = this.getElement('moz-forward-container');
-      } else {
-        rootElement = gMsgCompose.editor.rootElement;
-      }
+      // if (this.isForward) {
+      //   rootElement = this.getElement('moz-forward-container');
+      // } else {
+      //   rootElement = gMsgCompose.editor.rootElement;
+      // }
+      rootElement = gMsgCompose.editor.rootElement;
     }
 
     let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
@@ -139,8 +140,7 @@ var ReplyWithHeader = {
           continue;
         }
 
-        if (el.hasAttribute('class') &&
-          (el.getAttribute('class') == 'moz-signature')) {
+        if (this.contains(el.getAttribute('class'), 'moz-signature')) {
           found = true;
           break;
         }
@@ -149,7 +149,6 @@ var ReplyWithHeader = {
           this.Log.debug('reached blockquote, so no signature');
           break;
         }
-
       }
     } else {
       this.Log.debug('signatue is at top');
@@ -160,8 +159,7 @@ var ReplyWithHeader = {
           continue;
         }
 
-        if (el.hasAttribute('class') &&
-          (el.getAttribute('class') == 'moz-signature')) {
+        if (this.contains(el.getAttribute('class'), 'moz-signature')) {
           found = true;
           break;
         }
@@ -180,6 +178,13 @@ var ReplyWithHeader = {
   isDefined: function(o) {
     let defined = (typeof o === 'undefined');
     return !defined;
+  },
+
+  contains: function(str, srch) {
+    if (str && srch && str.toLowerCase().indexOf(srch.toLowerCase()) > -1) {
+      return true;
+    }
+    return false;
   },
 
   getMsgHeader: function(mUri) {
@@ -409,18 +414,6 @@ var ReplyWithHeader = {
       let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontFace + '" color="' + fontColor + '" style="font: ' + fontSize + 'px ' + fontFace + ' !important; color: ' + fontColor + ' !important;">';
       let htmlTagSuffix = '</font></span><br/>';
 
-      // if (this.isSignaturePresent) {
-      //   let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom'),
-      //     sigOnFwd = gCurrentIdentity.getBoolAttribute('sig_on_fwd'),
-      //     sigOnReply = gCurrentIdentity.getBoolAttribute('sig_on_reply');
-      //
-      //   this.Log.debug('sigOnBtm: ' + sigOnBtm + '\tsigOnReply: ' + sigOnReply + '\tsigOnFwd: ' + sigOnFwd);
-      //
-      //   if ((sigOnReply || sigOnFwd) && !sigOnBtm) {
-      //     rwhHdr += this.createBrTags(1);
-      //   }
-      // }
-
       let lineColor = this.Prefs.headerSepLineColor;
       let lineSize = this.Prefs.headerSepLineSize;
       rwhHdr += '<hr id="rwhMsgHdrDivider" style="border:0;border-top:' + lineSize + 'px solid ' + lineColor + ';padding:0;margin:10px 0 5px 0;width:100%;">';
@@ -626,6 +619,12 @@ var ReplyWithHeader = {
       }
     } else {
       if ((sigOnReply || sigOnFwd) && !sigOnBtm && isSignature) {
+        let firstNode = gMsgCompose.editor.rootElement.firstChild;
+        if (firstNode && firstNode.nodeName &&
+          firstNode.nodeName.toLowerCase() == 'p') {
+          rootElement.removeChild(firstNode);
+        }
+
         rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
       } else {
         let node = rootElement.firstChild;
@@ -718,6 +717,7 @@ var ReplyWithHeader = {
       let fwdContainer = this.getElement('moz-forward-container');
       let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
       let isSignature = this.isSignaturePresent;
+      let rootElement = gMsgCompose.editor.rootElement;
       let sigNode;
 
       this.Log.debug('isSignature: ' + isSignature);
@@ -725,26 +725,26 @@ var ReplyWithHeader = {
       // signature present and location above quoted email (top)
       if (!sigOnBtm && isSignature) {
         sigNode = this.getElement('moz-signature').cloneNode(true);
-        fwdContainer.removeChild(this.getElement('moz-signature'));
+        rootElement.removeChild(this.getElement('moz-signature'));
       }
       this.Log.debug('sigNode: ' + sigNode);
 
       if (this.isHtmlMail) {
         while (fwdContainer.firstChild) {
-          if (fwdContainer.firstChild.className == 'moz-email-headers-table') {
+          if (this.contains(fwdContainer.firstChild.className, 'moz-email-headers-table')) {
             break;
           }
           fwdContainer.removeChild(fwdContainer.firstChild);
         }
 
         fwdContainer.replaceChild(hdrRwhNode, this.getElement('moz-email-headers-table'));
-
         // put signature back to the place
         if (!sigOnBtm && isSignature) {
-          fwdContainer.insertBefore(sigNode, this.byIdInMail('rwhMsgHeader'));
+          rootElement.insertBefore(sigNode, fwdContainer);
+          this.cleanEmptyTags(rootElement.firstChild);
 
-          let rootElement = gMsgCompose.editor.rootElement;
-          rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
+          // let rootElement = gMsgCompose.editor.rootElement;
+          // rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
         }
       } else {
         this.Log.debug('hdrCnt: ' + this.hdrCnt);
@@ -758,7 +758,7 @@ var ReplyWithHeader = {
           lc = lc + 1; // for signature div
         }
 
-        for (let i = 0; i < lc; i++) {
+        for (let i = 0; i <= lc; i++) {
           this.deleteNode(fwdContainer.firstChild);
         }
 
@@ -766,7 +766,8 @@ var ReplyWithHeader = {
 
         // put signature back to the place
         if (!sigOnBtm && isSignature) {
-          fwdContainer.insertBefore(sigNode, fwdContainer.firstChild);
+          rootElement.insertBefore(sigNode, fwdContainer);
+          this.cleanEmptyTags(rootElement.firstChild);
         }
       }
     }
