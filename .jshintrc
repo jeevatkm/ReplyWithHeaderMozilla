@@ -1,0 +1,19 @@
+{
+  "moz": true,
+  "strict": "global",
+  "predef" : [
+    "Components",
+    "XPCOMUtils",
+    "AddonManager",
+    "GlodaUtils",
+    "gMsgCompose",
+    "gMessenger",
+    "gCurrentIdentity",
+    "DateFormat",
+    "Node",
+    "document",
+    "window",
+    "pref",
+    "GetSelectedMessages"
+  ]
+}

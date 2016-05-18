@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 
 <!--
-  Copyright (c) 2015 Jeevanandam M. (jeeva@myjeeva.com)
+  Copyright (c) 2015-2016 Jeevanandam M. (jeeva@myjeeva.com)
 
   This Source Code is subject to terms of MIT License.
   Please refer to LICENSE in the root folder of RWH extension.
-  You can download a copy of license at https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
+  You can download a copy of license at https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE.txt
   -->
 
 <overlay id="rwhMessengerComposeOverlay"
@@ -15,4 +15,3 @@
     <script type="application/javascript" src="chrome://replywithheader/content/rwh-init.js"/>
     <script type="application/javascript" src="resource://replywithheader/dateFormat.min.js"/>
 </overlay>
-

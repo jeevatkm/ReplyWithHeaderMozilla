@@ -8,7 +8,7 @@
         " type="text/css"?>
 
 <!--
-  Copyright (c) 2015 Jeevanandam M. (jeeva@myjeeva.com)
+  Copyright (c) 2015-2016 Jeevanandam M. (jeeva@myjeeva.com)
 
   This Source Code is subject to terms of MIT License.
   Please refer to LICENSE in the root folder of RWH extension.
@@ -32,11 +32,16 @@
             <preference id="pref-spaceBeforeSep" name="extensions.replywithheader.header.separator.space.before" type="int" instantApply="true" />
             <preference id="pref-spaceBeforeHdr" name="extensions.replywithheader.header.space.before" type="int" instantApply="true" />
             <preference id="pref-spaceAfterHdr" name="extensions.replywithheader.header.space.after" type="int" instantApply="true" />
+            <preference id="pref-hdrSepLineSize" name="extensions.replywithheader.header.separator.line.size" type="int" instantApply="true" />
+            <preference id="pref-hdrSepLineColor" name="extensions.replywithheader.header.separator.line.color" type="string" instantApply="true" />
             <preference id="pref-transSubjectPrefix" name="extensions.replywithheader.trans.subject.prefix" type="bool" instantApply="true" />
             <preference id="pref-cleanBlockQuote" name="extensions.replywithheader.clean.blockquote" type="bool" instantApply="true" />
             <preference id="pref-cleanNewBlockQuote" name="extensions.replywithheader.clean.new.blockquote" type="bool" instantApply="true" />
             <preference id="pref-cleanGreaterThanChar" name="extensions.replywithheader.clean.char.greaterthan" type="bool" instantApply="true" />
+            <preference id="pref-excludePlainTextHdrPrefix" name="extensions.replywithheader.clean.pln.hdr.prefix" type="bool" instantApply="true" />
             <preference id="pref-quotDateAttributionStyle" name="extensions.replywithheader.header.date.format" type="int" instantApply="true" />
+            <preference id="pref-quotTimeAttributionStyle" name="extensions.replywithheader.header.time.format" type="int" instantApply="true" />
+            <preference id="pref-enableRwhDebugMode" name="extensions.replywithheader.debug" type="bool" instantApply="true" />
         </preferences>
 
         <hbox align="center">
@@ -51,7 +56,7 @@
             </tabs>
             <tabpanels>
                 <tabpanel orient="vertical">
-                    <hbox align="center" style="margin-top:-15px">
+                    <hbox id="hboxFromAttribution" align="center">
                         <label id="lblFromAttribution" value="Header 'From' attribution style" />
                     </hbox>
                     <hbox align="center">
@@ -93,6 +98,13 @@
                             <radio value="1" label="International date format (GMT)" style="margin-top:-2px" />
                         </radiogroup>
                     </hbox>
+                    <hbox id="hboxQuotTimeAttributionStyle" align="center" style="margin-left:30px;margin-top:-6px;">
+                      <radiogroup id="quotTimeAttributionStyle" preference="pref-quotTimeAttributionStyle"
+                                  style="display:inline;font-size:12px;">
+                          <radio value="0" label="12 hours format (AM/PM)" />
+                          <radio value="1" label="24 hours format" style="margin-left:20px" />
+                      </radiogroup>
+                    </hbox>
                     <hbox align="center">
                         <label id="lblTypography" value="Header typography" />
                     </hbox>
@@ -102,10 +114,10 @@
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblFontsize" value="Font size:" />
-                        <menulist id="hdrFontsize" style="width:90px" preference="pref-hdrFontsize" />
+                        <menulist id="hdrFontsize" style="width:80px;margin-left:.35em;" preference="pref-hdrFontsize" />
                         <spacer width="20px" />
                         <label id="lblFontcolor" value="Color:" />
-                        <colorpicker id="hdrFontColor" type="button" value="" style="max-width:35px;max-height:17px;"
+                        <colorpicker id="hdrFontColor" type="button" value="" style="max-width:35px;"
                                      preference="pref-hdrFontcolor" />
                     </hbox>
                     <hbox align="center">
@@ -114,7 +126,7 @@
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblBeforeHeader" value="Before header:" />
                         <spacer width="16px" />
-                        <menulist id="spaceBeforeHdr" style="width:55px" preference="pref-spaceBeforeHdr">
+                        <menulist id="spaceBeforeHdr" style="width:65px" preference="pref-spaceBeforeHdr">
                             <menupopup>
                                 <menuitem label="0" value="0" />
                                 <menuitem label="1" value="1" />
@@ -126,7 +138,7 @@
                         </menulist>
                         <spacer width="20px" />
                         <label id="lblAfterHeader" value="After header:" />
-                        <menulist id="spaceAfterHdr" style="width:55px" preference="pref-spaceAfterHdr">
+                        <menulist id="spaceAfterHdr" style="width:65px" preference="pref-spaceAfterHdr">
                             <menupopup>
                                 <menuitem label="0" value="0" />
                                 <menuitem label="1" value="1" />
@@ -139,7 +151,7 @@
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblBeforeSeparator" value="Before separator:" />
-                        <menulist id="spaceBeforeSep" style="width:55px" preference="pref-spaceBeforeSep">
+                        <menulist id="spaceBeforeSep" style="width:65px;margin-left:.25em;" preference="pref-spaceBeforeSep">
                             <menupopup>
                                 <menuitem label="0" value="0" />
                                 <menuitem label="1" value="1" />
@@ -151,38 +163,69 @@
                         </menulist>
                         <label id="lblNotAppBeforeSeparator" value="(not applicable for Postbox)" style="font-size:11px;" />
                     </hbox>
-                    <hbox align="center" style="margin-top:-2px">
-                        <checkbox id="transSubjectPrefix" label="Transform subject prefix (Re -> RE and Fwd -> FW)" preference="pref-transSubjectPrefix" />
+                    <hbox align="center" style="margin-left:30px">
+                        <label id="lblSepLineSize" value="Line size:" />
+                        <menulist id="hdrSepLineSize" style="width:65px;margin-left:3.9em;" preference="pref-hdrSepLineSize">
+                          <menupopup>
+                              <menuitem label="1px" value="1" />
+                              <menuitem label="2px" value="2" />
+                              <menuitem label="3px" value="3" />
+                              <menuitem label="4px" value="4" />
+                              <menuitem label="5px" value="5" />
+                              <menuitem label="6px" value="6" />
+                          </menupopup>
+                        </menulist>
+                        <spacer width="20px" />
+                        <label id="lblSepLineColor" value="Line color:" />
+                        <colorpicker id="hdrSepLineColor" type="button" value="" style="max-width:35px;"
+                                     preference="pref-hdrSepLineColor" />
                     </hbox>
                 </tabpanel>
                 <tabpanel orient="vertical">
-                    <hbox align="center">
+                    <hbox id="hboxCntFormat" align="center">
                         <label id="lblCntFormat" value="Content formatting and cleanups" />
                     </hbox>
-                    <hbox align="center" style="margin-left:30px">
-                        <checkbox id="cleanBlockQuote" label="Cleanup the blockquote colors" preference="pref-cleanBlockQuote" />
+                    <hbox align="center" style="margin-left:15px">
+                        <checkbox id="cleanBlockQuote" label="Cleanup the blockquote colors" preference="pref-cleanBlockQuote"
+                          oncommand="ReplyWithHeader.Prefs.toggleBlockQuote();" />
                     </hbox>
-                    <hbox align="center" style="margin-left:30px">
-                        <checkbox id="cleanNewBlockQuote" label="Cleanup only new blockquote" preference="pref-cleanNewBlockQuote" />
+                    <hbox align="center" style="margin-left:35px">
+                        <checkbox id="cleanNewBlockQuote" label="Cleanup only new blockquote color" preference="pref-cleanNewBlockQuote" />
                     </hbox>
-                    <hbox align="center" style="margin-left:30px">
+                    <hbox align="center" style="margin-left:15px">
                         <checkbox id="cleanGreaterThanChar" label="Cleanup the quote character '>'" preference="pref-cleanGreaterThanChar" />
+                    </hbox>
+                    <hbox align="center" style="margin-top:5px">
+                        <label id="lblHeaderFormat" value="Subject reformatting" />
+                    </hbox>
+                    <hbox align="center" style="margin-left:15px">
+                        <checkbox id="transSubjectPrefix" label="Transform subject prefix (Re -> RE and Fwd -> FW)" preference="pref-transSubjectPrefix" />
+                    </hbox>
+                    <hbox align="center" style="margin-top:5px">
+                        <label id="lblHeaderFormat" value="Header cleanups" />
+                    </hbox>
+                    <hbox align="center" style="margin-left:15px">
+                        <checkbox id="excludePlainTextHdrPrefix" label="Don't include plain text header prefix" preference="pref-excludePlainTextHdrPrefix" />
                     </hbox>
                 </tabpanel>
                 <tabpanel orient="vertical">
                     <hbox align="center" style="margin-top: 30px">
-                        <image src='chrome://replywithheader/skin/icon-64.png' width='64' height='64'
+                        <image id="abtRwhLogo" src='chrome://replywithheader/skin/icon-64.png' width='64' height='64'
                                style="margin-left:100px"/>
                         <label id="abtRwhCaption" value="ReplyWithHeader" style="font-weight:bold;" />
-                        <label id="abtRwhCopyrights" value="&#169; 2015 Jeevanandam M."
-                               style="font-size:12px; margin-top:40px;margin-left:-152px" />
+                        <label id="abtRwhCopyrights" value="&#169; 2016 Jeevanandam M."
+                               style="font-size:12px; margin-top:40px;margin-left:-145px" />
                     </hbox>
-                    <hbox align="center" style="margin: 40px 0 0 55px">
+                    <hbox id="hboxRwhBtn" align="center" style="margin: 40px 0 0 55px">
                         <button label="Website" oncommand="ReplyWithHeader.Prefs.openWebsite();" />
                         <button label="Write a Review" oncommand="ReplyWithHeader.Prefs.openReviews();" />
-                        <button label="Need Support" oncommand="ReplyWithHeader.Prefs.reportIssues();" />
+                        <button label="Report Issues" oncommand="ReplyWithHeader.Prefs.reportIssues();" />
                     </hbox>
-                    <hbox align="center" style="margin-top:150px;">
+                    <hbox id="hboxEnableRwhDebugMode" align="center" style="margin: 15px 0 0 150px">
+                        <checkbox id="enableRwhDebugMode" label="Enable debug mode" preference="pref-enableRwhDebugMode"
+                          tooltiptext="Add-on logs useful debug details in the Error Console" />
+                    </hbox>
+                    <hbox id="hboxDonateBtn" align="center" style="margin-top:150px;">
                         <groupbox id="abtGrpBoxRwhDonate" style="width:430px;padding-bottom:10px;margin:0">
                             <caption label="Support ReplyWithHeader" style="font-size:13px" />
                             <hbox align="center" style="margin-bottom:10px;margin-top:5px">
