@@ -439,6 +439,10 @@ var ReplyWithHeader = {
         }
 
         rwhHdr += htmlTagPrefix + '<b>Subject:</b> ' + pHeader.subject + htmlTagSuffix;
+
+      } else if (headerQuotLblSeq == 2) {
+        rwhHdr += htmlTagPrefix + '<b>Sent:</b> ' + pHeader.date + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>Subject:</b> ' + pHeader.subject + htmlTagSuffix;
       }
 
     } else { // for plain/text emails
@@ -471,8 +475,11 @@ var ReplyWithHeader = {
         }
 
         rwhHdr += 'Subject: ' + pHeader.subject + '<br/>';
-      }
 
+      } else if (headerQuotLblSeq == 2) {
+        rwhHdr += 'Sent: ' + pHeader.date + '<br/>';
+        rwhHdr += 'Subject: ' + pHeader.subject + '<br/>';
+      }
     }
 
     rwhHdr += this.createBrTags(this.Prefs.afterHdrSpaceCnt);
