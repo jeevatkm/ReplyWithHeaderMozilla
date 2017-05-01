@@ -137,8 +137,12 @@ ReplyWithHeader.Prefs = {
     // Ref: Due this Bug 567240 - Cursor does not blink when replying
     // (https://bugzilla.mozilla.org/show_bug.cgi?id=567240)
     // RWH is setting this 'mail.compose.max_recycled_windows' value to 0
-    let maxRecycledWindows = this.branch.getIntPref('mail.compose.max_recycled_windows');
-    if (maxRecycledWindows == 1) {
+    if (this.branch.getPrefType('mail.compose.max_recycled_windows')) {
+      let maxRecycledWindows = this.branch.getIntPref('mail.compose.max_recycled_windows');
+      if (maxRecycledWindows == 1) {
+        this.branch.setIntPref('mail.compose.max_recycled_windows', 0);
+      }
+    } else {
       this.branch.setIntPref('mail.compose.max_recycled_windows', 0);
     }
   },
