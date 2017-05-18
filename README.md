@@ -1,4 +1,4 @@
-# Quoting Headers in Thunderbird and Postbox
+# Quoting Headers in Thunderbird and Postbox [![Version](https://img.shields.io/badge/version-1.5-blue.svg)](https://github.com/jeevatkm/ReplyWithHeaderMozilla/releases/latest) [![License](https://img.shields.io/github/license/jeevatkm/ReplyWithHeaderMozilla.svg)](LICENSE)
 ReplyWithHeaderMozilla aka [RWH Mozila] is an addon for Thunderbird and Postbox mail client that enables email header.
 Brings Outlook header capabilities into Thunderbird and Postbox.
 
@@ -24,4 +24,4 @@ Jeevanandam M. (jeeva@myjeeva.com)
 Have a look on [Contributors](https://github.com/jeevatkm/ReplyWithHeaderMozilla/graphs/contributors) page.
 
 # License
-ReplyWithHeader Mozilla is released under [MIT License](LICENSE.txt)
+ReplyWithHeader Mozilla is released under [MIT License](LICENSE)
