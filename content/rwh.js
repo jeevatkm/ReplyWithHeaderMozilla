@@ -981,6 +981,26 @@ var ReplyWithHeader = {
     }
   },
 
+  DateFmt: function(date) {
+    var options = {
+        weekday: "short",
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+    };
+    var locale = this.Prefs.headerLocale;
+
+    date = new Date(date);
+
+    var dateStr = date.toLocaleDateString(locale, options);
+    var timeStr = date.toLocaleTimeString(locale);
+
+    return {
+        date: dateStr,
+        time: timeStr,
+    }
+  },
+
 };
 
 ReplyWithHeader.i18n = {
