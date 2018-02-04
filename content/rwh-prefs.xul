@@ -94,6 +94,7 @@
                         <radiogroup id="quotSeqAttributionStyle" preference="pref-quotSeqAttributionStyle"
                                     style="margin-left:30px">
                             <radio value="0" label="Default (Subject, Date, From, To, Cc)" />
+                            <radio value="3" label="Lookout (From, To, Cc, Date, Subject)" style="margin-top:-2px" />
                             <radio value="1" label="Outlook (From, Sent, To, Cc, Subject)" style="margin-top:-2px" />
                             <radio value="2" label="Simple (From, Sent, Subject)" style="margin-top:-2px" />
                         </radiogroup>

@@ -431,6 +431,14 @@ var ReplyWithHeader = {
         if (pHeader.cc) {
           rwhHdr += htmlTagPrefix + '<b>' + i18n.cc[locale] + '</b> ' + pHeader.cc + htmlTagSuffix;
         }
+      } else if (headerQuotLblSeq == 3) {
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.to[locale] + '</b> ' + pHeader.to + htmlTagSuffix;
+
+        if (pHeader.cc) {
+          rwhHdr += htmlTagPrefix + '<b>' + i18n.cc[locale] + '</b> ' + pHeader.cc + htmlTagSuffix;
+        }
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.date[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
       } else if (headerQuotLblSeq == 1) {
         rwhHdr += htmlTagPrefix + '<b>' + i18n.sent[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
         rwhHdr += htmlTagPrefix + '<b>' + i18n.to[locale] + '</b> ' + pHeader.to + htmlTagSuffix;
@@ -469,6 +477,14 @@ var ReplyWithHeader = {
         if (pHeader.cc) {
           rwhHdr += i18n.cc[locale] + ' ' + pHeader.cc + '<br/>';
         }
+      } else if (headerQuotLblSeq == 3) {
+        rwhHdr += i18n.to[locale] + ' ' + pHeader.to + '<br/>';
+
+        if (pHeader.cc) {
+          rwhHdr += i18n.cc[locale] + ' ' + pHeader.cc + '<br/>';
+        }
+        rwhHdr += i18n.date[locale] + ' ' + pHeader.date + '<br/>';
+        rwhHdr += i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
       } else if (headerQuotLblSeq == 1) {
         rwhHdr += i18n.sent[locale] + ' ' + pHeader.date + '<br/>';
         rwhHdr += i18n.to[locale] + ' ' + pHeader.to + '<br/>';
