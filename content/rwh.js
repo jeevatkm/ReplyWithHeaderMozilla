@@ -1041,6 +1041,82 @@ ReplyWithHeader.Log = {
   }
 };
 
+// -----------------------------------------------
+// Get Mime headers (adapted from SmartTemplates4)
+// -----------------------------------------------
+var MimeHeaders = function(messageURI) {
+
+  const Ci = Components.interfaces,
+        Cc = Components.classes;
+  let   messenger = Cc["@mozilla.org/messenger;1"] .createInstance(Ci.nsIMessenger),
+        messageService = messenger.messageServiceFromURI(messageURI),
+        messageStream = Cc["@mozilla.org/network/sync-stream-listener;1"]
+                        .createInstance().QueryInterface(Ci.nsIInputStream),
+        inputStream   = Cc["@mozilla.org/scriptableinputstream;1"]
+                        .createInstance().QueryInterface(Ci.nsIScriptableInputStream),
+        headers       = Cc["@mozilla.org/messenger/mimeheaders;1"]
+                        .createInstance().QueryInterface(Ci.nsIMimeHeaders);
+
+  let contentCache = "";
+
+  inputStream.init(messageStream);
+  try {
+      messageService.streamMessage(messageURI, messageStream, msgWindow, null, false, null);
+  }
+  catch (ex) {
+      return null;
+  }
+
+
+  function _init() {
+      let msgContent = "";
+
+      try {
+          while (inputStream.available()) {
+              msgContent = msgContent + inputStream.read(2048);
+              let p = msgContent.search(/\r\n\r\n|\r\r|\n\n/);
+              // note: it would be faster to just search in the new block
+              // (but would also need to check the last 3 bytes)
+              if (p > 0) {
+                  contentCache = msgContent.substr(p + (msgContent[p] == msgContent[p+1] ? 2 : 4));
+                  msgContent = msgContent.substr(0, p) + "\r\n";
+                  break;
+              }
+              if (msgContent.length > 2048 * 32) {
+                  break;
+              }
+          }
+      }
+      catch(ex) {
+          if (!msgContent) throw(ex);
+      }
+
+      headers.initialize(msgContent, msgContent.length);
+  }
+
+
+  function get(header, get_all_occurences) {
+      return headers.extractHeader(header, get_all_occurences);
+  }
+
+  function content(size) {
+      while (inputStream.available() && contentCache.length < size)
+          contentCache += inputStream.read(2048);
+
+      if (contentCache.length > size)
+          return contentCache.substr(0, size);
+      else
+          return contentCache;
+  }
+
+  _init();
+
+  return {
+      get: get,
+      content: content,
+  }
+};
+
 // Getting Add-On name & version #
 AddonManager.getAddonByID(ReplyWithHeaderAddOnID, function(addOn) {
   ReplyWithHeader.addOnName = addOn.name;
