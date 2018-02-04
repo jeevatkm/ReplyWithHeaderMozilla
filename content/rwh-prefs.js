@@ -212,6 +212,7 @@ ReplyWithHeader.Prefs = {
       'hdrFontsize', 'lblFontcolor', 'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr',
       'lblAfterHeader', 'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblSepLineSize', 'lblSepLineColor',
       'hdrSepLineSize', 'hdrSepLineColor', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle', 'quotTimeAttributionStyle',
+      'lblHeaderCleanups',
       'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat', 'cleanBlockQuote', 'cleanNewBlockQuote',
       'cleanGreaterThanChar', 'lblHeaderFormat', 'excludePlainTextHdrPrefix', 'enableRwhDebugMode'
     ];
