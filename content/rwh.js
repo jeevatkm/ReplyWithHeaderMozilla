@@ -1001,6 +1001,16 @@ var ReplyWithHeader = {
     }
   },
 
+  formatMimeDate: function(dateStr) {
+    var dtStr = dateStr.replace(/ [+-].*/, "");
+    var tzStr = dateStr.replace(/.* ([+-])/, "$1");
+    var d = this.DateFmt(dtStr);
+
+    if (tzStr) d.time += " " + tzStr;
+
+    return d.date + " | " + d.time;
+  },
+
 };
 
 // RWH logger methods
