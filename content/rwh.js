@@ -394,6 +394,7 @@ var ReplyWithHeader = {
   },
 
   get createRwhHeader() {
+    let lang = this.Prefs.headerLang;
     let rawHdr = this.getMsgHeader(this.messageUri);
     let pHeader = this.parseMsgHeader(rawHdr);
     let headerQuotLblSeq = this.Prefs.headerQuotLblSeq;
@@ -921,8 +922,6 @@ var ReplyWithHeader = {
   },
 
 };
-
-var lang = "en";
 
 var i18n = {
   "from": {
