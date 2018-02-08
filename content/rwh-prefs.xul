@@ -49,7 +49,15 @@
             <checkbox id="enableRwh" label="Enable" preference="pref-enableRwh"
                     oncommand="ReplyWithHeader.Prefs.toggleRwh();" />
         </hbox>
-        <tabbox style="margin-bottom:7px">
+        <hbox align="right" style="margin-top:-27px;margin-right:3px;">
+            <menulist id="hdrLocale" preference="pref-hdrLocale">
+              <menupopup>
+                  <menuitem label="English (en)" value="en" />
+                  <menuitem label="French (fr)" value="fr" />
+              </menupopup>
+            </menulist>
+        </hbox>
+        <tabbox style="margin-bottom:7px;margin-top:5px;">
             <tabs>
                 <tab label="Manage Headers" selected="true" />
                 <tab label="Misc" />
@@ -78,16 +86,7 @@
                             <radio value="0" label="Default (To: Name1 &lt;email-address1&gt;, ...)" />
                             <radio value="1" label="Outlook (To: Name1; Name2; ...)" style="margin-top:-2px" />
                         </radiogroup>
-                    </hbox>
-                    <hbox align="right" style="margin-top:.2em;margin-bottom:-1.8em;margin-right:1em;">
-                        <label id="lblLocale" value="Locale:" />
-                        <menulist id="hdrLocale" style="margin-left:0.2em;margin-top:-.4em;" preference="pref-hdrLocale">
-                          <menupopup>
-                              <menuitem label="En" value="en" />
-                              <menuitem label="Fr" value="fr" />
-                          </menupopup>
-                        </menulist>
-                    </hbox>
+                    </hbox>                    
                     <hbox align="center">
                         <label id="lblHeaderQuotSeq" value="Header quoting sequence and labels" />
                     </hbox>
