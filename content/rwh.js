@@ -394,7 +394,7 @@ var ReplyWithHeader = {
   },
 
   get createRwhHeader() {
-    let lang = this.Prefs.headerLang;
+    let locale = this.Prefs.headerLocale;
     let rawHdr = this.getMsgHeader(this.messageUri);
     let pHeader = this.parseMsgHeader(rawHdr);
     let headerQuotLblSeq = this.Prefs.headerQuotLblSeq;
@@ -421,36 +421,36 @@ var ReplyWithHeader = {
 
       rwhHdr += this.createBrTags(this.Prefs.beforeHdrSpaceCnt);
 
-      rwhHdr += htmlTagPrefix + '<b>' + i18n.from[lang] + '</b> ' + pHeader.from + htmlTagSuffix;
+      rwhHdr += htmlTagPrefix + '<b>' + i18n.from[locale] + '</b> ' + pHeader.from + htmlTagSuffix;
 
       if (headerQuotLblSeq == 0) { // jshint ignore:line
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.subject[lang] + '</b> ' + pHeader.subject + htmlTagSuffix;
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.date[lang] + '</b> ' + pHeader.date + htmlTagSuffix;
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.to[lang] + '</b> ' + pHeader.to + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.date[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.to[locale] + '</b> ' + pHeader.to + htmlTagSuffix;
 
         if (pHeader.cc) {
-          rwhHdr += htmlTagPrefix + '<b>' + i18n.cc[lang] + '</b> ' + pHeader.cc + htmlTagSuffix;
+          rwhHdr += htmlTagPrefix + '<b>' + i18n.cc[locale] + '</b> ' + pHeader.cc + htmlTagSuffix;
         }
       } else if (headerQuotLblSeq == 1) {
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.sent[lang] + '</b> ' + pHeader.date + htmlTagSuffix;
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.to[lang] + '</b> ' + pHeader.to + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.sent[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.to[locale] + '</b> ' + pHeader.to + htmlTagSuffix;
 
         if (pHeader.cc) {
-          rwhHdr += htmlTagPrefix + '<b>' + i18n.cc[lang] + '</b> ' + pHeader.cc + htmlTagSuffix;
+          rwhHdr += htmlTagPrefix + '<b>' + i18n.cc[locale] + '</b> ' + pHeader.cc + htmlTagSuffix;
         }
 
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.subject[lang] + '</b> ' + pHeader.subject + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
 
       } else if (headerQuotLblSeq == 2) {
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.sent[lang] + '</b> ' + pHeader.date + htmlTagSuffix;
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.subject[lang] + '</b> ' + pHeader.subject + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.sent[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
       }
 
     } else { // for plain/text emails
       if (!this.Prefs.excludePlainTxtHdrPrefix) {
         rwhHdr += (this.isForward
-          ? '-------- ' + i18n.forwarded_message[lang] + ' --------<br/>'
-          : '-------- ' + i18n.original_message[lang] + ' --------<br/>');
+          ? '-------- ' + i18n.forwarded_message[locale] + ' --------<br/>'
+          : '-------- ' + i18n.original_message[locale] + ' --------<br/>');
       } else {
         if (this.isForward) {
           rwhHdr += '<br/>';
@@ -459,29 +459,29 @@ var ReplyWithHeader = {
 
       rwhHdr += this.createBrTags(this.Prefs.beforeHdrSpaceCnt);
 
-      rwhHdr += i18n.from[lang] + ' ' + pHeader.from + '<br/>';
+      rwhHdr += i18n.from[locale] + ' ' + pHeader.from + '<br/>';
 
       if (headerQuotLblSeq == 0) { // jshint ignore:line
-        rwhHdr += i18n.subject[lang] + ' ' + pHeader.subject + '<br/>';
-        rwhHdr += i18n.date[lang] + ' ' + pHeader.date + '<br/>';
-        rwhHdr += i18n.to[lang] + ' ' + pHeader.to + '<br/>';
+        rwhHdr += i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
+        rwhHdr += i18n.date[locale] + ' ' + pHeader.date + '<br/>';
+        rwhHdr += i18n.to[locale] + ' ' + pHeader.to + '<br/>';
 
         if (pHeader.cc) {
-          rwhHdr += i18n.cc[lang] + ' ' + pHeader.cc + '<br/>';
+          rwhHdr += i18n.cc[locale] + ' ' + pHeader.cc + '<br/>';
         }
       } else if (headerQuotLblSeq == 1) {
-        rwhHdr += i18n.sent[lang] + ' ' + pHeader.date + '<br/>';
-        rwhHdr += i18n.to[lang] + ' ' + pHeader.to + '<br/>';
+        rwhHdr += i18n.sent[locale] + ' ' + pHeader.date + '<br/>';
+        rwhHdr += i18n.to[locale] + ' ' + pHeader.to + '<br/>';
 
         if (pHeader.cc) {
-          rwhHdr += i18n.cc[lang] + ' ' + pHeader.cc + '<br/>';
+          rwhHdr += i18n.cc[locale] + ' ' + pHeader.cc + '<br/>';
         }
 
-        rwhHdr += i18n.subject[lang] + ' ' + pHeader.subject + '<br/>';
+        rwhHdr += i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
 
       } else if (headerQuotLblSeq == 2) {
-        rwhHdr += i18n.sent[lang] + ' ' + pHeader.date + '<br/>';
-        rwhHdr += i18n.subject[lang] + ' ' + pHeader.subject + '<br/>';
+        rwhHdr += i18n.sent[locale] + ' ' + pHeader.date + '<br/>';
+        rwhHdr += i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
       }
     }
 
