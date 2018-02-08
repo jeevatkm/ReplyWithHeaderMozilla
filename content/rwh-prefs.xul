@@ -26,7 +26,7 @@
             <preference id="pref-fromAttributionStyle" name="extensions.replywithheader.header.from.style" type="int" instantApply="true" />
             <preference id="pref-toccAttributionStyle" name="extensions.replywithheader.header.tocc.style" type="int" instantApply="true" />
             <preference id="pref-quotSeqAttributionStyle" name="extensions.replywithheader.header.lblseq.style" type="int" instantApply="true" />
-            <preference id="pref-hdrLang" name="extensions.replywithheader.header.lang" type="string" instantApply="true" />
+            <preference id="pref-hdrLang" name="extensions.replywithheader.header.locale" type="string" instantApply="true" />
             <preference id="pref-hdrFontface" name="extensions.replywithheader.header.font.face" type="string" instantApply="true" />
             <preference id="pref-hdrFontsize" name="extensions.replywithheader.header.font.size" type="int" instantApply="true" />
             <preference id="pref-hdrFontcolor" name="extensions.replywithheader.header.font.color" type="string" instantApply="true" />

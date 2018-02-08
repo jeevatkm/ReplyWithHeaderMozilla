@@ -86,7 +86,7 @@ ReplyWithHeader.Prefs = {
   },
 
   get headerLang() {
-    return this.getStringPref('header.lang');
+    return this.getStringPref('header.locale');
   },
 
   get isSubjectPrefixEnabled() {

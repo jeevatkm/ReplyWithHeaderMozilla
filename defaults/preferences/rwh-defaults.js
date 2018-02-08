@@ -15,7 +15,7 @@ pref('extensions.replywithheader.enable', true);
 pref('extensions.replywithheader.header.from.style', 1);
 pref('extensions.replywithheader.header.tocc.style', 1);
 pref('extensions.replywithheader.header.lblseq.style', 1);
-pref('extensions.replywithheader.header.lang', 'en');
+pref('extensions.replywithheader.header.locale', 'en');
 pref('extensions.replywithheader.header.font.face', 'Tahoma');
 pref('extensions.replywithheader.header.font.size', 13);
 pref('extensions.replywithheader.header.font.color', '#000000');
