@@ -85,7 +85,7 @@ ReplyWithHeader.Prefs = {
     return this.getIntPref('header.lblseq.style');
   },
 
-  get headerLang() {
+  get headerLocale() {
     return this.getStringPref('header.locale');
   },
 
@@ -217,7 +217,7 @@ ReplyWithHeader.Prefs = {
       'lblAfterHeader', 'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblSepLineSize', 'lblSepLineColor',
       'hdrSepLineSize', 'hdrSepLineColor', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle', 'quotTimeAttributionStyle',
       'lblHeaderCleanups',
-      'lblLang', 'hdrLang',
+      'lblLocale', 'hdrLocale',
       'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat', 'cleanBlockQuote', 'cleanNewBlockQuote',
       'cleanGreaterThanChar', 'lblHeaderFormat', 'excludePlainTextHdrPrefix', 'enableRwhDebugMode'
     ];
