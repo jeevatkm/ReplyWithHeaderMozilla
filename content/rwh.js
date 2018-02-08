@@ -394,6 +394,7 @@ var ReplyWithHeader = {
   },
 
   get createRwhHeader() {
+    let locale = this.Prefs.headerLocale;
     let rawHdr = this.getMsgHeader(this.messageUri);
     let pHeader = this.parseMsgHeader(rawHdr);
     let headerQuotLblSeq = this.Prefs.headerQuotLblSeq;
@@ -420,34 +421,36 @@ var ReplyWithHeader = {
 
       rwhHdr += this.createBrTags(this.Prefs.beforeHdrSpaceCnt);
 
-      rwhHdr += htmlTagPrefix + '<b>From:</b> ' + pHeader.from + htmlTagSuffix;
+      rwhHdr += htmlTagPrefix + '<b>' + i18n.from[locale] + '</b> ' + pHeader.from + htmlTagSuffix;
 
       if (headerQuotLblSeq == 0) { // jshint ignore:line
-        rwhHdr += htmlTagPrefix + '<b>Subject:</b> ' + pHeader.subject + htmlTagSuffix;
-        rwhHdr += htmlTagPrefix + '<b>Date:</b> ' + pHeader.date + htmlTagSuffix;
-        rwhHdr += htmlTagPrefix + '<b>To:</b> ' + pHeader.to + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.date[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.to[locale] + '</b> ' + pHeader.to + htmlTagSuffix;
 
         if (pHeader.cc) {
-          rwhHdr += htmlTagPrefix + '<b>Cc:</b> ' + pHeader.cc + htmlTagSuffix;
+          rwhHdr += htmlTagPrefix + '<b>' + i18n.cc[locale] + '</b> ' + pHeader.cc + htmlTagSuffix;
         }
       } else if (headerQuotLblSeq == 1) {
-        rwhHdr += htmlTagPrefix + '<b>Sent:</b> ' + pHeader.date + htmlTagSuffix;
-        rwhHdr += htmlTagPrefix + '<b>To:</b> ' + pHeader.to + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.sent[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.to[locale] + '</b> ' + pHeader.to + htmlTagSuffix;
 
         if (pHeader.cc) {
-          rwhHdr += htmlTagPrefix + '<b>Cc:</b> ' + pHeader.cc + htmlTagSuffix;
+          rwhHdr += htmlTagPrefix + '<b>' + i18n.cc[locale] + '</b> ' + pHeader.cc + htmlTagSuffix;
         }
 
-        rwhHdr += htmlTagPrefix + '<b>Subject:</b> ' + pHeader.subject + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
 
       } else if (headerQuotLblSeq == 2) {
-        rwhHdr += htmlTagPrefix + '<b>Sent:</b> ' + pHeader.date + htmlTagSuffix;
-        rwhHdr += htmlTagPrefix + '<b>Subject:</b> ' + pHeader.subject + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.sent[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
       }
 
     } else { // for plain/text emails
       if (!this.Prefs.excludePlainTxtHdrPrefix) {
-        rwhHdr += this.isForward ? '-------- Forwarded Message --------<br/>' : '-------- Original Message --------<br/>';
+        rwhHdr += (this.isForward
+          ? '-------- ' + i18n.forwarded_message[locale] + ' --------<br/>'
+          : '-------- ' + i18n.original_message[locale] + ' --------<br/>');
       } else {
         if (this.isForward) {
           rwhHdr += '<br/>';
@@ -456,29 +459,29 @@ var ReplyWithHeader = {
 
       rwhHdr += this.createBrTags(this.Prefs.beforeHdrSpaceCnt);
 
-      rwhHdr += 'From: ' + pHeader.from + '<br/>';
+      rwhHdr += i18n.from[locale] + ' ' + pHeader.from + '<br/>';
 
       if (headerQuotLblSeq == 0) { // jshint ignore:line
-        rwhHdr += 'Subject: ' + pHeader.subject + '<br/>';
-        rwhHdr += 'Date: ' + pHeader.date + '<br/>';
-        rwhHdr += 'To: ' + pHeader.to + '<br/>';
+        rwhHdr += i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
+        rwhHdr += i18n.date[locale] + ' ' + pHeader.date + '<br/>';
+        rwhHdr += i18n.to[locale] + ' ' + pHeader.to + '<br/>';
 
         if (pHeader.cc) {
-          rwhHdr += 'Cc: ' + pHeader.cc + '<br/>';
+          rwhHdr += i18n.cc[locale] + ' ' + pHeader.cc + '<br/>';
         }
       } else if (headerQuotLblSeq == 1) {
-        rwhHdr += 'Sent: ' + pHeader.date + '<br/>';
-        rwhHdr += 'To: ' + pHeader.to + '<br/>';
+        rwhHdr += i18n.sent[locale] + ' ' + pHeader.date + '<br/>';
+        rwhHdr += i18n.to[locale] + ' ' + pHeader.to + '<br/>';
 
         if (pHeader.cc) {
-          rwhHdr += 'Cc: ' + pHeader.cc + '<br/>';
+          rwhHdr += i18n.cc[locale] + ' ' + pHeader.cc + '<br/>';
         }
 
-        rwhHdr += 'Subject: ' + pHeader.subject + '<br/>';
+        rwhHdr += i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
 
       } else if (headerQuotLblSeq == 2) {
-        rwhHdr += 'Sent: ' + pHeader.date + '<br/>';
-        rwhHdr += 'Subject: ' + pHeader.subject + '<br/>';
+        rwhHdr += i18n.sent[locale] + ' ' + pHeader.date + '<br/>';
+        rwhHdr += i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
       }
     }
 
@@ -916,6 +919,42 @@ var ReplyWithHeader = {
     } catch (ex) {
       this.Log.errorWithException('Unable to open RWH URL.', ex);
     }
+  },
+
+};
+
+var i18n = {
+  "from": {
+    "en": "From:",
+    "fr": "De :",
+  },
+  "to": {
+    "en": "To:",
+    "fr": "Pour :",
+  },
+  "cc": {
+    "en": "Cc:",
+    "fr": "Cc :",
+  },
+  "subject": {
+    "en": "Subject:",
+    "fr": "Objet :",
+  },
+  "date": {
+    "en": "Date:",
+    "fr": "Date :",
+  },
+  "sent": {
+    "en": "Sent:",
+    "fr": "Envoyé :",
+  },
+  "forwarded_message": {
+    "en": "Forwarded message",
+    "fr": "Message transféré",
+  },
+  "original_message": {
+    "en": "Original message",
+    "fr": "Message original",
   },
 };
 
