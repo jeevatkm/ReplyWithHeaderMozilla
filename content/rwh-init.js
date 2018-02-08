@@ -1,7 +1,7 @@
 'use strict';
 
 /*
- * Copyright (c) 2015-2017 Jeevanandam M. (jeeva@myjeeva.com)
+ * Copyright (c) 2015-2018 Jeevanandam M. (jeeva@myjeeva.com)
  *
  * This Source Code is subject to terms of MIT License.
  * Please refer to LICENSE.txt in the root folder of RWH extension.
