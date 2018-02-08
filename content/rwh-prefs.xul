@@ -26,7 +26,7 @@
             <preference id="pref-fromAttributionStyle" name="extensions.replywithheader.header.from.style" type="int" instantApply="true" />
             <preference id="pref-toccAttributionStyle" name="extensions.replywithheader.header.tocc.style" type="int" instantApply="true" />
             <preference id="pref-quotSeqAttributionStyle" name="extensions.replywithheader.header.lblseq.style" type="int" instantApply="true" />
-            <preference id="pref-hdrLang" name="extensions.replywithheader.header.locale" type="string" instantApply="true" />
+            <preference id="pref-hdrLocale" name="extensions.replywithheader.header.locale" type="string" instantApply="true" />
             <preference id="pref-hdrFontface" name="extensions.replywithheader.header.font.face" type="string" instantApply="true" />
             <preference id="pref-hdrFontsize" name="extensions.replywithheader.header.font.size" type="int" instantApply="true" />
             <preference id="pref-hdrFontcolor" name="extensions.replywithheader.header.font.color" type="string" instantApply="true" />
@@ -80,8 +80,8 @@
                         </radiogroup>
                     </hbox>
                     <hbox align="right" style="margin-top:.2em;margin-bottom:-1.8em;margin-right:1em;">
-                        <label id="lblLang" value="Lang:" />
-                        <menulist id="hdrLang" style="margin-left:0.2em;margin-top:-.4em;" preference="pref-hdrLang">
+                        <label id="lblLocale" value="Locale:" />
+                        <menulist id="hdrLocale" style="margin-left:0.2em;margin-top:-.4em;" preference="pref-hdrLocale">
                           <menupopup>
                               <menuitem label="En" value="en" />
                               <menuitem label="Fr" value="fr" />
