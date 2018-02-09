@@ -926,27 +926,27 @@ var ReplyWithHeader = {
 var i18n = {
   "from": {
     "en": "From:",
-    "fr": "De:",
+    "fr": "De :",
   },
   "to": {
     "en": "To:",
-    "fr": "Pour:",
+    "fr": "Pour :",
   },
   "cc": {
     "en": "Cc:",
-    "fr": "Cc:",
+    "fr": "Cc :",
   },
   "subject": {
     "en": "Subject:",
-    "fr": "Objet:",
+    "fr": "Objet :",
   },
   "date": {
     "en": "Date:",
-    "fr": "Date:",
+    "fr": "Date :",
   },
   "sent": {
     "en": "Sent:",
-    "fr": "Envoyé:",
+    "fr": "Envoyé :",
   },
   "forwarded_message": {
     "en": "Forwarded Message",
