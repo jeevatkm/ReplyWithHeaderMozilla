@@ -86,7 +86,7 @@
                             <radio value="0" label="Default (To: Name1 &lt;email-address1&gt;, ...)" />
                             <radio value="1" label="Outlook (To: Name1; Name2; ...)" style="margin-top:-2px" />
                         </radiogroup>
-                    </hbox>                    
+                    </hbox>
                     <hbox align="center">
                         <label id="lblHeaderQuotSeq" value="Header quoting sequence and labels" />
                     </hbox>
