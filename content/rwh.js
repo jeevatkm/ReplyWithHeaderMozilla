@@ -954,7 +954,7 @@ var i18n = {
   },
   "original_message": {
     "en": "Original Message",
-    "fr": "Message original",
+    "fr": "Message d'origine",
   },
 };
 
