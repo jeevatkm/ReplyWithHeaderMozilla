@@ -105,6 +105,10 @@ ReplyWithHeader.Prefs = {
     return this.getBoolPref('clean.char.greaterthan');
   },
 
+  get cleanOnlyNewQuoteChar() {
+    return this.getBoolPref('clean.only.new.quote.char');
+  },
+
   get excludePlainTxtHdrPrefix() {
     return this.getBoolPref('clean.pln.hdr.prefix');
   },
@@ -202,6 +206,7 @@ ReplyWithHeader.Prefs = {
     this.loadFontSizes();
 
     this.toggleBlockQuote();
+    this.toggleQuoteChar();
 
     this.forPostbox(true);
 
@@ -219,6 +224,7 @@ ReplyWithHeader.Prefs = {
       'lblHeaderCleanups',
       'lblLocale', 'hdrLocale',
       'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat', 'cleanBlockQuote', 'cleanNewBlockQuote',
+      'cleanOnlyNewQuoteChar',
       'cleanGreaterThanChar', 'lblHeaderFormat', 'excludePlainTextHdrPrefix', 'enableRwhDebugMode'
     ];
 
@@ -246,6 +252,11 @@ ReplyWithHeader.Prefs = {
   toggleBlockQuote: function() {
     let cbq = ReplyWithHeader.byId('cleanBlockQuote');
     this.toggle('cleanNewBlockQuote', !cbq.checked);
+  },
+
+  toggleQuoteChar: function() {
+    let cqc = ReplyWithHeader.byId('cleanGreaterThanChar');
+    this.toggle('cleanOnlyNewQuoteChar', !cqc.checked);
   },
 
   applyPlatformStyle: function() {

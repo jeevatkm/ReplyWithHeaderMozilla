@@ -39,6 +39,7 @@
             <preference id="pref-cleanBlockQuote" name="extensions.replywithheader.clean.blockquote" type="bool" instantApply="true" />
             <preference id="pref-cleanNewBlockQuote" name="extensions.replywithheader.clean.new.blockquote" type="bool" instantApply="true" />
             <preference id="pref-cleanGreaterThanChar" name="extensions.replywithheader.clean.char.greaterthan" type="bool" instantApply="true" />
+            <preference id="pref-cleanOnlyNewQuoteChar" name="extensions.replywithheader.clean.only.new.quote.char" type="bool" instantApply="true" />
             <preference id="pref-excludePlainTextHdrPrefix" name="extensions.replywithheader.clean.pln.hdr.prefix" type="bool" instantApply="true" />
             <preference id="pref-quotDateAttributionStyle" name="extensions.replywithheader.header.date.format" type="int" instantApply="true" />
             <preference id="pref-quotTimeAttributionStyle" name="extensions.replywithheader.header.time.format" type="int" instantApply="true" />
@@ -204,7 +205,11 @@
                         <checkbox id="cleanNewBlockQuote" label="Cleanup only new blockquote color" preference="pref-cleanNewBlockQuote" />
                     </hbox>
                     <hbox align="center" style="margin-left:15px">
-                        <checkbox id="cleanGreaterThanChar" label="Cleanup the quote character '>'" preference="pref-cleanGreaterThanChar" />
+                        <checkbox id="cleanGreaterThanChar" label="Cleanup the quote character '>'" preference="pref-cleanGreaterThanChar"
+                          oncommand="ReplyWithHeader.Prefs.toggleQuoteChar();" />
+                    </hbox>
+                    <hbox align="center" style="margin-left:35px">
+                        <checkbox id="cleanOnlyNewQuoteChar" label="Cleanup only new quote character" preference="pref-cleanOnlyNewQuoteChar" />
                     </hbox>
                     <hbox align="center" style="margin-top:5px">
                         <label id="lblHeaderFormat" value="Subject reformatting" />
