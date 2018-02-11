@@ -48,8 +48,8 @@
         <hbox align="center">
             <checkbox id="enableRwh" label="Enable" preference="pref-enableRwh"
                     oncommand="ReplyWithHeader.Prefs.toggleRwh();" />
-        </hbox>
-        <hbox align="right" style="margin-top:-27px;margin-right:3px;">
+            <spacer flex="1" />
+            <label id="lblLocale" value="Locale:" style="display: none" />
             <menulist id="hdrLocale" preference="pref-hdrLocale">
               <menupopup>
                   <menuitem label="English (en)" value="en" />
