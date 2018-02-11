@@ -837,6 +837,9 @@ var ReplyWithHeader = {
 
     if (mailBody) {
       // Here RWH Add-On does string find and replace. No external creation of HTML string
+      if (this.Prefs.cleanOnlyNewQuoteChar)
+      mailBody.innerHTML = mailBody.innerHTML.replace(/>(&gt;) ?/g, '>');
+      else
       mailBody.innerHTML = mailBody.innerHTML.replace(/<br>(&gt;)+ ?/g, '<br />')
         .replace(/(<\/?span [^>]+>)(&gt;)+ /g, '$1');
     }
