@@ -65,6 +65,10 @@ ReplyWithHeader.Prefs = {
     return this.getIntPref('header.date.format');
   },
 
+  get dateStyle() {
+    return this.getIntPref('header.date.style');
+  },
+
   get timeFormat() {
     return this.getIntPref('header.time.format');
   },
@@ -216,6 +220,7 @@ ReplyWithHeader.Prefs = {
       'hdrFontsize', 'lblFontcolor', 'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr',
       'lblAfterHeader', 'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblSepLineSize', 'lblSepLineColor',
       'hdrSepLineSize', 'hdrSepLineColor', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle', 'quotTimeAttributionStyle',
+      'quotDateStyle',
       'lblHeaderCleanups',
       'lblLocale', 'hdrLocale',
       'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat', 'cleanBlockQuote', 'cleanNewBlockQuote',
