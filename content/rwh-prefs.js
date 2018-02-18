@@ -225,12 +225,9 @@ ReplyWithHeader.Prefs = {
       'hdrFontsize', 'lblFontcolor', 'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr',
       'lblAfterHeader', 'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblSepLineSize', 'lblSepLineColor',
       'hdrSepLineSize', 'hdrSepLineColor', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle', 'quotTimeAttributionStyle',
-      'quotDateStyle',
-      'lblHeaderCleanups',
-      'lblLocale', 'hdrLocale',
-      'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat', 'cleanBlockQuote', 'cleanNewBlockQuote',
-      'cleanOnlyNewQuoteChar',
-      'cleanGreaterThanChar', 'lblHeaderFormat', 'excludePlainTextHdrPrefix', 'enableRwhDebugMode'
+      'quotDateStyle', 'lblHeaderCleanups', 'hdrLocale', 'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat',
+      'cleanBlockQuote', 'cleanNewBlockQuote', 'cleanGreaterThanChar', 'lblHeaderFormat', 'excludePlainTextHdrPrefix',
+      'cleanOnlyNewQuoteChar', 'enableRwhDebugMode'
     ];
 
     for (let len = ids.length, i = 0; i < len; i++) {
@@ -241,7 +238,12 @@ ReplyWithHeader.Prefs = {
   },
 
   toggle: function(id, v) {
-    ReplyWithHeader.byId(id).disabled = v;
+    let obj = ReplyWithHeader.byId(id);
+    if (obj) {
+      obj.disabled = v;
+    } else {
+      ReplyWithHeader.Log.debug('func: toggle - Element not found ['+ id +']');
+    }
   },
 
   forPostbox: function(v) {

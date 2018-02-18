@@ -50,9 +50,9 @@
         <hbox align="center">
             <checkbox id="enableRwh" label="Enable" preference="pref-enableRwh"
                     oncommand="ReplyWithHeader.Prefs.toggleRwh();" />
-        </hbox>
-        <hbox align="right" style="margin-top:-27px;margin-right:3px;">
-            <menulist id="hdrLocale" preference="pref-hdrLocale">
+            <spacer flex="1" />
+            <image src='chrome://replywithheader/skin/language.png' width='21' height='21' style="margin-right:3px;margin-top:3px;" />
+            <menulist id="hdrLocale" preference="pref-hdrLocale" style="margin-right:4px;">
               <menupopup>
                   <menuitem label="English (en)" value="en" />
                   <menuitem label="French (fr)" value="fr" />
@@ -96,9 +96,9 @@
                         <radiogroup id="quotSeqAttributionStyle" preference="pref-quotSeqAttributionStyle"
                                     style="margin-left:30px">
                             <radio value="0" label="Default (Subject, Date, From, To, Cc)" />
-                            <radio value="3" label="Lookout (From, To, Cc, Date, Subject)" style="margin-top:-2px" />
                             <radio value="1" label="Outlook (From, Sent, To, Cc, Subject)" style="margin-top:-2px" />
                             <radio value="2" label="Simple (From, Sent, Subject)" style="margin-top:-2px" />
+                            <radio value="3" label="Lookout (From, To, Cc, Date, Subject)" style="margin-top:-2px" />
                         </radiogroup>
                     </hbox>
                     <hbox align="center">
@@ -237,7 +237,7 @@
                         <image id="abtRwhLogo" src='chrome://replywithheader/skin/icon-64.png' width='64' height='64'
                                style="margin-left:100px"/>
                         <label id="abtRwhCaption" value="ReplyWithHeader" style="font-weight:bold;" />
-                        <label id="abtRwhCopyrights" value="&#169; 2017 Jeevanandam M."
+                        <label id="abtRwhCopyrights" value="&#169; 2018 Jeevanandam M."
                                style="font-size:12px; margin-top:40px;margin-left:-145px" />
                     </hbox>
                     <hbox id="hboxRwhBtn" align="center" style="margin: 40px 0 0 55px">

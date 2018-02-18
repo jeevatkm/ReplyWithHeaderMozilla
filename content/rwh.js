@@ -134,10 +134,11 @@ var ReplyWithHeader = {
     let found = false;
 
     if (sigOnBtm) {
-      this.Log.debug('signatue in the bottom');
+      this.Log.debug('Signature settings: inserts after the quote');
       for (let i = rootElement.childNodes.length - 1; i >= 0; i--) {
         let el = rootElement.childNodes[i];
 
+        this.Log.debug('Element node type: ' + el.nodeType);
         if (el.nodeType != 1) { // check is it Node.ELEMENT_NODE
           continue;
         }
@@ -148,12 +149,12 @@ var ReplyWithHeader = {
         }
 
         if (el.nodeName.toLowerCase() == 'blockquote') {
-          this.Log.debug('reached blockquote, so no signature');
+          this.Log.debug('Signature not found');
           break;
         }
       }
     } else {
-      this.Log.debug('signatue is at top');
+      this.Log.debug('Signature settings: inserts above the quote');
       for (let i = 0; i < rootElement.childNodes.length; i++) {
         let el = rootElement.childNodes[i];
 
@@ -167,10 +168,9 @@ var ReplyWithHeader = {
         }
 
         if (el.nodeName.toLowerCase() == 'blockquote') {
-          this.Log.debug('reached blockquote, so no signature');
+          this.Log.debug('Signature not found');
           break;
         }
-
       }
     }
 
@@ -237,10 +237,10 @@ var ReplyWithHeader = {
     if (this.Prefs.dateStyle == 1) {
       dateFmtStr = this.dateFormatISO;
     }
+
     if (this.Prefs.timeFormat == 1) {
       dateFmtStr += " " + this.timeFormat24hrs;
-    }
-    else {
+    } else {
       dateFmtStr += " " + this.timeFormat12hrs;
     }
 
@@ -386,12 +386,6 @@ var ReplyWithHeader = {
       this.hdrCnt += 1; // for Cc header
     }
 
-    let replyTo = hdr.getStringProperty('replyTo').trim();
-    if (replyTo) {
-      this.Log.debug('ReplyTo is present:: ' + replyTo);
-      this.hdrCnt += 1; // for reply-to header
-    }
-
     this.Log.debug('\nFrom: ' + header.from +
       '\nTo: ' + header.to +
       '\nCC: ' + header.cc +
@@ -513,7 +507,7 @@ var ReplyWithHeader = {
 
     rwhHdr += '</div>';
 
-    this.Log.debug('Header HTML: ' + rwhHdr);
+    this.Log.debug('Composed RWH Headers: ' + rwhHdr);
 
     return rwhHdr;
   },
@@ -609,6 +603,14 @@ var ReplyWithHeader = {
     return this.mimeConverter.decodeMimeHeader(str, null, false, true);
   },
 
+  isReplyToNode: function(node) {
+    if (node) {
+      return (Node.TEXT_NODE == node.nodeType
+        && node.nodeValue.trim().startsWith('Reply-To:'));
+    }
+    return false;
+  },
+
   handleReplyMessage: function() {
     let hdrNode;
     if (this.isPostbox) {
@@ -624,7 +626,9 @@ var ReplyWithHeader = {
     }
 
     if (!hdrNode) {
-      this.Log.error('RWH is unable to insert headers, contact add-on author here - ' + this.issuesPageUrl);
+      this.Log.error('Due to internal changes in Thunderbird. '
+      + 'RWH add-on having difficulties in processing mail headers '
+      + ', contact add-on author here - ' + this.issuesPageUrl);
       return;
     }
 
@@ -678,6 +682,7 @@ var ReplyWithHeader = {
     // Postbox
     //
     if (this.isPostbox) {
+      this.Log.debug('Postbox:: Forward mode');
       let hdrNode = this.getElement('__pbConvHr');
       if (!hdrNode) {
         hdrNode = this.getElement('moz-email-headers-table');
@@ -685,20 +690,21 @@ var ReplyWithHeader = {
 
       let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
       let isSignature = this.isSignaturePresent;
-      this.Log.debug('isSignature: ' + isSignature);
-
       let sigNode;
+
+      this.Log.debug('Is signature present: ' + isSignature);
 
       // signature present and location above quoted email (top)
       if (!sigOnBtm && isSignature) {
         sigNode = this.getElement('moz-signature').cloneNode(true);
         gMsgCompose.editor.rootElement.removeChild(this.getElement('moz-signature'));
+        this.Log.debug('Postbox signature node: ' + sigNode);
       }
-      this.Log.debug('sigNode: ' + sigNode);
 
       let mBody = gMsgCompose.editor.rootElement;
 
       if (hdrNode && this.isHtmlMail) {
+        this.Log.debug('HTML forward mode');
         while (hdrNode.firstChild) {
           hdrNode.removeChild(hdrNode.firstChild);
         }
@@ -720,15 +726,18 @@ var ReplyWithHeader = {
         let lineSize = this.Prefs.headerSepLineSize;
         this.byIdInMail('rwhMsgHdrDivider').setAttribute('style', 'border:0;border-top:' + lineSize + 'px solid ' + lineColor + ';padding:0;margin:10px 0 5px 0;width:100%;');
       } else {
-        this.Log.debug('hdrCnt: ' + this.hdrCnt);
+        this.Log.debug('Plain text forward mode');
+        this.Log.debug('Headers count: ' + this.hdrCnt);
 
         let pos = 0;
         for (let i = 0; i < mBody.childNodes.length; i++) {
           let node = mBody.childNodes[i];
-          if (Node.TEXT_NODE == node.nodeType &&
-            node.nodeValue == '-------- Original Message --------') {
-            pos = i;
-            break;
+          if (Node.TEXT_NODE == node.nodeType) {
+            let str = node.nodeValue.trim();
+            if (str.startsWith('--------') && str.endsWith('--------')) {
+              pos = i;
+              break;
+            }
           }
         }
 
@@ -739,7 +748,16 @@ var ReplyWithHeader = {
         }
 
         for (let i = pos; i <= (pos + lc); i++) {
-          mBody.removeChild(mBody.childNodes[i]);
+          let fnode = mBody.childNodes[i];
+          if (fnode.nodeValue) {
+            this.Log.debug('Plain Text Hdr ==> ' + fnode.nodeValue);
+          }
+
+          if (this.isReplyToNode(fnode)) {
+            lc = lc + 2;
+            this.Log.debug('Reply-To header found');
+          }
+          mBody.removeChild(fnode);
         }
 
         mBody.insertBefore(hdrRwhNode, mBody.childNodes[pos - 1]);
@@ -748,22 +766,24 @@ var ReplyWithHeader = {
       //
       // For Thunderbird
       //
+      this.Log.debug('Thunderbird:: Forward mode');
       let fwdContainer = this.getElement('moz-forward-container');
       let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
       let isSignature = this.isSignaturePresent;
       let rootElement = gMsgCompose.editor.rootElement;
       let sigNode;
 
-      this.Log.debug('isSignature: ' + isSignature);
+      this.Log.debug('Is signature present: ' + isSignature);
 
       // signature present and location above quoted email (top)
       if (!sigOnBtm && isSignature) {
         sigNode = this.getElement('moz-signature').cloneNode(true);
         rootElement.removeChild(this.getElement('moz-signature'));
+        this.Log.debug('Thunderbird signature node: ' + sigNode);
       }
-      this.Log.debug('sigNode: ' + sigNode);
 
       if (this.isHtmlMail) {
+        this.Log.debug('HTML forward mode');
         while (fwdContainer.firstChild) {
           if (this.contains(fwdContainer.firstChild.className, 'moz-email-headers-table')) {
             break;
@@ -772,6 +792,7 @@ var ReplyWithHeader = {
         }
 
         fwdContainer.replaceChild(hdrRwhNode, this.getElement('moz-email-headers-table'));
+
         // put signature back to the place
         if (!sigOnBtm && isSignature) {
           rootElement.insertBefore(sigNode, fwdContainer);
@@ -781,7 +802,8 @@ var ReplyWithHeader = {
           // rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
         }
       } else {
-        this.Log.debug('hdrCnt: ' + this.hdrCnt);
+        this.Log.debug('Plain text forward mode');
+        this.Log.debug('Headers count: ' + this.hdrCnt);
 
         // Logically removing text node header elements
         this.deleteNode(fwdContainer.firstChild);
@@ -793,7 +815,17 @@ var ReplyWithHeader = {
         }
 
         for (let i = 0; i <= lc; i++) {
-          this.deleteNode(fwdContainer.firstChild);
+          let fnode = fwdContainer.firstChild;
+          if (fnode.nodeValue) {
+            this.Log.debug('Plain Text Hdr ==> ' + fnode.nodeValue);
+          }
+
+          if (this.isReplyToNode(fnode)) {
+            lc = lc + 2;
+            this.Log.debug('Reply-To header found');
+          }
+
+          this.deleteNode(fnode);
         }
 
         fwdContainer.replaceChild(hdrRwhNode, fwdContainer.firstChild);
@@ -845,11 +877,12 @@ var ReplyWithHeader = {
 
     if (mailBody) {
       // Here RWH Add-On does string find and replace. No external creation of HTML string
-      if (this.Prefs.cleanOnlyNewQuoteChar)
-      mailBody.innerHTML = mailBody.innerHTML.replace(/>(&gt;) ?/g, '>');
-      else
-      mailBody.innerHTML = mailBody.innerHTML.replace(/<br>(&gt;)+ ?/g, '<br />')
-        .replace(/(<\/?span [^>]+>)(&gt;)+ /g, '$1');
+      if (this.Prefs.cleanOnlyNewQuoteChar) {
+        mailBody.innerHTML = mailBody.innerHTML.replace(/>(&gt;) ?/g, '>');
+      } else {
+        mailBody.innerHTML = mailBody.innerHTML.replace(/<br>(&gt;)+ ?/g, '<br />')
+          .replace(/(<\/?span [^>]+>)(&gt;)+ /g, '$1');
+      }
     }
   },
 
@@ -889,8 +922,8 @@ var ReplyWithHeader = {
     if (prefs.isEnabled && this.isOkayToMoveOn) {
       this.hdrCnt = 4; // From, To, Subject, Date
 
-      // this.Log.debug('BEFORE Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
-      this.Log.debug('Is HTML compose: ' + this.isHtmlMail);
+      // this.Log.debug('BEFORE Raw Content:: ' + gMsgCompose.editor.rootElement.innerHTML);
+      this.Log.debug('Current mail type: ' + (this.isHtmlMail ? 'HTML' : 'Plain text'));
 
       if (this.isReply) {
         this.Log.debug('Reply/ReplyAll mode');
@@ -916,7 +949,7 @@ var ReplyWithHeader = {
 
       this.handOverToUser();
 
-      // this.Log.debug('AFTER Raw Source:: ' + gMsgCompose.editor.rootElement.innerHTML);
+      // this.Log.debug('AFTER Raw Content:: ' + gMsgCompose.editor.rootElement.innerHTML);
     } else {
       if (prefs.isEnabled) {
         // Resend=10, Redirect=15
@@ -1074,3 +1107,19 @@ XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader.Log, 'console',
                                        'nsIScriptableUnescapeHTML');
   }
 })();
+
+// String prototype
+if (!String.prototype.startsWith) {
+	String.prototype.startsWith = function(search, pos) {
+		return this.substr(!pos || pos < 0 ? 0 : +pos, search.length) === search;
+	};
+}
+
+if (!String.prototype.endsWith) {
+	String.prototype.endsWith = function(search, this_len) {
+		if (this_len === undefined || this_len > this.length) {
+			this_len = this.length;
+		}
+		return this.substring(this_len - search.length, this_len) === search;
+	};
+}

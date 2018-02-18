@@ -31,6 +31,11 @@ pref('extensions.replywithheader.trans.subject.prefix', false);
 // 1 - International date format - GMT
 pref('extensions.replywithheader.header.date.format', 0);
 
+// RWH Date style
+// Full - ddd, MMM d, yyyy
+// ISO - yyyy-MM-dd
+pref('extensions.replywithheader.header.date.style', 0);
+
 // 0 - 12 hours AM/PM
 // 1 - 24 hours
 pref('extensions.replywithheader.header.time.format', 0);
@@ -39,6 +44,7 @@ pref('extensions.replywithheader.header.time.format', 0);
 pref('extensions.replywithheader.clean.blockquote', true);
 pref('extensions.replywithheader.clean.new.blockquote', false);
 pref('extensions.replywithheader.clean.char.greaterthan', true);
+pref('extensions.replywithheader.clean.only.new.quote.char', false);
 pref('extensions.replywithheader.clean.pln.hdr.prefix', false);
 
 // RWH Debug settings
