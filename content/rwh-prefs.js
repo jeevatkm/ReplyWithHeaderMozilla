@@ -65,6 +65,10 @@ ReplyWithHeader.Prefs = {
     return this.getIntPref('header.date.format');
   },
 
+  get dateStyle() {
+    return this.getIntPref('header.date.style');
+  },
+
   get timeFormat() {
     return this.getIntPref('header.time.format');
   },
@@ -103,6 +107,10 @@ ReplyWithHeader.Prefs = {
 
   get cleanGreaterThanChar() {
     return this.getBoolPref('clean.char.greaterthan');
+  },
+
+  get cleanOnlyNewQuoteChar() {
+    return this.getBoolPref('clean.only.new.quote.char');
   },
 
   get excludePlainTxtHdrPrefix() {
@@ -202,6 +210,7 @@ ReplyWithHeader.Prefs = {
     this.loadFontSizes();
 
     this.toggleBlockQuote();
+    this.toggleQuoteChar();
 
     this.forPostbox(true);
 
@@ -216,9 +225,9 @@ ReplyWithHeader.Prefs = {
       'hdrFontsize', 'lblFontcolor', 'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr',
       'lblAfterHeader', 'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblSepLineSize', 'lblSepLineColor',
       'hdrSepLineSize', 'hdrSepLineColor', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle', 'quotTimeAttributionStyle',
-      'lblHeaderCleanups', 'hdrLocale', 'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat',
+      'quotDateStyle', 'lblHeaderCleanups', 'hdrLocale', 'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat',
       'cleanBlockQuote', 'cleanNewBlockQuote', 'cleanGreaterThanChar', 'lblHeaderFormat', 'excludePlainTextHdrPrefix',
-      'enableRwhDebugMode'
+      'cleanOnlyNewQuoteChar', 'enableRwhDebugMode'
     ];
 
     for (let len = ids.length, i = 0; i < len; i++) {
@@ -250,6 +259,11 @@ ReplyWithHeader.Prefs = {
   toggleBlockQuote: function() {
     let cbq = ReplyWithHeader.byId('cleanBlockQuote');
     this.toggle('cleanNewBlockQuote', !cbq.checked);
+  },
+
+  toggleQuoteChar: function() {
+    let cqc = ReplyWithHeader.byId('cleanGreaterThanChar');
+    this.toggle('cleanOnlyNewQuoteChar', !cqc.checked);
   },
 
   applyPlatformStyle: function() {

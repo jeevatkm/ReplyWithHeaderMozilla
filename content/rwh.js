@@ -26,8 +26,10 @@ var ReplyWithHeader = {
   paypalDonateUrl: 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=Jeevanandam%20M%2e&item_number=ReplyWithHeaderMozilla&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted',
   hdrCnt: 4,
   bqStyleStr: 'border:none !important; margin-left:0px !important; margin-right:0px !important; margin-top:0px !important; padding-left:0px !important; padding-right:0px !important',
-  dateFormat12hrs: 'ddd, MMM d, yyyy h:mm a',
-  dateFormat24hrs: 'ddd, MMM d, yyyy H:mm',
+  dateFormatISO: 'yyyy-MM-dd',
+  dateFormatFull: 'ddd, MMM d, yyyy',
+  timeFormat12hrs: 'h:mm a',
+  timeFormat24hrs: 'H:mm',
 
   get isMacOSX() {
     return (this.appRuntime.OS == 'Darwin');
@@ -231,9 +233,15 @@ var ReplyWithHeader = {
     let d = new Date(prTime / 1000);
     var nd = '';
 
-    let dateFmtStr = this.dateFormat12hrs;
+    let dateFmtStr = this.dateFormatFull;
+    if (this.Prefs.dateStyle == 1) {
+      dateFmtStr = this.dateFormatISO;
+    }
+
     if (this.Prefs.timeFormat == 1) {
-      dateFmtStr = this.dateFormat24hrs;
+      dateFmtStr += " " + this.timeFormat24hrs;
+    } else {
+      dateFmtStr += " " + this.timeFormat12hrs;
     }
 
     if (this.Prefs.dateFormat == 0) { // jshint ignore:line
@@ -376,17 +384,6 @@ var ReplyWithHeader = {
     // Cleanup numbers
     if (header.cc) {
       this.hdrCnt += 1; // for Cc header
-    }
-
-    let henumer = hdr.propertyEnumerator;
-    while (henumer.hasMore()) {
-      this.Log.debug('property:: '+ henumer.getNext());
-    }
-
-    let replyTo = hdr.getStringProperty('replyTo').trim();
-    if (replyTo) {
-      this.Log.debug('ReplyTo is present:: ' + replyTo);
-      this.hdrCnt += 1; // for reply-to header
     }
 
     this.Log.debug('\nFrom: ' + header.from +
@@ -880,8 +877,12 @@ var ReplyWithHeader = {
 
     if (mailBody) {
       // Here RWH Add-On does string find and replace. No external creation of HTML string
-      mailBody.innerHTML = mailBody.innerHTML.replace(/<br>(&gt;)+ ?/g, '<br />')
-        .replace(/(<\/?span [^>]+>)(&gt;)+ /g, '$1');
+      if (this.Prefs.cleanOnlyNewQuoteChar) {
+        mailBody.innerHTML = mailBody.innerHTML.replace(/>(&gt;) ?/g, '>');
+      } else {
+        mailBody.innerHTML = mailBody.innerHTML.replace(/<br>(&gt;)+ ?/g, '<br />')
+          .replace(/(<\/?span [^>]+>)(&gt;)+ /g, '$1');
+      }
     }
   },
 
