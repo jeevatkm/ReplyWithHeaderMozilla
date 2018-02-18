@@ -922,7 +922,7 @@ var ReplyWithHeader = {
     if (prefs.isEnabled && this.isOkayToMoveOn) {
       this.hdrCnt = 4; // From, To, Subject, Date
 
-      this.Log.debug('BEFORE Raw Content:: ' + gMsgCompose.editor.rootElement.innerHTML);
+      // this.Log.debug('BEFORE Raw Content:: ' + gMsgCompose.editor.rootElement.innerHTML);
       this.Log.debug('Current mail type: ' + (this.isHtmlMail ? 'HTML' : 'Plain text'));
 
       if (this.isReply) {
@@ -949,7 +949,7 @@ var ReplyWithHeader = {
 
       this.handOverToUser();
 
-      this.Log.debug('AFTER Raw Content:: ' + gMsgCompose.editor.rootElement.innerHTML);
+      // this.Log.debug('AFTER Raw Content:: ' + gMsgCompose.editor.rootElement.innerHTML);
     } else {
       if (prefs.isEnabled) {
         // Resend=10, Redirect=15

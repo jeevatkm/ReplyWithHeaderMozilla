@@ -50,15 +50,14 @@
         <hbox align="center">
             <checkbox id="enableRwh" label="Enable" preference="pref-enableRwh"
                     oncommand="ReplyWithHeader.Prefs.toggleRwh();" />
-        </hbox>
-        <hbox align="right" style="margin-top:-27px;margin-right:3px;">
-          <image src='chrome://replywithheader/skin/language.png' width='21' height='21' style="margin-right:3px;margin-top:5px;" />
-          <menulist id="hdrLocale" preference="pref-hdrLocale">
-            <menupopup>
-                <menuitem label="English (en)" value="en" />
-                <menuitem label="French (fr)" value="fr" />
-            </menupopup>
-          </menulist>
+            <spacer flex="1" />
+            <image src='chrome://replywithheader/skin/language.png' width='21' height='21' style="margin-right:3px;margin-top:3px;" />
+            <menulist id="hdrLocale" preference="pref-hdrLocale" style="margin-right:4px;">
+              <menupopup>
+                  <menuitem label="English (en)" value="en" />
+                  <menuitem label="French (fr)" value="fr" />
+              </menupopup>
+            </menulist>
         </hbox>
         <tabbox style="margin-bottom:7px;margin-top:5px;">
             <tabs>
@@ -238,7 +237,7 @@
                         <image id="abtRwhLogo" src='chrome://replywithheader/skin/icon-64.png' width='64' height='64'
                                style="margin-left:100px"/>
                         <label id="abtRwhCaption" value="ReplyWithHeader" style="font-weight:bold;" />
-                        <label id="abtRwhCopyrights" value="&#169; 2017 Jeevanandam M."
+                        <label id="abtRwhCopyrights" value="&#169; 2018 Jeevanandam M."
                                style="font-size:12px; margin-top:40px;margin-left:-145px" />
                     </hbox>
                     <hbox id="hboxRwhBtn" align="center" style="margin: 40px 0 0 55px">
