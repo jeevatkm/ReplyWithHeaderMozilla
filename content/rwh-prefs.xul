@@ -3,7 +3,11 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
 <?xml-stylesheet href="data:text/css,
-        radio { font-size: 12px }
+        radio { font-size: 12px; margin-top:-2px; }
+        radio:first-child { margin-top:0px; }
+        radiogroup { margin-left:30px; }
+        radiogroup.horizontal { display:inline-block; }
+        .horizontal radio { margin-right:20px; }
         button { cursor: pointer }
         " type="text/css"?>
 
@@ -71,34 +75,30 @@
                         <label id="lblFromAttribution" value="Header 'From' attribution style" />
                     </hbox>
                     <hbox align="center">
-                        <radiogroup id="fromAttributionStyle" preference="pref-fromAttributionStyle"
-                                    style="margin-left:30px">
+                        <radiogroup id="fromAttributionStyle" preference="pref-fromAttributionStyle">
                             <radio value="0" label="Default" />
-                            <radio value="1" label="Outlook Simple (From: Name)" style="margin-top:-2px" />
-                            <radio value="2" label="Outlook Extended (From: Name [mailto:email-address])"
-                                   style="margin-top:-2px" />
+                            <radio value="1" label="Outlook Simple (From: Name)" />
+                            <radio value="2" label="Outlook Extended (From: Name [mailto:email-address])" />
                         </radiogroup>
                     </hbox>
                     <hbox align="center">
                         <label id="lblHeaderToCcAttrib" value="Header 'To' &amp; 'Cc' attribution style" />
                     </hbox>
                     <hbox align="center">
-                        <radiogroup id="toccAttributionStyle" preference="pref-toccAttributionStyle"
-                                    style="margin-left:30px">
+                        <radiogroup id="toccAttributionStyle" preference="pref-toccAttributionStyle">
                             <radio value="0" label="Default (To: Name1 &lt;email-address1&gt;, ...)" />
-                            <radio value="1" label="Outlook (To: Name1; Name2; ...)" style="margin-top:-2px" />
+                            <radio value="1" label="Outlook (To: Name1; Name2; ...)" />
                         </radiogroup>
                     </hbox>
                     <hbox align="center">
                         <label id="lblHeaderQuotSeq" value="Header quoting sequence and labels" />
                     </hbox>
                     <hbox align="center">
-                        <radiogroup id="quotSeqAttributionStyle" preference="pref-quotSeqAttributionStyle"
-                                    style="margin-left:30px">
+                        <radiogroup id="quotSeqAttributionStyle" preference="pref-quotSeqAttributionStyle">
                             <radio value="0" label="Default (Subject, Date, From, To, Cc)" />
-                            <radio value="1" label="Outlook (From, Sent, To, Cc, Subject)" style="margin-top:-2px" />
-                            <radio value="2" label="Simple (From, Sent, Subject)" style="margin-top:-2px" />
-                            <radio value="3" label="Lookout (From, To, Cc, Date, Subject)" style="margin-top:-2px" />
+                            <radio value="1" label="Outlook (From, Sent, To, Cc, Subject)" />
+                            <radio value="2" label="Simple (From, Sent, Subject)" />
+                            <radio value="3" label="Lookout (From, To, Cc, Date, Subject)" />
                         </radiogroup>
                     </hbox>
                     <hbox align="center">
@@ -106,24 +106,24 @@
                     </hbox>
                     <hbox align="center">
                         <radiogroup id="quotDateAttributionStyle" preference="pref-quotDateAttributionStyle"
-                                    style="margin-left:30px">
-                            <radio value="0" label="Locale date format" />
-                            <radio value="1" label="International date format (GMT)" style="margin-top:-2px" />
+                                    class="horizontal">
+                            <radio value="0" label="Local timezone" />
+                            <radio value="1" label="International time (GMT)" />
                         </radiogroup>
                     </hbox>
-                    <hbox align="center" style="margin-left:30px;margin-top:-6px;">
-                      <radiogroup id="quotDateStyle" preference="pref-quotDateStyle"
-                                  style="display:inline;font-size:12px;">
-                          <radio value="0" label="Full (ddd, MMM d, yyyy)" />
-                          <radio value="1" label="ISO (yyyy-mm-dd)" style="margin-left:20px" />
-                      </radiogroup>
+                    <hbox align="center" style="margin-top:-2px">
+                        <radiogroup id="quotDateStyle" preference="pref-quotDateStyle"
+                                  class="horizontal">
+                            <radio value="0" label="Full (ddd, MMM d, yyyy)" />
+                            <radio value="1" label="ISO (yyyy-mm-dd)" />
+                        </radiogroup>
                     </hbox>
-                    <hbox id="hboxQuotTimeAttributionStyle" align="center" style="margin-left:30px;margin-top:-6px;">
-                      <radiogroup id="quotTimeAttributionStyle" preference="pref-quotTimeAttributionStyle"
-                                  style="display:inline;font-size:12px;">
-                          <radio value="0" label="12 hours format (AM/PM)" />
-                          <radio value="1" label="24 hours format" style="margin-left:20px" />
-                      </radiogroup>
+                    <hbox align="center" style="margin-top:-2px">
+                        <radiogroup id="quotTimeAttributionStyle" preference="pref-quotTimeAttributionStyle"
+                                  class="horizontal">
+                            <radio value="0" label="12 hours format (AM/PM)" />
+                            <radio value="1" label="24 hours format" />
+                        </radiogroup>
                     </hbox>
                     <hbox align="center">
                         <label id="lblTypography" value="Header typography" />

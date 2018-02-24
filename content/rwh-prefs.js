@@ -271,7 +271,6 @@ ReplyWithHeader.Prefs = {
       ReplyWithHeader.byId('hboxFromAttribution').style.marginTop = '-10px';
       ReplyWithHeader.byId('hboxCntFormat').style.marginTop = '-10px';
     } else if (ReplyWithHeader.isWindows) {
-      ReplyWithHeader.byId('hboxQuotTimeAttributionStyle').style.marginTop = '-4px';
       ReplyWithHeader.byId('hdrFontsize').style.marginLeft = '6px';
       ReplyWithHeader.byId('spaceBeforeSep').style.marginLeft = '.63em';
       ReplyWithHeader.byId('hdrSepLineSize').style.marginLeft = '4.15em';
@@ -281,7 +280,6 @@ ReplyWithHeader.Prefs = {
       ReplyWithHeader.byId('hboxEnableRwhDebugMode').style.marginLeft = '170px';
       ReplyWithHeader.byId('hboxDonateBtn').style.marginLeft = '16px';
     } else if (ReplyWithHeader.isLinux) {
-      ReplyWithHeader.byId('hboxQuotTimeAttributionStyle').style.marginTop = '-4px';
       ReplyWithHeader.byId('hdrFontsize').style.marginLeft = '7px';
       ReplyWithHeader.byId('spaceBeforeSep').style.marginLeft = '0px';
       ReplyWithHeader.byId('hdrSepLineSize').style.marginLeft = '4.05em';
