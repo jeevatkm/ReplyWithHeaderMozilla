@@ -232,27 +232,30 @@ var ReplyWithHeader = {
     // Input is PR time
     let d = new Date(prTime / 1000);
     var nd = '';
-
-    let dateFmtStr = this.dateFormatFull;
-    if (this.Prefs.dateStyle == 1) {
-      dateFmtStr = this.dateFormatISO;
-    }
-
-    if (this.Prefs.timeFormat == 1) {
-      dateFmtStr += " " + this.timeFormat24hrs;
-    } else {
-      dateFmtStr += " " + this.timeFormat12hrs;
-    }
+    var dateStr, timeStr, tz;
 
     if (this.Prefs.dateFormat == 0) { // jshint ignore:line
       this.Log.debug('Locale date format');
-      nd = DateFormat.format.date(d, dateFmtStr) + ' ' + this.tzAbbr(d);
+      tz = this.tzAbbr(d);
     } else {
       this.Log.debug('GMT date format');
-      var utc = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
-      nd = DateFormat.format.date(utc, dateFmtStr) + ' ' + this.tzAbbr(d.toUTCString());
+      tz = this.tzAbbr(d.toUTCString());
+      d = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
     }
 
+    if (this.Prefs.timeFormat == 1) {
+      timeStr = DateFormat.format.date(d, this.timeFormat24hrs);
+    } else {
+      timeStr = DateFormat.format.date(d, this.timeFormat12hrs);
+    }
+
+    if (this.Prefs.dateStyle == 1) {
+      dateStr = DateFormat.format.date(d, this.dateFormatISO);
+    } else {
+      dateStr = this.DateFmt(d).date;
+    }
+
+    nd = dateStr + ' ' + timeStr + ' ' + tz;
     return nd;
   },
 
