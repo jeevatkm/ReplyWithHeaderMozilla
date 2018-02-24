@@ -26,8 +26,6 @@ var ReplyWithHeader = {
   paypalDonateUrl: 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=Jeevanandam%20M%2e&item_number=ReplyWithHeaderMozilla&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted',
   hdrCnt: 4,
   bqStyleStr: 'border:none !important; margin-left:0px !important; margin-right:0px !important; margin-top:0px !important; padding-left:0px !important; padding-right:0px !important',
-  dateFormatISO: 'yyyy-MM-dd',
-  dateFormatFull: 'ddd, MMM d, yyyy',
   timeFormat12hrs: 'h:mm a',
   timeFormat24hrs: 'H:mm',
 
@@ -250,7 +248,7 @@ var ReplyWithHeader = {
     }
 
     if (this.Prefs.dateStyle == 1) {
-      dateStr = DateFormat.format.date(d, this.dateFormatISO);
+      dateStr = DateFormat.format.date(d, 'yyyy-MM-dd');
     } else {
       dateStr = this.DateFmt(d).date;
     }
