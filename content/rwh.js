@@ -988,13 +988,18 @@ var ReplyWithHeader = {
         year: "numeric",
         month: "short",
         day: "numeric",
+    }
+    var timeOpts = {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: (this.Prefs.timeFormat == 0),
     };
     var locale = this.Prefs.headerLocale;
 
     date = new Date(date);
 
     var dateStr = date.toLocaleDateString(locale, options);
-    var timeStr = date.toLocaleTimeString(locale);
+    var timeStr = date.toLocaleTimeString(locale, timeOpts);
 
     return {
         date: dateStr,
