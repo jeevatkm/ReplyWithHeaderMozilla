@@ -997,7 +997,7 @@ var i18n = {
   "cc": {
     "en": "Cc:",
     "fr": "Cc :",
-    "de": "De :",
+    "de": "Cc:",
   },
   "subject": {
     "en": "Subject:",
@@ -1017,7 +1017,7 @@ var i18n = {
   "forwarded_message": {
     "en": "Forwarded Message",
     "fr": "Message transféré",
-    "de": "Weitergeleitet Nachricht",
+    "de": "Weitergeleitete Nachricht",
   },
   "original_message": {
     "en": "Original Message",
