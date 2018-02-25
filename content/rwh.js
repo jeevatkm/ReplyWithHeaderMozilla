@@ -241,16 +241,12 @@ var ReplyWithHeader = {
       d = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
     }
 
-    if (this.Prefs.timeFormat == 1) {
-      timeStr = DateFormat.format.date(d, this.timeFormat24hrs);
-    } else {
-      timeStr = DateFormat.format.date(d, this.timeFormat12hrs);
-    }
+    nd = this.DateFmt(d);
+    dateStr = nd.date;
+    timeStr = nd.time;
 
     if (this.Prefs.dateStyle == 1) {
       dateStr = DateFormat.format.date(d, 'yyyy-MM-dd');
-    } else {
-      dateStr = this.DateFmt(d).date;
     }
 
     nd = dateStr + ' ' + timeStr + ' ' + tz;
