@@ -60,6 +60,7 @@
               <menupopup>
                   <menuitem label="English (en)" value="en" />
                   <menuitem label="French (fr)" value="fr" />
+                  <menuitem label="German (de)" value="de" />
               </menupopup>
             </menulist>
         </hbox>

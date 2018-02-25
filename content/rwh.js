@@ -987,34 +987,42 @@ var i18n = {
   "from": {
     "en": "From:",
     "fr": "De :",
+    "de": "Von:",
   },
   "to": {
     "en": "To:",
     "fr": "Pour :",
+    "de": "An:",
   },
   "cc": {
     "en": "Cc:",
     "fr": "Cc :",
+    "de": "De :",
   },
   "subject": {
     "en": "Subject:",
     "fr": "Objet :",
+    "de": "Betreff:",
   },
   "date": {
     "en": "Date:",
     "fr": "Date :",
+    "de": "Datum:",
   },
   "sent": {
     "en": "Sent:",
     "fr": "Envoyé :",
+    "de": "Gesendet:",
   },
   "forwarded_message": {
     "en": "Forwarded Message",
     "fr": "Message transféré",
+    "de": "Weitergeleitet Nachricht",
   },
   "original_message": {
     "en": "Original Message",
     "fr": "Message d'origine",
+    "de": "Ursprüngliche Nachricht",
   },
 };
 
