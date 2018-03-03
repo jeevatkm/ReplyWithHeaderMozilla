@@ -984,6 +984,11 @@ var ReplyWithHeader = {
 };
 
 var i18n = {
+  "lang": {
+    "en": "English",
+    "fr": "French",
+    "de": "German",
+  },
   "from": {
     "en": "From:",
     "fr": "De :",
