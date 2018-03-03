@@ -1031,6 +1031,8 @@ var i18n = {
   },
 };
 
+ReplyWithHeader.i18n = i18n;
+
 // RWH logger methods
 ReplyWithHeader.Log = {
   info: function(msg) {
