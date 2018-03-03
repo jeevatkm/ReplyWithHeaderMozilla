@@ -984,6 +984,11 @@ var ReplyWithHeader = {
 };
 
 var i18n = {
+  "lang": {
+    "en": "English",
+    "fr": "French",
+    "de": "German",
+  },
   "from": {
     "en": "From:",
     "fr": "De :",
@@ -1025,6 +1030,8 @@ var i18n = {
     "de": "Ursprüngliche Nachricht",
   },
 };
+
+ReplyWithHeader.i18n = i18n;
 
 // RWH logger methods
 ReplyWithHeader.Log = {

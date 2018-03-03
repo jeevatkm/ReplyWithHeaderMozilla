@@ -58,9 +58,7 @@
             <image src='chrome://replywithheader/skin/language.png' width='21' height='21' style="margin-right:3px;margin-top:3px;" />
             <menulist id="hdrLocale" preference="pref-hdrLocale" style="margin-right:4px;">
               <menupopup>
-                  <menuitem label="English (en)" value="en" />
-                  <menuitem label="French (fr)" value="fr" />
-                  <menuitem label="German (de)" value="de" />
+              <!-- populated by rwh-prefs.js:populateLocale -->
               </menupopup>
             </menulist>
         </hbox>
