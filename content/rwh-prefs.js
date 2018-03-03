@@ -199,6 +199,18 @@ ReplyWithHeader.Prefs = {
     hdrFontsizeObj.selectedIndex = this.headerFontSize - 10; // 10 - start size
   },
 
+  populateLocale: function() {
+    var menu = ReplyWithHeader.byId('hdrLocale').firstChild;
+    var i18n = ReplyWithHeader.i18n;
+
+    for (var lang in i18n.lang) {
+      menu.appendChild(this.createMenuItem(
+        lang, i18n.lang[lang] + " (" + lang + ")"
+      ));
+    }
+    menu.parentNode.value = this.headerLocale;
+  },
+
   init: function() {
     this.toggleRwh();
 
@@ -208,6 +220,8 @@ ReplyWithHeader.Prefs = {
     this.loadFontFaces();
 
     this.loadFontSizes();
+
+    this.populateLocale();
 
     this.toggleBlockQuote();
     this.toggleQuoteChar();
