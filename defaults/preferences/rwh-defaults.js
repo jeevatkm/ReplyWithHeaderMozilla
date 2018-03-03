@@ -36,6 +36,7 @@ pref('extensions.replywithheader.header.date.format', 0);
 // ISO - yyyy-MM-dd
 pref('extensions.replywithheader.header.date.style', 0);
 
+// RWH Time style
 // 0 - 12 hours AM/PM
 // 1 - 24 hours
 pref('extensions.replywithheader.header.time.format', 0);

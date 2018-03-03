@@ -205,7 +205,7 @@ ReplyWithHeader.Prefs = {
 
     for (var lang in i18n.lang) {
       menu.appendChild(this.createMenuItem(
-        lang, i18n.lang[lang] + " (" + lang + ")"
+        lang, i18n.lang[lang] + ' (' + lang + ')'
       ));
     }
     menu.parentNode.value = this.headerLocale;
@@ -216,6 +216,9 @@ ReplyWithHeader.Prefs = {
 
     // Assigning RWH name and version #
     ReplyWithHeader.byId('abtRwhCaption').value = ReplyWithHeader.addOnName + ' v' + ReplyWithHeader.addOnVersion;
+
+    let d = new Date();
+    ReplyWithHeader.byId('abtRwhCopyrights').value = 'Ⓒ ' + d.getFullYear() + ' Jeevanandam M.'
 
     this.loadFontFaces();
 

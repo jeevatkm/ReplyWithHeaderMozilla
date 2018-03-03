@@ -899,7 +899,7 @@ var ReplyWithHeader = {
   },
 
   init: function() {
-    ReplyWithHeader.Log.debug('Initializing');
+    ReplyWithHeader.Log.debug('Initializing RWH');
     gMsgCompose.RegisterStateListener(ReplyWithHeader.composeStateListener);
   },
 
@@ -926,7 +926,7 @@ var ReplyWithHeader = {
       this.Log.debug('Current mail type: ' + (this.isHtmlMail ? 'HTML' : 'Plain text'));
 
       if (this.isReply) {
-        this.Log.debug('Reply/ReplyAll mode');
+        this.Log.debug('Reply or ReplyAll mode');
 
         this.handleReplyMessage();
       } else if (this.isForward) {
@@ -983,7 +983,7 @@ var ReplyWithHeader = {
 
 };
 
-var i18n = {
+ReplyWithHeader.i18n = {
   "lang": {
     "en": "English",
     "fr": "French",
@@ -1030,8 +1030,6 @@ var i18n = {
     "de": "Ursprüngliche Nachricht",
   },
 };
-
-ReplyWithHeader.i18n = i18n;
 
 // RWH logger methods
 ReplyWithHeader.Log = {

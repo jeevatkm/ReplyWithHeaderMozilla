@@ -106,7 +106,7 @@
                     <hbox align="center">
                         <radiogroup id="quotDateAttributionStyle" preference="pref-quotDateAttributionStyle"
                                     class="horizontal">
-                            <radio value="0" label="Local timezone" />
+                            <radio value="0" label="Locale timezone" />
                             <radio value="1" label="International time (GMT)" />
                         </radiogroup>
                     </hbox>
@@ -114,7 +114,7 @@
                         <radiogroup id="quotDateStyle" preference="pref-quotDateStyle"
                                   class="horizontal">
                             <radio value="0" label="Full (ddd, MMM d, yyyy)" />
-                            <radio value="1" label="ISO (yyyy-mm-dd)" />
+                            <radio value="1" label="ISO (yyyy-MM-dd)" />
                         </radiogroup>
                     </hbox>
                     <hbox align="center" style="margin-top:-2px">
@@ -236,7 +236,7 @@
                         <image id="abtRwhLogo" src='chrome://replywithheader/skin/icon-64.png' width='64' height='64'
                                style="margin-left:100px"/>
                         <label id="abtRwhCaption" value="ReplyWithHeader" style="font-weight:bold;" />
-                        <label id="abtRwhCopyrights" value="&#169; 2018 Jeevanandam M."
+                        <label id="abtRwhCopyrights" value="&#169; Jeevanandam M."
                                style="font-size:12px; margin-top:40px;margin-left:-145px" />
                     </hbox>
                     <hbox id="hboxRwhBtn" align="center" style="margin: 40px 0 0 55px">
