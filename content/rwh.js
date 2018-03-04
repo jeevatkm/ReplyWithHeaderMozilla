@@ -251,6 +251,21 @@ var ReplyWithHeader = {
     return nd;
   },
 
+  handleBadMimeDateUsers: function(rawHdr, pHeader) {
+    let fromAddr = this.cleanEmail(rawHdr.mime2DecodedAuthor);
+
+    let listOfLusers = new RegExp(
+	this.Prefs.useLocalDateRegexList
+	.split("\n")
+	.join("|")
+    );
+    if (fromAddr.match(listOfLusers)) {
+        pHeader.date = this.formatMimeDate(
+		new Date(rawHdr.date/1000)
+		.toString().replace(/GMT([+-]....).*/, "$1"));
+    }
+  },
+
   escapeHtml: function(str) {
     return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   },
