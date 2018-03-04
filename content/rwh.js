@@ -26,10 +26,6 @@ var ReplyWithHeader = {
   paypalDonateUrl: 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=Jeevanandam%20M%2e&item_number=ReplyWithHeaderMozilla&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted',
   hdrCnt: 4,
   bqStyleStr: 'border:none !important; margin-left:0px !important; margin-right:0px !important; margin-top:0px !important; padding-left:0px !important; padding-right:0px !important',
-  dateFormatISO: 'yyyy-MM-dd',
-  dateFormatFull: 'ddd, MMM d, yyyy',
-  timeFormat12hrs: 'h:mm a',
-  timeFormat24hrs: 'H:mm',
 
   get isMacOSX() {
     return (this.appRuntime.OS == 'Darwin');
@@ -232,27 +228,26 @@ var ReplyWithHeader = {
     // Input is PR time
     let d = new Date(prTime / 1000);
     var nd = '';
-
-    let dateFmtStr = this.dateFormatFull;
-    if (this.Prefs.dateStyle == 1) {
-      dateFmtStr = this.dateFormatISO;
-    }
-
-    if (this.Prefs.timeFormat == 1) {
-      dateFmtStr += " " + this.timeFormat24hrs;
-    } else {
-      dateFmtStr += " " + this.timeFormat12hrs;
-    }
+    var dateStr, timeStr, tz;
 
     if (this.Prefs.dateFormat == 0) { // jshint ignore:line
       this.Log.debug('Locale date format');
-      nd = DateFormat.format.date(d, dateFmtStr) + ' ' + this.tzAbbr(d);
+      tz = this.tzAbbr(d);
     } else {
       this.Log.debug('GMT date format');
-      var utc = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
-      nd = DateFormat.format.date(utc, dateFmtStr) + ' ' + this.tzAbbr(d.toUTCString());
+      tz = this.tzAbbr(d.toUTCString());
+      d = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
     }
 
+    nd = this.DateFmt(d);
+    dateStr = nd.date;
+    timeStr = nd.time;
+
+    if (this.Prefs.dateStyle == 1) {
+      dateStr = DateFormat.format.date(d, 'yyyy-MM-dd');
+    }
+
+    nd = dateStr + ' ' + timeStr + ' ' + tz;
     return nd;
   },
 
@@ -978,6 +973,31 @@ var ReplyWithHeader = {
       this.messenger.launchExternalURL(url);
     } catch (ex) {
       this.Log.errorWithException('Unable to open RWH URL.', ex);
+    }
+  },
+
+  DateFmt: function(date) {
+    var options = {
+        weekday: "short",
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+    }
+    var timeOpts = {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: (this.Prefs.timeFormat == 0),
+    };
+    var locale = this.Prefs.headerLocale;
+
+    date = new Date(date);
+
+    var dateStr = date.toLocaleDateString(locale, options);
+    var timeStr = date.toLocaleTimeString(locale, timeOpts);
+
+    return {
+        date: dateStr,
+        time: timeStr,
     }
   },
 
