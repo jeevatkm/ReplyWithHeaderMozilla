@@ -117,6 +117,14 @@ ReplyWithHeader.Prefs = {
     return this.getBoolPref('clean.pln.hdr.prefix');
   },
 
+  get useSenderDate() {
+    return this.getBoolPref('use.sender.date');
+  },
+
+  get useLocalDateRegexList() {
+    return this.getStringPref('use.local.date.regex.list');
+  },
+
   openWebsite: function() {
     ReplyWithHeader.openUrl(ReplyWithHeader.homepageUrl);
   },
@@ -213,6 +221,8 @@ ReplyWithHeader.Prefs = {
   init: function() {
     this.toggleRwh();
 
+    ReplyWithHeader.byId('useSenderDate').doCommand();
+
     // Assigning RWH name and version #
     ReplyWithHeader.byId('abtRwhCaption').value = ReplyWithHeader.addOnName + ' v' + ReplyWithHeader.addOnVersion;
 
@@ -243,6 +253,8 @@ ReplyWithHeader.Prefs = {
       'hdrSepLineSize', 'hdrSepLineColor', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle', 'quotTimeAttributionStyle',
       'quotDateStyle', 'lblHeaderCleanups', 'hdrLocale', 'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat',
       'cleanBlockQuote', 'cleanNewBlockQuote', 'cleanGreaterThanChar', 'lblHeaderFormat', 'excludePlainTextHdrPrefix',
+      'useSenderDate', 'lblUseSenderDate',
+      'useLocalDateRegexList','lblUseLocalDateRegexList',
       'cleanOnlyNewQuoteChar', 'enableRwhDebugMode'
     ];
 
