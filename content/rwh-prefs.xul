@@ -39,6 +39,8 @@
             <preference id="pref-spaceAfterHdr" name="extensions.replywithheader.header.space.after" type="int" instantApply="true" />
             <preference id="pref-hdrSepLineSize" name="extensions.replywithheader.header.separator.line.size" type="int" instantApply="true" />
             <preference id="pref-hdrSepLineColor" name="extensions.replywithheader.header.separator.line.color" type="string" instantApply="true" />
+            <preference id="pref-autoSelectLang" name="extensions.replywithheader.auto.select.lang" type="bool" instantApply="true" />
+            <preference id="pref-autoSelectLangRegexList" name="extensions.replywithheader.auto.select.lang.regex.list" type="string" instantApply="true" />
             <preference id="pref-transSubjectPrefix" name="extensions.replywithheader.trans.subject.prefix" type="bool" instantApply="true" />
             <preference id="pref-cleanBlockQuote" name="extensions.replywithheader.clean.blockquote" type="bool" instantApply="true" />
             <preference id="pref-cleanNewBlockQuote" name="extensions.replywithheader.clean.new.blockquote" type="bool" instantApply="true" />
@@ -201,6 +203,17 @@
                     </hbox>
                 </tabpanel>
                 <tabpanel orient="vertical">
+                    <hbox align="center">
+                        <label id="lblAutoSelectLang" value="Automatic language selection" />
+                    </hbox>
+                    <hbox align="center" style="margin-left:15px">
+                        <checkbox id="autoSelectLang" label="Select language based on account's email" preference="pref-autoSelectLang"
+                                  oncommand="this.parentNode.nextSibling.hidden = ! this.checked;" />
+                    </hbox>
+                    <vbox align="left" style="margin-left:15px; margin-top:5px; font-size:12px">
+                        <label id="lblAutoSelectLangRegexList" value="email => language mappings"/>
+                        <textbox id="autoSelectLangRegexList" preference="pref-autoSelectLangRegexList" multiline="true" rows="2" />
+                    </vbox>
                     <hbox id="hboxCntFormat" align="center">
                         <label id="lblCntFormat" value="Content formatting and cleanups" />
                     </hbox>
