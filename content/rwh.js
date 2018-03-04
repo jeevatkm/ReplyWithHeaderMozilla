@@ -411,6 +411,12 @@ var ReplyWithHeader = {
     let pHeader = this.parseMsgHeader(rawHdr);
     let headerQuotLblSeq = this.Prefs.headerQuotLblSeq;
 
+    if (this.Prefs.useSenderDate) {
+      let mimeDate = MimeHeaders(this.messageUri).get("Date");
+      pHeader.date = this.formatMimeDate(mimeDate);
+      this.handleBadMimeDateUsers(rawHdr, pHeader);
+    }
+
     var rwhHdr = '<div id="rwhMsgHeader">';
 
     if (this.isThunderbird) {
