@@ -395,6 +395,7 @@ var ReplyWithHeader = {
     let rawHdr = this.getMsgHeader(this.messageUri);
     let pHeader = this.parseMsgHeader(rawHdr);
     let headerQuotLblSeq = this.Prefs.headerQuotLblSeq;
+    let i18n = this.i18n;
 
     var rwhHdr = '<div id="rwhMsgHeader">';
 
