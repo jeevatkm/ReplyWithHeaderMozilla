@@ -201,7 +201,6 @@ ReplyWithHeader.Prefs = {
 
   populateLocale: function() {
     var menu = ReplyWithHeader.byId('hdrLocale').firstChild;
-    var i18n = ReplyWithHeader.i18n;
 
     for (var lang in i18n.lang) {
       menu.appendChild(this.createMenuItem(
