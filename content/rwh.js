@@ -395,7 +395,6 @@ var ReplyWithHeader = {
     let rawHdr = this.getMsgHeader(this.messageUri);
     let pHeader = this.parseMsgHeader(rawHdr);
     let headerQuotLblSeq = this.Prefs.headerQuotLblSeq;
-    let i18n = this.i18n;
 
     var rwhHdr = '<div id="rwhMsgHeader">';
 
@@ -1002,54 +1001,6 @@ var ReplyWithHeader = {
     }
   },
 
-};
-
-ReplyWithHeader.i18n = {
-  "lang": {
-    "en": "English",
-    "fr": "French",
-    "de": "German",
-  },
-  "from": {
-    "en": "From:",
-    "fr": "De :",
-    "de": "Von:",
-  },
-  "to": {
-    "en": "To:",
-    "fr": "Pour :",
-    "de": "An:",
-  },
-  "cc": {
-    "en": "Cc:",
-    "fr": "Cc :",
-    "de": "Cc:",
-  },
-  "subject": {
-    "en": "Subject:",
-    "fr": "Objet :",
-    "de": "Betreff:",
-  },
-  "date": {
-    "en": "Date:",
-    "fr": "Date :",
-    "de": "Datum:",
-  },
-  "sent": {
-    "en": "Sent:",
-    "fr": "Envoyé :",
-    "de": "Gesendet:",
-  },
-  "forwarded_message": {
-    "en": "Forwarded Message",
-    "fr": "Message transféré",
-    "de": "Weitergeleitete Nachricht",
-  },
-  "original_message": {
-    "en": "Original Message",
-    "fr": "Message d'origine",
-    "de": "Ursprüngliche Nachricht",
-  },
 };
 
 // RWH logger methods
