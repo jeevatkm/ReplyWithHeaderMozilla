@@ -390,8 +390,34 @@ var ReplyWithHeader = {
     return header;
   },
 
+  getLocaleForAccount: function() {
+    var from = gMsgCompose.compFields.from;
+    var list = this.Prefs.autoSelectLangRegexList.split("\n");
+
+    for (var entry in list) {
+      entry = list[entry].match(/(.*) => (..)/);
+      if (! entry) continue;
+
+      var spec = entry[1];
+      var lang = entry[2].toLowerCase();
+
+      if (! i18n.lang[lang]) continue;
+      if (! from.match(spec)) continue;
+
+      return lang;
+    }
+    return this.Prefs.headerLocale;
+  },
+
+  setLocale: function() {
+    if (this.Prefs.autoSelectLang)
+      return this.locale = this.getLocaleForAccount();
+    else
+      return this.locale = this.Prefs.headerLocale;
+  },
+
   get createRwhHeader() {
-    let locale = this.Prefs.headerLocale;
+    let locale = this.setLocale();
     let rawHdr = this.getMsgHeader(this.messageUri);
     let pHeader = this.parseMsgHeader(rawHdr);
     let headerQuotLblSeq = this.Prefs.headerQuotLblSeq;
@@ -988,7 +1014,7 @@ var ReplyWithHeader = {
         minute: "numeric",
         hour12: (this.Prefs.timeFormat == 0),
     };
-    var locale = this.Prefs.headerLocale;
+    var locale = this.locale;
 
     date = new Date(date);
 
