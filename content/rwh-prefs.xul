@@ -216,7 +216,7 @@
                         <label id="lblAutoSelectLangRegexList" value="email => language mappings"/>
                         <textbox id="autoSelectLangRegexList" preference="pref-autoSelectLangRegexList" multiline="true" rows="2" />
                     </vbox>
-                    <hbox id="hboxCntFormat" align="center">
+                    <hbox id="hboxCntFormat" align="center" style="margin-top:5px">
                         <label id="lblCntFormat" value="Content formatting and cleanups" />
                     </hbox>
                     <hbox align="center" style="margin-left:15px">
