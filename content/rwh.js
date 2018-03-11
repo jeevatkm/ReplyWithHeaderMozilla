@@ -251,6 +251,21 @@ var ReplyWithHeader = {
     return nd;
   },
 
+  handleBadMimeDateUsers: function(rawHdr, pHeader) {
+    let fromAddr = this.cleanEmail(rawHdr.mime2DecodedAuthor);
+
+    let listOfLusers = new RegExp(
+	this.Prefs.useLocalDateRegexList
+	.split("\n")
+	.join("|")
+    );
+    if (fromAddr.match(listOfLusers)) {
+        pHeader.date = this.formatMimeDate(
+		new Date(rawHdr.date/1000)
+		.toString().replace(/GMT([+-]....).*/, "$1"));
+    }
+  },
+
   escapeHtml: function(str) {
     return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   },
@@ -395,6 +410,12 @@ var ReplyWithHeader = {
     let rawHdr = this.getMsgHeader(this.messageUri);
     let pHeader = this.parseMsgHeader(rawHdr);
     let headerQuotLblSeq = this.Prefs.headerQuotLblSeq;
+
+    if (this.Prefs.useSenderDate) {
+      let mimeDate = MimeHeaders(this.messageUri).get("Date");
+      pHeader.date = this.formatMimeDate(mimeDate);
+      this.handleBadMimeDateUsers(rawHdr, pHeader);
+    }
 
     var rwhHdr = '<div id="rwhMsgHeader">';
 
@@ -1001,6 +1022,16 @@ var ReplyWithHeader = {
     }
   },
 
+  formatMimeDate: function(dateStr) {
+    var dtStr = dateStr.replace(/ [+-].*/, "");
+    var tzStr = dateStr.replace(/.* ([+-])/, "$1");
+    var d = this.DateFmt(dtStr);
+
+    if (tzStr) d.time += " " + tzStr;
+
+    return d.date + " | " + d.time;
+  },
+
 };
 
 // RWH logger methods
@@ -1038,6 +1069,82 @@ ReplyWithHeader.Log = {
 
   logMsg: function(l, m) {
     this.console.logStringMessage('RWH   '+ l + '\t' + m);
+  }
+};
+
+// -----------------------------------------------
+// Get Mime headers (adapted from SmartTemplates4)
+// -----------------------------------------------
+var MimeHeaders = function(messageURI) {
+
+  const Ci = Components.interfaces,
+        Cc = Components.classes;
+  let   messenger = Cc["@mozilla.org/messenger;1"] .createInstance(Ci.nsIMessenger),
+        messageService = messenger.messageServiceFromURI(messageURI),
+        messageStream = Cc["@mozilla.org/network/sync-stream-listener;1"]
+                        .createInstance().QueryInterface(Ci.nsIInputStream),
+        inputStream   = Cc["@mozilla.org/scriptableinputstream;1"]
+                        .createInstance().QueryInterface(Ci.nsIScriptableInputStream),
+        headers       = Cc["@mozilla.org/messenger/mimeheaders;1"]
+                        .createInstance().QueryInterface(Ci.nsIMimeHeaders);
+
+  let contentCache = "";
+
+  inputStream.init(messageStream);
+  try {
+      messageService.streamMessage(messageURI, messageStream, msgWindow, null, false, null);
+  }
+  catch (ex) {
+      return null;
+  }
+
+
+  function _init() {
+      let msgContent = "";
+
+      try {
+          while (inputStream.available()) {
+              msgContent = msgContent + inputStream.read(2048);
+              let p = msgContent.search(/\r\n\r\n|\r\r|\n\n/);
+              // note: it would be faster to just search in the new block
+              // (but would also need to check the last 3 bytes)
+              if (p > 0) {
+                  contentCache = msgContent.substr(p + (msgContent[p] == msgContent[p+1] ? 2 : 4));
+                  msgContent = msgContent.substr(0, p) + "\r\n";
+                  break;
+              }
+              if (msgContent.length > 2048 * 32) {
+                  break;
+              }
+          }
+      }
+      catch(ex) {
+          if (!msgContent) throw(ex);
+      }
+
+      headers.initialize(msgContent, msgContent.length);
+  }
+
+
+  function get(header, get_all_occurences) {
+      return headers.extractHeader(header, get_all_occurences);
+  }
+
+  function content(size) {
+      while (inputStream.available() && contentCache.length < size)
+          contentCache += inputStream.read(2048);
+
+      if (contentCache.length > size)
+          return contentCache.substr(0, size);
+      else
+          return contentCache;
+  }
+
+  _init();
+
+  return {
+      get: get,
+      content: content,
   }
 };
 

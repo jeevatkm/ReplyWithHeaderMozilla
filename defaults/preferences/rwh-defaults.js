@@ -25,6 +25,8 @@ pref('extensions.replywithheader.header.space.after', 1);
 pref('extensions.replywithheader.header.separator.line.size', 1);
 pref('extensions.replywithheader.header.separator.line.color', '#B5C4DF');
 pref('extensions.replywithheader.trans.subject.prefix', false);
+pref('extensions.replywithheader.use.sender.date', false);
+pref('extensions.replywithheader.use.local.date.regex.list', "");
 
 // RWH Date & Time
 // 0 - Locale date format

@@ -45,6 +45,8 @@
             <preference id="pref-cleanGreaterThanChar" name="extensions.replywithheader.clean.char.greaterthan" type="bool" instantApply="true" />
             <preference id="pref-cleanOnlyNewQuoteChar" name="extensions.replywithheader.clean.only.new.quote.char" type="bool" instantApply="true" />
             <preference id="pref-excludePlainTextHdrPrefix" name="extensions.replywithheader.clean.pln.hdr.prefix" type="bool" instantApply="true" />
+            <preference id="pref-useSenderDate" name="extensions.replywithheader.use.sender.date" type="bool" instantApply="true" />
+            <preference id="pref-useLocalDateRegexList" name="extensions.replywithheader.use.local.date.regex.list" type="string" instantApply="true" />
             <preference id="pref-quotDateAttributionStyle" name="extensions.replywithheader.header.date.format" type="int" instantApply="true" />
             <preference id="pref-quotDateStyle" name="extensions.replywithheader.header.date.style" type="int" instantApply="true" />
             <preference id="pref-quotTimeAttributionStyle" name="extensions.replywithheader.header.time.format" type="int" instantApply="true" />
@@ -230,6 +232,19 @@
                     <hbox align="center" style="margin-left:15px">
                         <checkbox id="excludePlainTextHdrPrefix" label="Don't include plain text header prefix" preference="pref-excludePlainTextHdrPrefix" />
                     </hbox>
+                    <hbox align="center" style="margin-top:5px">
+                        <label id="lblUseSenderDate" value="Date source" />
+                    </hbox>
+                    <hbox align="center" style="margin-left:15px">
+                        <checkbox id="useSenderDate" label="Use sender's date (MIME date)" preference="pref-useSenderDate"
+                                  oncommand="this.parentNode.nextSibling.hidden = ! this.checked;" />
+                    </hbox>
+                    <vbox align="left" style="margin-left:15px; margin-top:5px; font-size:12px">
+                        <label id="lblUseLocalDateRegexList" style="width:18em">
+                               Use received date instead of sender's for authors matching:
+                        </label>
+                        <textbox id="useLocalDateRegexList" preference="pref-useLocalDateRegexList" multiline="true" rows="5" />
+                    </vbox>
                 </tabpanel>
                 <tabpanel orient="vertical">
                     <hbox align="center" style="margin-top: 30px">
