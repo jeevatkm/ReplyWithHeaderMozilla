@@ -97,6 +97,14 @@ ReplyWithHeader.Prefs = {
     return this.getBoolPref('trans.subject.prefix');
   },
 
+  get autoSelectLang() {
+    return this.getBoolPref('auto.select.lang');
+  },
+
+  get autoSelectLangRegexList() {
+    return this.getStringPref('auto.select.lang.regex.list');
+  },
+
   get cleanBlockQuote() {
     return this.getBoolPref('clean.blockquote');
   },
@@ -237,6 +245,7 @@ ReplyWithHeader.Prefs = {
 
     this.toggleBlockQuote();
     this.toggleQuoteChar();
+    ReplyWithHeader.byId('autoSelectLang').doCommand();
 
     this.forPostbox(true);
 
@@ -252,6 +261,8 @@ ReplyWithHeader.Prefs = {
       'lblAfterHeader', 'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblSepLineSize', 'lblSepLineColor',
       'hdrSepLineSize', 'hdrSepLineColor', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle', 'quotTimeAttributionStyle',
       'quotDateStyle', 'lblHeaderCleanups', 'hdrLocale', 'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat',
+      'autoSelectLang', 'lblAutoSelectLang',
+      'autoSelectLangRegexList', 'lblAutoSelectLangRegexList',
       'cleanBlockQuote', 'cleanNewBlockQuote', 'cleanGreaterThanChar', 'lblHeaderFormat', 'excludePlainTextHdrPrefix',
       'useSenderDate', 'lblUseSenderDate',
       'useLocalDateRegexList','lblUseLocalDateRegexList',
