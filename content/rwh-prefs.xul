@@ -110,7 +110,7 @@
                     <hbox align="center">
                         <radiogroup id="quotDateAttributionStyle" preference="pref-quotDateAttributionStyle"
                                     class="horizontal">
-                            <radio value="0" label="Locale timezone" />
+                            <radio value="0" label="Local timezone" />
                             <radio value="1" label="International time (GMT)" />
                         </radiogroup>
                     </hbox>
