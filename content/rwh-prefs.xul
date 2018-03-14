@@ -110,7 +110,7 @@
                     <hbox align="center">
                         <radiogroup id="quotDateAttributionStyle" preference="pref-quotDateAttributionStyle"
                                     class="horizontal">
-                            <radio value="0" label="Locale timezone" />
+                            <radio value="0" label="Local timezone" />
                             <radio value="1" label="International time (GMT)" />
                         </radiogroup>
                     </hbox>
@@ -216,7 +216,7 @@
                         <label id="lblAutoSelectLangRegexList" value="email => language mappings"/>
                         <textbox id="autoSelectLangRegexList" preference="pref-autoSelectLangRegexList" multiline="true" rows="2" />
                     </vbox>
-                    <hbox id="hboxCntFormat" align="center">
+                    <hbox id="hboxCntFormat" align="center" style="margin-top:5px">
                         <label id="lblCntFormat" value="Content formatting and cleanups" />
                     </hbox>
                     <hbox align="center" style="margin-left:15px">
