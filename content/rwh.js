@@ -251,19 +251,49 @@ var ReplyWithHeader = {
     return nd;
   },
 
-  handleBadMimeDateUsers: function(rawHdr, pHeader) {
+  getSenderDate: function(rawHdr, pHeader) {
     let fromAddr = this.cleanEmail(rawHdr.mime2DecodedAuthor);
+    let luser = this.isLuser(fromAddr);
 
-    let listOfLusers = new RegExp(
-	this.Prefs.useLocalDateRegexList
-	.split("\n")
-	.join("|")
-    );
-    if (fromAddr.match(listOfLusers)) {
-        pHeader.date = this.formatMimeDate(
-		new Date(rawHdr.date/1000)
-		.toString().replace(/GMT([+-]....).*/, "$1"));
+    var mimeDate = MimeHeaders(this.messageUri).get("Date");
+    var recvDate = new Date(rawHdr.date/1000).toString().replace("GMT", "");
+    var date;
+
+    if (!luser)
+      date = mimeDate;
+    else
+    if (luser.tzOffset)
+      date = this.fixupTimezone(mimeDate, luser.tzOffset)
+    else
+      date = recvDate;
+
+    return this.formatMimeDate(date);
+  },
+
+  isLuser: function(fromAddr) {
+    let lusers = this.Prefs.useLocalDateRegexList.split("\n");
+
+    var match, tzOffset;
+    for (var entry in lusers) {
+      entry = lusers[entry].split(" => ");
+      match = fromAddr.match(new RegExp(entry[0]));
+      if (match) {
+        tzOffset = entry[1];
+        break;
+      }
     }
+    return match ? { tzOffset: tzOffset } : false;
+  },
+
+  fixupTimezone: function(date, tzOffset) {
+    let d1 = new Date(date);
+    let tz = tzOffset.match(/([+-])(..)(..)/);
+    let sign = (tz[1] == "+" ? 1 : -1);
+
+    tz = parseInt(tz[2])*60 + parseInt(tz[3]);
+    d1 = new Date(d1.getTime() + 60000 * tz * sign);
+
+    return d1.toUTCString().replace("GMT", tzOffset);
   },
 
   escapeHtml: function(str) {
@@ -438,9 +468,7 @@ var ReplyWithHeader = {
     let headerQuotLblSeq = this.Prefs.headerQuotLblSeq;
 
     if (this.Prefs.useSenderDate) {
-      let mimeDate = MimeHeaders(this.messageUri).get("Date");
-      pHeader.date = this.formatMimeDate(mimeDate);
-      this.handleBadMimeDateUsers(rawHdr, pHeader);
+      pHeader.date = this.getSenderDate(rawHdr, pHeader);
     }
 
     var rwhHdr = '<div id="rwhMsgHeader">';
