@@ -3,12 +3,12 @@
 var i18n = {
   "lang": {
     "en": "English",
-    "fr": "French",
-    "de": "German",
-    "es": "Spanish",
-    "jp": "Japanese",
+    "fr": "French - Français",
+    "de": "German - Deutsch",
+    "es": "Spanish - Español",
+    "jp": "Japanese - 日本語",
     "pl": "Polish",
-    "ar": "Arabic",
+    "ar": "Arabic - العربية",
     "pt": "Portuguese",
   },
   "from": {
