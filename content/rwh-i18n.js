@@ -7,9 +7,9 @@ var i18n = {
     "de": "German - Deutsch",
     "es": "Spanish - Español",
     "jp": "Japanese - 日本語",
-    "pl": "Polish",
+    "pl": "Polish - Polski",
     "ar": "Arabic - العربية",
-    "pt": "Portuguese",
+    "pt": "Portuguese - Português",
   },
   "from": {
     "en": "From:",
