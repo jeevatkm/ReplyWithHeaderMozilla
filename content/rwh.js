@@ -406,7 +406,7 @@ var ReplyWithHeader = {
   },
 
   getLocaleForAccount: function() {
-    var from = gMsgCompose.compFields.from;
+    var from = document.getElementById("msgIdentity").value;
     var list = this.Prefs.autoSelectLangRegexList.split("\n");
 
     for (var entry in list) {
