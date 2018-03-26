@@ -9,6 +9,7 @@ var i18n = {
     "jp": "Japanese",
     "pl": "Polish",
     "ar": "Arabic",
+    "pt": "Portuguese",
   },
   "from": {
     "en": "From:",
@@ -18,6 +19,7 @@ var i18n = {
     "jp": "送信者:",
     "pl": "Od:",
     "ar": "من :",
+    "pt": "Do:",
   },
   "to": {
     "en": "To:",
@@ -27,6 +29,7 @@ var i18n = {
     "jp": "宛先:",
     "pl": "Do:",
     "ar": "إلى :",
+    "pt": "Para:",
   },
   "cc": {
     "en": "Cc:",
@@ -36,6 +39,7 @@ var i18n = {
     "jp": "Cc:",
     "pl": "Cc:", // or "Do wiadomości"
     "ar": "Cc :",
+    "pt": "Cc:",
   },
   "subject": {
     "en": "Subject:",
@@ -45,6 +49,7 @@ var i18n = {
     "jp": "件名:",
     "pl": "Temat:",
     "ar": "الموضوع :",
+    "pt": "Tópico:",
   },
   "date": {
     "en": "Date:",
@@ -54,6 +59,7 @@ var i18n = {
     "jp": "日時:",
     "pl": "Data:",
     "ar": "التاريخ :",
+    "pt": "Data:",
   },
   "sent": {
     "en": "Sent:",
@@ -63,6 +69,7 @@ var i18n = {
     "jp": "送信メール:",
     "pl": "Wysłane:",
     "ar": "المرسلة :",
+    "pt": "Enviei:",
   },
   "forwarded_message": {
     "en": "Forwarded Message",
@@ -72,6 +79,7 @@ var i18n = {
     "jp": "転送メール",
     "pl": "Przekazana wiadomość",
     "ar": "اعادة التوجيه",
+    "pt": "Mensagem transferida",
   },
   "original_message": {
     "en": "Original Message",
@@ -81,5 +89,6 @@ var i18n = {
     "jp": "元のメール",
     "pl": "Wiadomość oryginalna",
     "ar": "الرسالة الأصلية",
+    "pt": "Mensagem original",
   },
 };
