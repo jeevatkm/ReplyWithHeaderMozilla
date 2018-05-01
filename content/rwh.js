@@ -10,8 +10,8 @@
 
 var EXPORTED_SYMBOLS = ['ReplyWithHeader'];
 
-Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
-Components.utils.import('resource://gre/modules/AddonManager.jsm');
+ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
+ChromeUtils.import('resource://gre/modules/AddonManager.jsm');
 
 // ReplyWithHeader Add-On ID
 const ReplyWithHeaderAddOnID = 'replywithheader@myjeeva.com';
