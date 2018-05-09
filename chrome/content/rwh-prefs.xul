@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<?xml-stylesheet type="text/css" href="chrome://global/skin/" ?>
 <?xml-stylesheet type="text/css" href="chrome://messenger/skin/preferences/preferences.css"?>
-
 <?xml-stylesheet href="data:text/css,
         radio { font-size: 12px; margin-top:-2px; }
         radio:first-child { margin-top:0px; }
@@ -23,6 +22,10 @@
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
             title="RWH Preferences" style="width:500px"
             onload="ReplyWithHeader.Prefs.init();">
+
+    <script type="application/javascript" src="chrome://replywithheader/content/rwh.js"/>
+    <script type="application/javascript" src="chrome://replywithheader/content/rwh-prefs.js"/>
+    <script type="application/javascript" src="chrome://replywithheader/content/rwh-i18n.js"/>
 
     <prefpane id="rwhPane" orient="vertical">
         <preferences id="rwhGlobalPref">
@@ -300,9 +303,5 @@
             </tabpanels>
         </tabbox>
     </prefpane>
-
-    <script type="application/javascript" src="chrome://replywithheader/content/rwh.js"/>
-    <script type="application/javascript" src="chrome://replywithheader/content/rwh-prefs.js"/>
-    <script type="application/javascript" src="chrome://replywithheader/content/rwh-i18n.js"/>
 
 </prefwindow>

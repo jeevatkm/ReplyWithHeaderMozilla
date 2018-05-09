@@ -6,8 +6,8 @@
 # You can download a copy of license at https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE.txt
 #
 
-content replywithheader content/
-resource replywithheader modules/
+content replywithheader chrome/content/
+resource replywithheader chrome/resource/
 
 skin    replywithheader default/1.0 skin/
 

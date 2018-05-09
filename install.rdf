@@ -14,13 +14,15 @@
     <em:id>replywithheader@myjeeva.com</em:id>
     <em:name>ReplyWithHeader</em:name>
     <em:version>2.0-beta</em:version>
+    <em:type>2</em:type>
     <em:optionsType>3</em:optionsType>
     <em:unpack>false</em:unpack>
     <!-- <em:bootstrap>true</em:bootstrap> -->
     <em:creator>Jeevanandam M.</em:creator>
     <em:description>Outlook style headers and few goodies for Thunderbird &amp; Postbox.</em:description>
-    <em:homepageURL>http://myjeeva.com/replywithheader-mozilla</em:homepageURL>
+    <em:homepageURL>https://myjeeva.com/replywithheader-mozilla</em:homepageURL>
     <em:optionsURL>chrome://replywithheader/content/rwh-prefs.xul</em:optionsURL>
+    <em:icon64URL>chrome://replywithheader/skin/icon-64.png</em:icon64URL>
 
     <!-- Thunderbird -->
     <em:targetApplication>
