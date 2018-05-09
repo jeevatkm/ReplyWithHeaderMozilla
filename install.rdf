@@ -30,7 +30,7 @@
         <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
         <em:minVersion>57.*</em:minVersion>
         <!-- As per valid version # https://addons.mozilla.org/en-US/firefox/pages/appversions/ -->
-        <em:maxVersion>63.*</em:maxVersion>
+        <em:maxVersion>62.*</em:maxVersion>
       </Description>
     </em:targetApplication>
 
