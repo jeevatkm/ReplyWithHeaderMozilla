@@ -261,11 +261,9 @@ ReplyWithHeader.Prefs = {
       'lblAfterHeader', 'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblSepLineSize', 'lblSepLineColor',
       'hdrSepLineSize', 'hdrSepLineColor', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle', 'quotTimeAttributionStyle',
       'quotDateStyle', 'lblHeaderCleanups', 'hdrLocale', 'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat',
-      'autoSelectLang', 'lblAutoSelectLang',
-      'autoSelectLangRegexList', 'lblAutoSelectLangRegexList',
+      'autoSelectLang', 'lblAutoSelectLang', 'autoSelectLangRegexList', 'lblAutoSelectLangRegexList',
       'cleanBlockQuote', 'cleanNewBlockQuote', 'cleanGreaterThanChar', 'lblHeaderFormat', 'excludePlainTextHdrPrefix',
-      'useSenderDate', 'lblUseSenderDate',
-      'useLocalDateRegexList','lblUseLocalDateRegexList',
+      'useSenderDate', 'lblUseSenderDate', 'useLocalDateRegexList','lblUseLocalDateRegexList',
       'cleanOnlyNewQuoteChar', 'enableRwhDebugMode'
     ];
 

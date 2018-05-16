@@ -4,7 +4,7 @@
 <?xml-stylesheet href="data:text/css,
         radio { font-size: 12px; margin-top:-2px; }
         radio:first-child { margin-top:0px; }
-        radiogroup { margin-left:30px; }
+        radiogroup { margin-left:20px; }
         radiogroup.horizontal { display:inline-block; }
         .horizontal radio { margin-right:20px; }
         button { cursor: pointer }
@@ -20,7 +20,7 @@
 
 <prefwindow id="rwhPrefsDialog"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-            title="RWH Preferences" style="width:500px"
+            title="RWH Preferences" style="width:525px"
             onload="ReplyWithHeader.Prefs.init();">
 
     <script type="application/javascript" src="chrome://replywithheader/content/rwh.js"/>
@@ -215,9 +215,10 @@
                         <checkbox id="autoSelectLang" label="Select language based on account's email" preference="pref-autoSelectLang"
                                   oncommand="this.parentNode.nextSibling.hidden = ! this.checked;" />
                     </hbox>
-                    <vbox align="left" style="margin-left:15px; margin-top:5px; font-size:12px">
+                    <vbox align="left" style="margin-left:21px; margin-top:5px; margin-bottom:7px; font-size:12px">
                         <label id="lblAutoSelectLangRegexList" value="email => language mappings"/>
-                        <textbox id="autoSelectLangRegexList" preference="pref-autoSelectLangRegexList" multiline="true" rows="2" />
+                        <textbox id="autoSelectLangRegexList" preference="pref-autoSelectLangRegexList" multiline="true" rows="3"
+                          style="width:290px;" />
                     </vbox>
                     <hbox id="hboxCntFormat" align="center" style="margin-top:5px">
                         <label id="lblCntFormat" value="Content formatting and cleanups" />
@@ -255,22 +256,21 @@
                         <checkbox id="useSenderDate" label="Use sender's date (MIME date)" preference="pref-useSenderDate"
                                   oncommand="this.parentNode.nextSibling.hidden = ! this.checked;" />
                     </hbox>
-                    <vbox align="left" style="margin-left:15px; margin-top:5px; font-size:12px">
-                        <label id="lblUseLocalDateRegexList" style="width:18em">
-                               Use received date instead of sender's for authors matching:
-                        </label>
-                        <textbox id="useLocalDateRegexList" preference="pref-useLocalDateRegexList" multiline="true" rows="5" />
+                    <vbox align="left" style="margin-left:21px; margin-top:5px; margin-bottom:7px; font-size:12px">
+                        <label id="lblUseLocalDateRegexList" value="Use received date instead of sender's for authors matching" />
+                        <textbox id="useLocalDateRegexList" preference="pref-useLocalDateRegexList" multiline="true" rows="3"
+                          style="width:290px;" />
                     </vbox>
                 </tabpanel>
                 <tabpanel orient="vertical">
                     <hbox align="center" style="margin-top: 30px">
                         <image id="abtRwhLogo" src='chrome://replywithheader/skin/icon-64.png' width='64' height='64'
-                               style="margin-left:100px"/>
+                               style="margin-left:85px"/>
                         <label id="abtRwhCaption" value="ReplyWithHeader" style="font-weight:bold;" />
                         <label id="abtRwhCopyrights" value="&#169; Jeevanandam M."
                                style="font-size:12px; margin-top:40px;margin-left:-145px" />
                     </hbox>
-                    <hbox id="hboxRwhBtn" align="center" style="margin: 40px 0 0 55px">
+                    <hbox id="hboxRwhBtn" align="center" style="margin: 40px 0 0 50px">
                         <button label="Website" oncommand="ReplyWithHeader.Prefs.openWebsite();" />
                         <button label="Write a Review" oncommand="ReplyWithHeader.Prefs.openReviews();" />
                         <button label="Report Issues" oncommand="ReplyWithHeader.Prefs.reportIssues();" />

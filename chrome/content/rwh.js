@@ -946,7 +946,7 @@ var ReplyWithHeader = {
     let mailBody = gMsgCompose.editor.rootElement; // alternate is gMsgCompose.editor.document.body
 
     if (mailBody) {
-      // Here RWH Add-On does string find and replace. No external creation of HTML string
+      // NOTE: Here RWH Add-On does string find and replace. No external creation of HTML string
       if (this.Prefs.cleanOnlyNewQuoteChar) {
         mailBody.innerHTML = mailBody.innerHTML.replace(/>(&gt;) ?/g, '>');
       } else {
