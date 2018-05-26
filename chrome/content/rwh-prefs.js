@@ -81,6 +81,10 @@ ReplyWithHeader.Prefs = {
     return this.getIntPref('header.font.size');
   },
 
+  get headerFontSizeUnit() {
+    return this.getStringPref('header.font.size.unit');
+  },
+
   get headerFontColor() {
     return this.getStringPref('header.font.color');
   },
@@ -206,13 +210,13 @@ ReplyWithHeader.Prefs = {
     let menuPopup = document.createElement('menupopup');
     let selectedIdx = 0;
 
-    for (let i = 10, j = 0; i < 35; i++, j++) {
-      menuPopup.appendChild(this.createMenuItem(i, i + 'px'));
+    for (let i = 7, j = 0; i < 35; i++, j++) {
+      menuPopup.appendChild(this.createMenuItem(i, i));
     }
 
     let hdrFontsizeObj = ReplyWithHeader.byId('hdrFontsize');
     hdrFontsizeObj.appendChild(menuPopup);
-    hdrFontsizeObj.selectedIndex = this.headerFontSize - 10; // 10 - start size
+    hdrFontsizeObj.selectedIndex = this.headerFontSize - 7;
   },
 
   populateLocale: function() {
@@ -244,8 +248,10 @@ ReplyWithHeader.Prefs = {
     this.populateLocale();
 
     this.toggleBlockQuote();
+
     this.toggleQuoteChar();
-    ReplyWithHeader.byId('autoSelectLang').doCommand();
+
+    this.toggleAutoSelectLangRegexList();
 
     this.forPostbox(true);
 
@@ -301,6 +307,17 @@ ReplyWithHeader.Prefs = {
   toggleQuoteChar: function() {
     let cqc = ReplyWithHeader.byId('cleanGreaterThanChar');
     this.toggle('cleanOnlyNewQuoteChar', !cqc.checked);
+  },
+
+  toggleAutoSelectLangRegexList: function() {
+    let obj = ReplyWithHeader.byId('autoSelectLang');
+    if (obj.checked) {
+      obj.style.marginBottom = '0px';
+      obj.parentNode.nextSibling.hidden = false;
+    } else {
+      obj.style.marginBottom = '9px';
+      obj.parentNode.nextSibling.hidden = true;
+    }
   },
 
   applyPlatformStyle: function() {

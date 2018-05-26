@@ -36,6 +36,7 @@
             <preference id="pref-hdrLocale" name="extensions.replywithheader.header.locale" type="string" instantApply="true" />
             <preference id="pref-hdrFontface" name="extensions.replywithheader.header.font.face" type="string" instantApply="true" />
             <preference id="pref-hdrFontsize" name="extensions.replywithheader.header.font.size" type="int" instantApply="true" />
+            <preference id="pref-hdrFontsizeUnit" name="extensions.replywithheader.header.font.size.unit" type="string" instantApply="true" />
             <preference id="pref-hdrFontcolor" name="extensions.replywithheader.header.font.color" type="string" instantApply="true" />
             <preference id="pref-spaceBeforeSep" name="extensions.replywithheader.header.separator.space.before" type="int" instantApply="true" />
             <preference id="pref-spaceBeforeHdr" name="extensions.replywithheader.header.space.before" type="int" instantApply="true" />
@@ -140,7 +141,13 @@
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblFontsize" value="Font size:" />
-                        <menulist id="hdrFontsize" style="width:80px;margin-left:.35em;" preference="pref-hdrFontsize" />
+                        <menulist id="hdrFontsize" style="width:60px;margin-left:.35em;" preference="pref-hdrFontsize" />
+                        <menulist id="hdrFontsizeUnit" style="width:80px;" preference="pref-hdrFontsizeUnit">
+                          <menupopup>
+                              <menuitem label="Pixel" value="px" />
+                              <menuitem label="Point" value="pt" />
+                          </menupopup>
+                        </menulist>
                         <spacer width="20px" />
                         <label id="lblFontcolor" value="Color:" />
                         <colorpicker id="hdrFontColor" type="button" value="" style="max-width:35px;"
@@ -211,11 +218,11 @@
                     <hbox align="center">
                         <label id="lblAutoSelectLang" value="Automatic language selection" />
                     </hbox>
-                    <hbox align="center" style="margin-left:15px">
+                    <hbox align="center" style="margin-left:15px;margin-bottom:7px;">
                         <checkbox id="autoSelectLang" label="Select language based on account's email" preference="pref-autoSelectLang"
-                                  oncommand="this.parentNode.nextSibling.hidden = ! this.checked;" />
+                          oncommand="ReplyWithHeader.Prefs.toggleAutoSelectLangRegexList();" />
                     </hbox>
-                    <vbox align="left" style="margin-left:21px; margin-top:5px; margin-bottom:7px; font-size:12px">
+                    <vbox align="left" style="margin-left:21px; margin-bottom:10px; font-size:12px">
                         <label id="lblAutoSelectLangRegexList" value="email => language mappings"/>
                         <textbox id="autoSelectLangRegexList" preference="pref-autoSelectLangRegexList" multiline="true" rows="3"
                           style="width:290px;" />

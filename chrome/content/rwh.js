@@ -481,10 +481,13 @@ var ReplyWithHeader = {
     if (this.isHtmlMail) {
       let fontFace = this.Prefs.headerFontFace;
       let fontSize = this.Prefs.headerFontSize;
+      let fontSizeUnit = this.Prefs.headerFontSizeUnit;
       let fontColor = this.Prefs.headerFontColor;
-      this.Log.debug('Font face: ' + fontFace + '\tFont size: ' + fontSize + '\tColor: ' + fontColor);
+      this.Log.debug('Font face: ' + fontFace + '\tFont size: ' + fontSize + fontSizeUnit + '\tColor: ' + fontColor);
 
-      let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontFace + '" color="' + fontColor + '" style="font: ' + fontSize + 'px ' + fontFace + ' !important; color: ' + fontColor + ' !important;">';
+      let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontFace + '" color="'
+        + fontColor + '" style="font: ' + fontSize + fontSizeUnit + ' '
+        + fontFace + ' !important; color: ' + fontColor + ' !important;">';
       let htmlTagSuffix = '</font></span><br/>';
 
       let lineColor = this.Prefs.headerSepLineColor;
@@ -950,8 +953,7 @@ var ReplyWithHeader = {
       if (this.Prefs.cleanOnlyNewQuoteChar) {
         mailBody.innerHTML = mailBody.innerHTML.replace(/>(&gt;) ?/g, '>');
       } else {
-        mailBody.innerHTML = mailBody.innerHTML.replace(/<br>(&gt;)+ ?/g, '<br />')
-          .replace(/(<\/?span [^>]+>)(&gt;)+ /g, '$1');
+        mailBody.innerHTML = mailBody.innerHTML.replace(/<br>(&gt;)+ ?/g, '<br>').replace(/(<\/?span [^>]+>)(&gt;)+ /g, '$1');
       }
     }
   },
@@ -1083,7 +1085,7 @@ var ReplyWithHeader = {
 
     if (tzStr) d.time += " " + tzStr;
 
-    return d.date + " | " + d.time;
+    return d.date + ", " + d.time;
   },
 
 };

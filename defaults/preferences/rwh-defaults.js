@@ -18,6 +18,7 @@ pref('extensions.replywithheader.header.lblseq.style', 1);
 pref('extensions.replywithheader.header.locale', 'en');
 pref('extensions.replywithheader.header.font.face', 'Tahoma');
 pref('extensions.replywithheader.header.font.size', 13);
+pref('extensions.replywithheader.header.font.size.unit', 'px');
 pref('extensions.replywithheader.header.font.color', '#000000');
 pref('extensions.replywithheader.header.separator.space.before', 1);
 pref('extensions.replywithheader.header.space.before', 0);
