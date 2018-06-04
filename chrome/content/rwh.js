@@ -1,11 +1,12 @@
 'use strict';
 
 /*
- * Copyright (c) 2015-2018 Jeevanandam M. (jeeva@myjeeva.com)
+ * Copyright (c) Jeevanandam M. (jeeva@myjeeva.com)
  *
- * This Source Code is subject to terms of MIT License.
- * Please refer to LICENSE.txt in the root folder of RWH extension.
- * You can download a copy of license at https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE.txt
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at
+ * https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
  */
 
 var EXPORTED_SYMBOLS = ['ReplyWithHeader'];
