@@ -14,11 +14,9 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>replywithheader@myjeeva.com</em:id>
     <em:name>ReplyWithHeader</em:name>
-    <em:version>2.0</em:version>
-    <em:type>2</em:type>
+    <em:version>2.1.0-beta</em:version>
     <em:optionsType>3</em:optionsType>
     <em:unpack>false</em:unpack>
-    <!-- <em:bootstrap>true</em:bootstrap> -->
     <em:creator>Jeevanandam M.</em:creator>
     <em:description>Outlook style headers and few goodies for Thunderbird &amp; Postbox.</em:description>
     <em:homepageURL>https://myjeeva.com/replywithheader-mozilla</em:homepageURL>
@@ -30,8 +28,7 @@
       <Description>
         <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
         <em:minVersion>57.*</em:minVersion>
-        <!-- As per valid version # https://addons.mozilla.org/en-US/firefox/pages/appversions/ -->
-        <em:maxVersion>64.*</em:maxVersion>
+        <em:maxVersion>60.*</em:maxVersion>
       </Description>
     </em:targetApplication>
 
