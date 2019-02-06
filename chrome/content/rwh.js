@@ -972,7 +972,7 @@ var ReplyWithHeader = {
   },
 
   init: function() {
-    ReplyWithHeader.Log.debug('Initializing RWH');
+    ReplyWithHeader.Log.debug('Initializing ' + ReplyWithHeader.addOnName + ' v' + ReplyWithHeader.addOnVersion);
     gMsgCompose.RegisterStateListener(ReplyWithHeader.composeStateListener);
   },
 
