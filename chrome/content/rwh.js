@@ -972,7 +972,6 @@ var ReplyWithHeader = {
   },
 
   init: function() {
-    ReplyWithHeader.Log.debug('Initializing ' + ReplyWithHeader.addOnName + ' v' + ReplyWithHeader.addOnVersion);
     gMsgCompose.RegisterStateListener(ReplyWithHeader.composeStateListener);
   },
 
@@ -986,6 +985,10 @@ var ReplyWithHeader = {
   },
 
   handleMailCompose: function() {
+    this.Log.debug('Initializing ' + ReplyWithHeader.addOnName + ' v' + ReplyWithHeader.addOnVersion 
+      + ' (' + this.hostApp + ' ' + this.appInfo.platformVersion 
+      + ', ' + this.appInfo.platformBuildID + ', '+ this.appRuntime.OS + ')');
+      
     /*
      * ReplyWithHeader has to be enabled; extensions.replywithheader.enable=true and
      * ReplyWithHeader.isOkayToMoveOn must return true
