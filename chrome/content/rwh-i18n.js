@@ -6,12 +6,16 @@
  * file, You can obtain one at
  * https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
  */
+
+'use strict'; 
  
-// coding: utf-8
+// encoding: utf-8
 
 var i18n = {
   "lang": {
-    "en": "English",
+    "en-US": "English",
+    "en-UK": "English",
+    "en-AU": "English",
     "fr": "French - Français",
     "de": "German - Deutsch",
     "es": "Spanish - Español",
@@ -21,7 +25,9 @@ var i18n = {
     "pt": "Portuguese - Português",
   },
   "from": {
-    "en": "From:",
+    "en-US": "From:",
+    "en-UK": "From:",
+    "en-AU": "From:",
     "fr": "De :",
     "de": "Von:",
     "es": "De:",
@@ -31,7 +37,9 @@ var i18n = {
     "pt": "De:",
   },
   "to": {
-    "en": "To:",
+    "en-US": "To:",
+    "en-UK": "To:",
+    "en-AU": "To:",
     "fr": "Pour :",
     "de": "An:",
     "es": "Para:",
@@ -41,7 +49,9 @@ var i18n = {
     "pt": "Para:",
   },
   "cc": {
-    "en": "Cc:",
+    "en-US": "Cc:",
+    "en-UK": "Cc:",
+    "en-AU": "Cc:",
     "fr": "Cc :",
     "de": "Cc:",
     "es": "Cc:",
@@ -51,7 +61,9 @@ var i18n = {
     "pt": "Cc:",
   },
   "subject": {
-    "en": "Subject:",
+    "en-US": "Subject:",
+    "en-UK": "Subject:",
+    "en-AU": "Subject:",
     "fr": "Objet :",
     "de": "Betreff:",
     "es": "Asunto:",
@@ -61,7 +73,9 @@ var i18n = {
     "pt": "Assunto:",
   },
   "date": {
-    "en": "Date:",
+    "en-US": "Date:",
+    "en-UK": "Date:",
+    "en-AU": "Date:",
     "fr": "Date :",
     "de": "Datum:",
     "es": "Fecha:",
@@ -71,7 +85,9 @@ var i18n = {
     "pt": "Data:",
   },
   "sent": {
-    "en": "Sent:",
+    "en-US": "Sent:",
+    "en-UK": "Sent:",
+    "en-AU": "Sent:",
     "fr": "Envoyé :",
     "de": "Gesendet:",
     "es": "Enviado:",
@@ -81,7 +97,9 @@ var i18n = {
     "pt": "Enviado:",
   },
   "forwarded_message": {
-    "en": "Forwarded Message",
+    "en-US": "Forwarded Message",
+    "en-UK": "Forwarded Message",
+    "en-AU": "Forwarded Message",
     "fr": "Message transféré",
     "de": "Weitergeleitete Nachricht",
     "es": "Mensaje reenviado",
@@ -91,7 +109,9 @@ var i18n = {
     "pt": "Mensagem encaminhada",
   },
   "original_message": {
-    "en": "Original Message",
+    "en-US": "Original Message",
+    "en-UK": "Original Message",
+    "en-AU": "Original Message",
     "fr": "Message d'origine",
     "de": "Ursprüngliche Nachricht",
     "es": "Mensaje original",

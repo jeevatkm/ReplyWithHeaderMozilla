@@ -13,6 +13,7 @@
 
 // Registering RWH into compose window of Thunderbird/Postbox
 window.setTimeout(function(){
+  ReplyWithHeader.Prefs.migrate();
   ReplyWithHeader.Prefs.fixCursorBlink();
 
   document.getElementById('msgcomposeWindow')

@@ -1,5 +1,3 @@
-'use strict';
-
 /*
  * Copyright (c) Jeevanandam M. (jeeva@myjeeva.com)
  *
@@ -9,10 +7,14 @@
  * https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
  */
 
+'use strict';
+
 var EXPORTED_SYMBOLS = ['ReplyWithHeader'];
 
 ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
 ChromeUtils.import('resource://gre/modules/AddonManager.jsm');
+ChromeUtils.import('resource://replywithheader/log.jsm');
+ChromeUtils.import('resource://replywithheader/host.jsm');
 
 // ReplyWithHeader Add-On ID
 const ReplyWithHeaderAddOnID = 'replywithheader@myjeeva.com';
@@ -27,37 +29,6 @@ var ReplyWithHeader = {
   paypalDonateUrl: 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=Jeevanandam%20M%2e&item_number=ReplyWithHeaderMozilla&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted',
   hdrCnt: 4,
   bqStyleStr: 'border:none !important; margin-left:0px !important; margin-right:0px !important; margin-top:0px !important; padding-left:0px !important; padding-right:0px !important',
-
-  get isMacOSX() {
-    return (this.appRuntime.OS == 'Darwin');
-  },
-
-  get isLinux() {
-    return (this.appRuntime.OS == 'Linux');
-  },
-
-  get isWindows() {
-    return (this.appRuntime.OS == 'WINNT');
-  },
-
-  get isPostbox() {
-    return (this.hostApp == 'Postbox');
-  },
-
-  get isThunderbird() {
-    return (this.hostApp == 'Thunderbird');
-  },
-
-  get hostApp() {
-    var app = 'Unknown';
-    if (this.appInfo.ID == '{3550f703-e582-4d05-9a08-453d09bdfdc6}') {
-      app = 'Thunderbird';  // this.appInfo.name
-    } else if (this.appInfo.ID == 'postbox@postbox-inc.com') {
-      app = 'Postbox';
-    }
-
-    return app;
-  },
 
   get isReply() {
     let mct = Components.interfaces.nsIMsgCompType;
@@ -87,16 +58,16 @@ var ReplyWithHeader = {
     if (this.isDefined(gMsgCompose.originalMsgURI)) {
       msgUri = gMsgCompose.originalMsgURI;
     } else {
-      this.Log.debug('gMsgCompose.originalMsgURI is not defined, fallback');
+      rwhlog.debug('gMsgCompose.originalMsgURI is not defined, fallback');
       let selectedURIs = GetSelectedMessages();
       try {
         msgUri = selectedURIs[0]; // only first message
       } catch (ex) {
-        this.Log.errorWithException('Error occurred while getting selected message.', ex);
+        rwhlog.errorWithException('Error occurred while getting selected message.', ex);
         return false;
       }
     }
-    this.Log.debug('Message URI: ' + msgUri);
+    rwhlog.debug('Message URI: ' + msgUri);
 
     return msgUri;
   },
@@ -131,11 +102,11 @@ var ReplyWithHeader = {
     let found = false;
 
     if (sigOnBtm) {
-      this.Log.debug('Signature settings: inserts after the quote');
+      rwhlog.debug('Signature settings: inserts after the quote');
       for (let i = rootElement.childNodes.length - 1; i >= 0; i--) {
         let el = rootElement.childNodes[i];
 
-        this.Log.debug('Element node type: ' + el.nodeType);
+        rwhlog.debug('Element node type: ' + el.nodeType);
         if (el.nodeType != 1) { // check is it Node.ELEMENT_NODE
           continue;
         }
@@ -146,12 +117,12 @@ var ReplyWithHeader = {
         }
 
         if (el.nodeName.toLowerCase() == 'blockquote') {
-          this.Log.debug('Signature not found');
+          rwhlog.debug('Signature not exists');
           break;
         }
       }
     } else {
-      this.Log.debug('Signature settings: inserts above the quote');
+      rwhlog.debug('Signature settings: inserts above the quote');
       for (let i = 0; i < rootElement.childNodes.length; i++) {
         let el = rootElement.childNodes[i];
 
@@ -165,7 +136,7 @@ var ReplyWithHeader = {
         }
 
         if (el.nodeName.toLowerCase() == 'blockquote') {
-          this.Log.debug('Signature not found');
+          rwhlog.debug('Signature not exists');
           break;
         }
       }
@@ -194,108 +165,157 @@ var ReplyWithHeader = {
       // Ref: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMsgDBHdr
       return messengerService.messageURIToMsgHdr(mUri);
     } catch (ex) {
-      this.Log.errorWithException('Unable to get message [' + mUri + ']', ex);
+      rwhlog.errorWithException('Unable to get message [' + mUri + ']', ex);
       return null;
     }
   },
 
   // Reference: https://gist.github.com/redoPop/3915761
-  tzAbbr: function(dateInput) {
-    var dateObject = dateInput || new Date(),
-      dateString = dateObject + "",
-      tzAbbr = (
-        // Works for the majority of modern browsers
-        dateString.match(/\(([^\)]+)\)$/) ||
-        // IE outputs date strings in a different format:
-        dateString.match(/([A-Z]+) [\d]{4}$/)
-      );
-    if (tzAbbr) {
-      // Old Firefox uses the long timezone name (e.g., "Central
-      // Daylight Time" instead of "CDT")
-      tzAbbr = tzAbbr[1].match(/[A-Z]/g).join("");
-    }
-    // Uncomment these lines to return a GMT offset for browsers
-    // that don't include the user's zone abbreviation (e.g.,
-    // "GMT-0500".) I prefer to have `null` in this case, but
-    // you may not!
-    // First seen on: http://stackoverflow.com/a/12496442
-    if (!tzAbbr && /(GMT\W*\d{4}|GMT)/.test(dateString)) {
-      return RegExp.$1;
-    }
-    return tzAbbr;
-  },
+  // tzAbbr: function(dateInput) {
+  //   var dateObject = dateInput || new Date(),
+  //     dateString = dateObject + "",
+  //     tzAbbr = (
+  //       // Works for the majority of modern browsers
+  //       dateString.match(/\(([^\)]+)\)$/) ||
+  //       // IE outputs date strings in a different format:
+  //       dateString.match(/([A-Z]+) [\d]{4}$/)
+  //     );
+  //   if (tzAbbr) {
+  //     // Old Firefox uses the long timezone name (e.g., "Central
+  //     // Daylight Time" instead of "CDT")
+  //     tzAbbr = tzAbbr[1].match(/[A-Z]/g).join("");
+  //   }
+  //   // Uncomment these lines to return a GMT offset for browsers
+  //   // that don't include the user's zone abbreviation (e.g.,
+  //   // "GMT-0500".) I prefer to have `null` in this case, but
+  //   // you may not!
+  //   // First seen on: http://stackoverflow.com/a/12496442
+  //   if (!tzAbbr && /(GMT\W*\d{4}|GMT)/.test(dateString)) {
+  //     return RegExp.$1;
+  //   }
+  //   return tzAbbr;
+  // },
 
   parseDate: function(prTime) {
+    let locale = this.Prefs.headerLocale;
+    let dateFormat = this.Prefs.headerDateFormat;
+    let timeFormat = this.Prefs.headerTimeFormat;
+    let includeTimezone = this.Prefs.headerIncludeTimeZone;
+
+    rwhlog.debug('Date format: ' + (dateFormat === 1 ? 'UTC' : 'Locale (' + locale + ')')
+                 + ', Time format: ' + (timeFormat === 1 ? '24-hour' : '12-hour')
+                 + (includeTimezone ? ', Include short timezone info' : ''))
+
     // Input is PR time
     let d = new Date(prTime / 1000);
-    var nd = '';
-    var dateStr, timeStr, tz;
+    let options = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'};
 
-    if (this.Prefs.dateFormat == 0) { // jshint ignore:line
-      this.Log.debug('Locale date format');
-      tz = this.tzAbbr(d);
-    } else {
-      this.Log.debug('GMT date format');
-      tz = this.tzAbbr(d.toUTCString());
-      d = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
+    if (dateFormat === 1) { // Locale date format
+      options.timeZone = 'UTC';
+      options.timeZoneName = 'short';
     }
 
-    nd = this.DateFmt(d);
-    dateStr = nd.date;
-    timeStr = nd.time;
-
-    if (this.Prefs.dateStyle == 1) {
-      dateStr = DateFormat.format.date(d, 'yyyy-MM-dd');
+    if (timeFormat === 1) {
+      options.hour12 = false;
     }
 
-    nd = dateStr + ' ' + timeStr + ' ' + tz;
-    return nd;
-  },
-
-  getSenderDate: function(rawHdr, pHeader) {
-    let fromAddr = this.cleanEmail(rawHdr.mime2DecodedAuthor);
-    let luser = this.isLuser(fromAddr);
-
-    var mimeDate = MimeHeaders(this.messageUri).get("Date");
-    var recvDate = new Date(rawHdr.date/1000).toString().replace("GMT", "");
-    var date;
-
-    if (!luser)
-      date = mimeDate;
-    else
-    if (luser.tzOffset)
-      date = this.fixupTimezone(mimeDate, luser.tzOffset)
-    else
-      date = recvDate;
-
-    return this.formatMimeDate(date);
-  },
-
-  isLuser: function(fromAddr) {
-    let lusers = this.Prefs.useLocalDateRegexList.split("\n");
-
-    var match, tzOffset;
-    for (var entry in lusers) {
-      entry = lusers[entry].split(" => ");
-      match = fromAddr.match(new RegExp(entry[0]));
-      if (match) {
-        tzOffset = entry[1];
-        break;
-      }
+    if (this.Prefs.headerIncludeTimeZone) {
+      options.timeZoneName = 'short';
     }
-    return match ? { tzOffset: tzOffset } : false;
+
+    return new Intl.DateTimeFormat(locale, options).format(d);
+
+
+    // var nd = '';
+
+    // let dateFmtStr = this.dateFormat12hrs;
+    // if (this.Prefs.timeFormat == 1) {
+    //   dateFmtStr = this.dateFormat24hrs;
+    // }
+
+    // if (this.Prefs.dateFormat == 0) { // jshint ignore:line
+    //   rwhlog.debug('Locale date format');
+    //   nd = DateFormat.format.date(d, dateFmtStr) + ' ' + this.tzAbbr(d);
+    // } else {
+    //   rwhlog.debug('GMT date format');
+    //   var utc = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
+    //   nd = DateFormat.format.date(utc, dateFmtStr) + ' ' + this.tzAbbr(d.toUTCString());
+    // }
+
+    // return nd;
   },
 
-  fixupTimezone: function(date, tzOffset) {
-    let d1 = new Date(date);
-    let tz = tzOffset.match(/([+-])(..)(..)/);
-    let sign = (tz[1] == "+" ? 1 : -1);
+  // parseDate: function(prTime) {
+  //   // Input is PR time
+  //   let d = new Date(prTime / 1000);
+  //   var nd = '';
+  //   var dateStr, timeStr, tz;
 
-    tz = parseInt(tz[2])*60 + parseInt(tz[3]);
-    d1 = new Date(d1.getTime() + 60000 * tz * sign);
+  //   if (this.Prefs.dateFormat == 0) { // jshint ignore:line
+  //     rwhlog.debug('Locale date format');
+  //     tz = this.tzAbbr(d);
+  //   } else {
+  //     rwhlog.debug('GMT date format');
+  //     tz = this.tzAbbr(d.toUTCString());
+  //     d = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
+  //   }
 
-    return d1.toUTCString().replace("GMT", tzOffset);
-  },
+  //   nd = this.DateFmt(d);
+  //   dateStr = nd.date;
+  //   timeStr = nd.time;
+
+  //   if (this.Prefs.dateStyle == 1) {
+  //     dateStr = DateFormat.format.date(d, 'yyyy-MM-dd');
+  //   }
+
+  //   nd = dateStr + ' ' + timeStr + ' ' + tz;
+  //   return nd;
+  // },
+
+  // getSenderDate: function(rawHdr, pHeader) {
+  //   let fromAddr = this.cleanEmail(rawHdr.mime2DecodedAuthor);
+  //   let luser = this.isLuser(fromAddr);
+
+  //   var mimeDate = MimeHeaders(this.messageUri).get("Date");
+  //   var recvDate = new Date(rawHdr.date/1000).toString().replace("GMT", "");
+  //   var date;
+
+  //   if (!luser)
+  //     date = mimeDate;
+  //   else
+  //   if (luser.tzOffset)
+  //     date = this.fixupTimezone(mimeDate, luser.tzOffset)
+  //   else
+  //     date = recvDate;
+
+  //   return this.formatMimeDate(date);
+  // },
+
+  // isLuser: function(fromAddr) {
+  //   let lusers = this.Prefs.useLocalDateRegexList.split("\n");
+
+  //   var match, tzOffset;
+  //   for (var entry in lusers) {
+  //     entry = lusers[entry].split(" => ");
+  //     match = fromAddr.match(new RegExp(entry[0]));
+  //     if (match) {
+  //       tzOffset = entry[1];
+  //       break;
+  //     }
+  //   }
+  //   return match ? { tzOffset: tzOffset } : false;
+  // },
+
+  // fixupTimezone: function(date, tzOffset) {
+  //   let d1 = new Date(date);
+  //   let tz = tzOffset.match(/([+-])(..)(..)/);
+  //   let sign = (tz[1] == "+" ? 1 : -1);
+
+  //   tz = parseInt(tz[2])*60 + parseInt(tz[3]);
+  //   d1 = new Date(d1.getTime() + 60000 * tz * sign);
+
+  //   return d1.toUTCString().replace("GMT", tzOffset);
+  // },
 
   escapeHtml: function(str) {
     return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -426,51 +446,51 @@ var ReplyWithHeader = {
     if (header.cc) {
       this.hdrCnt += 1; // for Cc header
     }
-
-    this.Log.debug('\nFrom: ' + header.from +
-      '\nTo: ' + header.to +
-      '\nCC: ' + header.cc +
-      '\nSubject: ' + header.subject +
-      '\nDate: ' + header.date);
+    
+    rwhlog.debug('From: ' + header.from);
+    rwhlog.debug('To: ' + header.to);
+    rwhlog.debug('Cc: ' + header.cc);
+    rwhlog.debug('Subject: ' + header.subject);
+    rwhlog.debug('Date: ' + header.date);
 
     return header;
   },
 
-  getLocaleForAccount: function() {
-    var from = document.getElementById("msgIdentity").value;
-    var list = this.Prefs.autoSelectLangRegexList.split("\n");
+  // getLocaleForAccount: function() {
+  //   var from = document.getElementById("msgIdentity").value;
+  //   var list = this.Prefs.autoSelectLangRegexList.split("\n");
 
-    for (var entry in list) {
-      entry = list[entry].match(/(.*) => (..)/);
-      if (! entry) continue;
+  //   for (var entry in list) {
+  //     entry = list[entry].match(/(.*) => (..)/);
+  //     if (! entry) continue;
 
-      var spec = entry[1];
-      var lang = entry[2].toLowerCase();
+  //     var spec = entry[1];
+  //     var lang = entry[2].toLowerCase();
 
-      if (! i18n.lang[lang]) continue;
-      if (! from.match(spec)) continue;
+  //     if (! i18n.lang[lang]) continue;
+  //     if (! from.match(spec)) continue;
 
-      return lang;
-    }
-    return this.Prefs.headerLocale;
-  },
+  //     return lang;
+  //   }
+  //   return this.Prefs.headerLocale;
+  // },
 
-  setLocale: function() {
-    if (this.Prefs.autoSelectLang)
-      return this.locale = this.getLocaleForAccount();
-    else
-      return this.locale = this.Prefs.headerLocale;
-  },
+  // setLocale: function() {
+  //   if (this.Prefs.autoSelectLang)
+  //     return this.locale = this.getLocaleForAccount();
+  //   else
+  //     return this.locale = this.Prefs.headerLocale;
+  // },
 
   get createRwhHeader() {
-    let locale = this.setLocale();
+    let locale = this.Prefs.headerLocale;
     let rawHdr = this.getMsgHeader(this.messageUri);
     let pHeader = this.parseMsgHeader(rawHdr);
     let headerQuotLblSeq = this.Prefs.headerQuotLblSeq;
 
-    if (this.Prefs.useSenderDate) {
-      pHeader.date = this.getSenderDate(rawHdr, pHeader);
-    }
+    // if (this.Prefs.useSenderDate) {
+    //   pHeader.date = this.getSenderDate(rawHdr, pHeader);
+    // }
 
     var rwhHdr = '<div id="rwhMsgHeader">';
 
@@ -484,7 +504,7 @@ var ReplyWithHeader = {
       let fontSize = this.Prefs.headerFontSize;
       let fontSizeUnit = this.Prefs.headerFontSizeUnit;
       let fontColor = this.Prefs.headerFontColor;
-      this.Log.debug('Font face: ' + fontFace + '\tFont size: ' + fontSize + fontSizeUnit + '\tColor: ' + fontColor);
+      rwhlog.debug('Font face: ' + fontFace + '\tFont size: ' + fontSize + fontSizeUnit + '\tColor: ' + fontColor);
 
       let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontFace + '" color="'
         + fontColor + '" style="font: ' + fontSize + fontSizeUnit + ' '
@@ -581,7 +601,7 @@ var ReplyWithHeader = {
 
     rwhHdr += '</div>';
 
-    this.Log.debug('Composed RWH Headers: ' + rwhHdr);
+    rwhlog.debug('Composed RWH Headers: ' + rwhHdr);
 
     return rwhHdr;
   },
@@ -662,7 +682,7 @@ var ReplyWithHeader = {
       }
 
       if (toDelete) {
-        // this.Log.debug('Delete node: \t' + node.nodeName + '	' + node.nodeValue);
+        // rwhlog.debug('Delete node: \t' + node.nodeName + '	' + node.nodeValue);
         this.deleteNode(node);
         node = nextNode;
       }
@@ -700,7 +720,7 @@ var ReplyWithHeader = {
     }
 
     if (!hdrNode) {
-      this.Log.error('Due to internal changes in Thunderbird. '
+      rwhlog.error('Due to internal changes in Thunderbird. '
       + 'RWH add-on having difficulties in processing mail headers '
       + ', contact add-on author here - ' + this.issuesPageUrl);
       return;
@@ -756,7 +776,7 @@ var ReplyWithHeader = {
     // Postbox
     //
     if (this.isPostbox) {
-      this.Log.debug('Postbox:: Forward mode');
+      rwhlog.debug('Postbox:: Forward mode');
       let hdrNode = this.getElement('__pbConvHr');
       if (!hdrNode) {
         hdrNode = this.getElement('moz-email-headers-table');
@@ -766,19 +786,19 @@ var ReplyWithHeader = {
       let isSignature = this.isSignaturePresent;
       let sigNode;
 
-      this.Log.debug('Is signature present: ' + isSignature);
+      rwhlog.debug('Is signature present: ' + isSignature);
 
       // signature present and location above quoted email (top)
       if (!sigOnBtm && isSignature) {
         sigNode = this.getElement('moz-signature').cloneNode(true);
         gMsgCompose.editor.rootElement.removeChild(this.getElement('moz-signature'));
-        this.Log.debug('Postbox signature node: ' + sigNode);
+        rwhlog.debug('Postbox signature node: ' + sigNode);
       }
 
       let mBody = gMsgCompose.editor.rootElement;
 
       if (hdrNode && this.isHtmlMail) {
-        this.Log.debug('HTML forward mode');
+        rwhlog.debug('HTML forward mode');
         while (hdrNode.firstChild) {
           hdrNode.removeChild(hdrNode.firstChild);
         }
@@ -800,8 +820,8 @@ var ReplyWithHeader = {
         let lineSize = this.Prefs.headerSepLineSize;
         this.byIdInMail('rwhMsgHdrDivider').setAttribute('style', 'border:0;border-top:' + lineSize + 'px solid ' + lineColor + ';padding:0;margin:10px 0 5px 0;width:100%;');
       } else {
-        this.Log.debug('Plain text forward mode');
-        this.Log.debug('Headers count: ' + this.hdrCnt);
+        rwhlog.debug('Plain text forward mode');
+        rwhlog.debug('Headers count: ' + this.hdrCnt);
 
         let pos = 0;
         for (let i = 0; i < mBody.childNodes.length; i++) {
@@ -824,12 +844,12 @@ var ReplyWithHeader = {
         for (let i = pos; i <= (pos + lc); i++) {
           let fnode = mBody.childNodes[i];
           if (fnode.nodeValue) {
-            this.Log.debug('Plain Text Hdr ==> ' + fnode.nodeValue);
+            rwhlog.debug('Plain Text Hdr ==> ' + fnode.nodeValue);
           }
 
           if (this.isReplyToNode(fnode)) {
             lc = lc + 2;
-            this.Log.debug('Reply-To header found');
+            rwhlog.debug('Reply-To header found');
           }
           mBody.removeChild(fnode);
         }
@@ -840,24 +860,24 @@ var ReplyWithHeader = {
       //
       // For Thunderbird
       //
-      this.Log.debug('Thunderbird:: Forward mode');
+      rwhlog.debug('Thunderbird:: Forward mode');
       let fwdContainer = this.getElement('moz-forward-container');
       let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
       let isSignature = this.isSignaturePresent;
       let rootElement = gMsgCompose.editor.rootElement;
       let sigNode;
 
-      this.Log.debug('Is signature present: ' + isSignature);
+      rwhlog.debug('Is signature present: ' + isSignature);
 
       // signature present and location above quoted email (top)
       if (!sigOnBtm && isSignature) {
         sigNode = this.getElement('moz-signature').cloneNode(true);
         rootElement.removeChild(this.getElement('moz-signature'));
-        this.Log.debug('Thunderbird signature node: ' + sigNode);
+        rwhlog.debug('Thunderbird signature node: ' + sigNode);
       }
 
       if (this.isHtmlMail) {
-        this.Log.debug('HTML forward mode');
+        rwhlog.debug('HTML forward mode');
         while (fwdContainer.firstChild) {
           if (this.contains(fwdContainer.firstChild.className, 'moz-email-headers-table')) {
             break;
@@ -876,8 +896,8 @@ var ReplyWithHeader = {
           // rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
         }
       } else {
-        this.Log.debug('Plain text forward mode');
-        this.Log.debug('Headers count: ' + this.hdrCnt);
+        rwhlog.debug('Plain text forward mode');
+        rwhlog.debug('Headers count: ' + this.hdrCnt);
 
         // Logically removing text node header elements
         this.deleteNode(fwdContainer.firstChild);
@@ -891,12 +911,12 @@ var ReplyWithHeader = {
         for (let i = 0; i <= lc; i++) {
           let fnode = fwdContainer.firstChild;
           if (fnode.nodeValue) {
-            this.Log.debug('Plain Text Hdr ==> ' + fnode.nodeValue);
+            rwhlog.debug('Plain Text Hdr ==> ' + fnode.nodeValue);
           }
 
           if (this.isReplyToNode(fnode)) {
             lc = lc + 2;
-            this.Log.debug('Reply-To header found');
+            rwhlog.debug('Reply-To header found');
           }
 
           this.deleteNode(fnode);
@@ -985,28 +1005,31 @@ var ReplyWithHeader = {
   },
 
   handleMailCompose: function() {
-    this.Log.debug('Initializing ' + ReplyWithHeader.addOnName + ' v' + ReplyWithHeader.addOnVersion 
-      + ' (' + this.hostApp + ' ' + this.appInfo.platformVersion 
-      + ', ' + this.appInfo.platformBuildID + ', '+ this.appRuntime.OS + ')');
+    let prefs = this.Prefs;
+    rwhlog.enableDebug = prefs.isDebugEnabled;
+    
+    rwhlog.debug('Initializing ' + ReplyWithHeader.addOnName + ' v' + ReplyWithHeader.addOnVersion 
+      + ' (' + rwhhost.app + ' ' + rwhhost.version 
+      + ', ' + rwhhost.OS + ', ' + rwhhost.buildID + ')');
       
     /*
      * ReplyWithHeader has to be enabled; extensions.replywithheader.enable=true and
      * ReplyWithHeader.isOkayToMoveOn must return true
      * Add-On comes into play :)
      */
-    let prefs = this.Prefs;
+    
     if (prefs.isEnabled && this.isOkayToMoveOn) {
       this.hdrCnt = 4; // From, To, Subject, Date
 
-      // this.Log.debug('BEFORE Raw Content:: ' + gMsgCompose.editor.rootElement.innerHTML);
-      this.Log.debug('Current mail type: ' + (this.isHtmlMail ? 'HTML' : 'Plain text'));
+      // rwhlog.debug('BEFORE Raw Content:: ' + gMsgCompose.editor.rootElement.innerHTML);
+      rwhlog.debug('Email content-type: ' + (this.isHtmlMail ? 'HTML' : 'Plain text'));
 
       if (this.isReply) {
-        this.Log.debug('Reply or ReplyAll mode');
+        rwhlog.debug('Email compose type: Reply/ReplyAll');
 
         this.handleReplyMessage();
       } else if (this.isForward) {
-        this.Log.debug('Forward mode');
+        rwhlog.debug('Email compose type: Forward');
 
         this.handleForwardMessage();
       }
@@ -1025,15 +1048,15 @@ var ReplyWithHeader = {
 
       this.handOverToUser();
 
-      // this.Log.debug('AFTER Raw Content:: ' + gMsgCompose.editor.rootElement.innerHTML);
+      // rwhlog.debug('AFTER Raw Content:: ' + gMsgCompose.editor.rootElement.innerHTML);
     } else {
       if (prefs.isEnabled) {
         // Resend=10, Redirect=15
         if (this.composeType == 10 || this.composeType == 15) {
-          this.Log.info('Email composeType [' + this.composeType + '] is not supported.');
+          rwhlog.info('Email composeType [' + this.composeType + '] is not supported.');
         }
       } else {
-        this.Log.info('ReplyWithHeader add-on is not enabled, you can enable it in the Add-On Preferences.');
+        rwhlog.info('ReplyWithHeader add-on is not enabled, you can enable it in the Add-On Preferences.');
       }
     }
   },
@@ -1044,7 +1067,7 @@ var ReplyWithHeader = {
         this.alerts.showAlertNotification('chrome://replywithheader/skin/icon-64.png',
           'ReplyWithHeader', str, false, '', null, '');
       } catch (ex) {
-        this.Log.errorWithException('Unable to show RWH notify alert.', ex);
+        rwhlog.errorWithException('Unable to show RWH notify alert.', ex);
       }
     }
   },
@@ -1053,83 +1076,45 @@ var ReplyWithHeader = {
     try {
       this.messenger.launchExternalURL(url);
     } catch (ex) {
-      this.Log.errorWithException('Unable to open RWH URL.', ex);
+      rwhlog.errorWithException('Unable to open RWH URL.', ex);
     }
   },
 
-  DateFmt: function(date) {
-    var options = {
-        weekday: "short",
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-    }
-    var timeOpts = {
-        hour: "numeric",
-        minute: "numeric",
-        hour12: (this.Prefs.timeFormat == 0),
-    };
-    var locale = this.locale;
+  // DateFmt: function(date) {
+  //   var options = {
+  //       weekday: "short",
+  //       year: "numeric",
+  //       month: "short",
+  //       day: "numeric",
+  //   }
+  //   var timeOpts = {
+  //       hour: "numeric",
+  //       minute: "numeric",
+  //       hour12: (this.Prefs.timeFormat == 0),
+  //   };
+  //   var locale = this.locale;
 
-    date = new Date(date);
+  //   date = new Date(date);
 
-    var dateStr = date.toLocaleDateString(locale, options);
-    var timeStr = date.toLocaleTimeString(locale, timeOpts);
+  //   var dateStr = date.toLocaleDateString(locale, options);
+  //   var timeStr = date.toLocaleTimeString(locale, timeOpts);
 
-    return {
-        date: dateStr,
-        time: timeStr,
-    }
-  },
+  //   return {
+  //       date: dateStr,
+  //       time: timeStr,
+  //   }
+  // },
 
-  formatMimeDate: function(dateStr) {
-    var dtStr = dateStr.replace(/ [+-].*/, "");
-    var tzStr = dateStr.replace(/.* ([+-])/, "$1");
-    var d = this.DateFmt(dtStr);
+  // formatMimeDate: function(dateStr) {
+  //   var dtStr = dateStr.replace(/ [+-].*/, "");
+  //   var tzStr = dateStr.replace(/.* ([+-])/, "$1");
+  //   var d = this.DateFmt(dtStr);
 
-    if (tzStr) d.time += " " + tzStr;
+  //   if (tzStr) d.time += " " + tzStr;
 
-    return d.date + ", " + d.time;
-  },
+  //   return d.date + ", " + d.time;
+  // },
 
-};
-
-// RWH logger methods
-ReplyWithHeader.Log = {
-  info: function(msg) {
-    this.logMsg('INFO', msg);
-  },
-
-  debug: function(msg) {
-    if (ReplyWithHeader.Prefs.isDebugEnabled) {
-      this.logMsg('DEBUG', msg);
-    }
-  },
-
-  error: function(msg) {
-    this.logMsg('ERROR', msg);
-  },
-
-  errorWithException: function(msg, ex) {
-    var stack = '';
-    var group = 'ReplyWithHeader';
-
-    if (typeof ex.stack != 'undefined') {
-      stack = ex.stack.replace('@', '\n  ');
-    }
-
-    var srcName = ex.fileName || '';
-    var scriptError = Components.classes['@mozilla.org/scripterror;1']
-                                .createInstance(Components.interfaces.nsIScriptError);
-
-    // Addon generates this error, it is better to use warningFlag = 0x1
-    scriptError.init(msg + '\n' + ex.message, srcName, stack, ex.lineNumber, 0, 0x1, group);
-    this.console.logMessage(scriptError);
-  },
-
-  logMsg: function(l, m) {
-    this.console.logStringMessage('RWH   '+ l + '\t' + m);
-  }
 };
 
 // -----------------------------------------------
@@ -1215,16 +1200,6 @@ AddonManager.getAddonByID(ReplyWithHeaderAddOnID, function(addOn) {
 });
 
 // Initializing Services
-// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIXULAppInfo
-XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'appInfo',
-                                   '@mozilla.org/xre/app-info;1',
-                                   'nsIXULAppInfo');
-
-// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIXULRuntime
-XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'appRuntime',
-                                  '@mozilla.org/xre/app-info;1',
-                                  'nsIXULRuntime');
-
 // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIAlertsService
 XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'alerts',
                                    '@mozilla.org/alerts-service;1',
@@ -1240,11 +1215,6 @@ XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'mimeConverter',
                                   '@mozilla.org/messenger/mimeconverter;1',
                                   'nsIMimeConverter');
 
-// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIConsoleService
-XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader.Log, 'console',
-                                   '@mozilla.org/consoleservice;1',
-                                   'nsIConsoleService');
-
 // based on available service, initialize one
 (function() {
   if ('@mozilla.org/parserutils;1' in Components.classes) {
@@ -1258,20 +1228,21 @@ XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader.Log, 'console',
                                        '@mozilla.org/feed-unescapehtml;1',
                                        'nsIScriptableUnescapeHTML');
   }
+
+  // String prototype
+  if (!String.prototype.startsWith) {
+    String.prototype.startsWith = function(search, pos) {
+      return this.substr(!pos || pos < 0 ? 0 : +pos, search.length) === search;
+    };
+  }
+
+  if (!String.prototype.endsWith) {
+    String.prototype.endsWith = function(search, this_len) {
+      if (this_len === undefined || this_len > this.length) {
+        this_len = this.length;
+      }
+      return this.substring(this_len - search.length, this_len) === search;
+    };
+  }
 })();
 
-// String prototype
-if (!String.prototype.startsWith) {
-	String.prototype.startsWith = function(search, pos) {
-		return this.substr(!pos || pos < 0 ? 0 : +pos, search.length) === search;
-	};
-}
-
-if (!String.prototype.endsWith) {
-	String.prototype.endsWith = function(search, this_len) {
-		if (this_len === undefined || this_len > this.length) {
-			this_len = this.length;
-		}
-		return this.substring(this_len - search.length, this_len) === search;
-	};
-}

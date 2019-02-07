@@ -11,7 +11,7 @@
 
 <overlay id="rwhMessengerComposeOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-    <script type="application/javascript" src="chrome://replywithheader/content/rwh.js"/>
+    <script type="application/javascript" src="chrome://replywithheader/content/core.js"/>    
     <script type="application/javascript" src="chrome://replywithheader/content/rwh-prefs.js"/>
     <script type="application/javascript" src="chrome://replywithheader/content/rwh-init.js"/>
     <script type="application/javascript" src="chrome://replywithheader/content/rwh-i18n.js"/>
