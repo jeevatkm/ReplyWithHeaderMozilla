@@ -170,32 +170,6 @@ var ReplyWithHeader = {
     }
   },
 
-  // Reference: https://gist.github.com/redoPop/3915761
-  // tzAbbr: function(dateInput) {
-  //   var dateObject = dateInput || new Date(),
-  //     dateString = dateObject + "",
-  //     tzAbbr = (
-  //       // Works for the majority of modern browsers
-  //       dateString.match(/\(([^\)]+)\)$/) ||
-  //       // IE outputs date strings in a different format:
-  //       dateString.match(/([A-Z]+) [\d]{4}$/)
-  //     );
-  //   if (tzAbbr) {
-  //     // Old Firefox uses the long timezone name (e.g., "Central
-  //     // Daylight Time" instead of "CDT")
-  //     tzAbbr = tzAbbr[1].match(/[A-Z]/g).join("");
-  //   }
-  //   // Uncomment these lines to return a GMT offset for browsers
-  //   // that don't include the user's zone abbreviation (e.g.,
-  //   // "GMT-0500".) I prefer to have `null` in this case, but
-  //   // you may not!
-  //   // First seen on: http://stackoverflow.com/a/12496442
-  //   if (!tzAbbr && /(GMT\W*\d{4}|GMT)/.test(dateString)) {
-  //     return RegExp.$1;
-  //   }
-  //   return tzAbbr;
-  // },
-
   parseDate: function(prTime) {
     let locale = this.Prefs.headerLocale;
     let dateFormat = this.Prefs.headerDateFormat;
@@ -224,98 +198,7 @@ var ReplyWithHeader = {
     }
 
     return new Intl.DateTimeFormat(locale, options).format(d);
-
-
-    // var nd = '';
-
-    // let dateFmtStr = this.dateFormat12hrs;
-    // if (this.Prefs.timeFormat == 1) {
-    //   dateFmtStr = this.dateFormat24hrs;
-    // }
-
-    // if (this.Prefs.dateFormat == 0) { // jshint ignore:line
-    //   rwhlog.debug('Locale date format');
-    //   nd = DateFormat.format.date(d, dateFmtStr) + ' ' + this.tzAbbr(d);
-    // } else {
-    //   rwhlog.debug('GMT date format');
-    //   var utc = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
-    //   nd = DateFormat.format.date(utc, dateFmtStr) + ' ' + this.tzAbbr(d.toUTCString());
-    // }
-
-    // return nd;
   },
-
-  // parseDate: function(prTime) {
-  //   // Input is PR time
-  //   let d = new Date(prTime / 1000);
-  //   var nd = '';
-  //   var dateStr, timeStr, tz;
-
-  //   if (this.Prefs.dateFormat == 0) { // jshint ignore:line
-  //     rwhlog.debug('Locale date format');
-  //     tz = this.tzAbbr(d);
-  //   } else {
-  //     rwhlog.debug('GMT date format');
-  //     tz = this.tzAbbr(d.toUTCString());
-  //     d = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
-  //   }
-
-  //   nd = this.DateFmt(d);
-  //   dateStr = nd.date;
-  //   timeStr = nd.time;
-
-  //   if (this.Prefs.dateStyle == 1) {
-  //     dateStr = DateFormat.format.date(d, 'yyyy-MM-dd');
-  //   }
-
-  //   nd = dateStr + ' ' + timeStr + ' ' + tz;
-  //   return nd;
-  // },
-
-  // getSenderDate: function(rawHdr, pHeader) {
-  //   let fromAddr = this.cleanEmail(rawHdr.mime2DecodedAuthor);
-  //   let luser = this.isLuser(fromAddr);
-
-  //   var mimeDate = MimeHeaders(this.messageUri).get("Date");
-  //   var recvDate = new Date(rawHdr.date/1000).toString().replace("GMT", "");
-  //   var date;
-
-  //   if (!luser)
-  //     date = mimeDate;
-  //   else
-  //   if (luser.tzOffset)
-  //     date = this.fixupTimezone(mimeDate, luser.tzOffset)
-  //   else
-  //     date = recvDate;
-
-  //   return this.formatMimeDate(date);
-  // },
-
-  // isLuser: function(fromAddr) {
-  //   let lusers = this.Prefs.useLocalDateRegexList.split("\n");
-
-  //   var match, tzOffset;
-  //   for (var entry in lusers) {
-  //     entry = lusers[entry].split(" => ");
-  //     match = fromAddr.match(new RegExp(entry[0]));
-  //     if (match) {
-  //       tzOffset = entry[1];
-  //       break;
-  //     }
-  //   }
-  //   return match ? { tzOffset: tzOffset } : false;
-  // },
-
-  // fixupTimezone: function(date, tzOffset) {
-  //   let d1 = new Date(date);
-  //   let tz = tzOffset.match(/([+-])(..)(..)/);
-  //   let sign = (tz[1] == "+" ? 1 : -1);
-
-  //   tz = parseInt(tz[2])*60 + parseInt(tz[3]);
-  //   d1 = new Date(d1.getTime() + 60000 * tz * sign);
-
-  //   return d1.toUTCString().replace("GMT", tzOffset);
-  // },
 
   escapeHtml: function(str) {
     return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -446,7 +329,7 @@ var ReplyWithHeader = {
     if (header.cc) {
       this.hdrCnt += 1; // for Cc header
     }
-    
+
     rwhlog.debug('From: ' + header.from);
     rwhlog.debug('To: ' + header.to);
     rwhlog.debug('Cc: ' + header.cc);
@@ -456,41 +339,11 @@ var ReplyWithHeader = {
     return header;
   },
 
-  // getLocaleForAccount: function() {
-  //   var from = document.getElementById("msgIdentity").value;
-  //   var list = this.Prefs.autoSelectLangRegexList.split("\n");
-
-  //   for (var entry in list) {
-  //     entry = list[entry].match(/(.*) => (..)/);
-  //     if (! entry) continue;
-
-  //     var spec = entry[1];
-  //     var lang = entry[2].toLowerCase();
-
-  //     if (! i18n.lang[lang]) continue;
-  //     if (! from.match(spec)) continue;
-
-  //     return lang;
-  //   }
-  //   return this.Prefs.headerLocale;
-  // },
-
-  // setLocale: function() {
-  //   if (this.Prefs.autoSelectLang)
-  //     return this.locale = this.getLocaleForAccount();
-  //   else
-  //     return this.locale = this.Prefs.headerLocale;
-  // },
-
   get createRwhHeader() {
     let locale = this.Prefs.headerLocale;
     let rawHdr = this.getMsgHeader(this.messageUri);
     let pHeader = this.parseMsgHeader(rawHdr);
     let headerQuotLblSeq = this.Prefs.headerQuotLblSeq;
-
-    // if (this.Prefs.useSenderDate) {
-    //   pHeader.date = this.getSenderDate(rawHdr, pHeader);
-    // }
 
     var rwhHdr = '<div id="rwhMsgHeader">';
 
@@ -1080,117 +933,6 @@ var ReplyWithHeader = {
     }
   },
 
-  // DateFmt: function(date) {
-  //   var options = {
-  //       weekday: "short",
-  //       year: "numeric",
-  //       month: "short",
-  //       day: "numeric",
-  //   }
-  //   var timeOpts = {
-  //       hour: "numeric",
-  //       minute: "numeric",
-  //       hour12: (this.Prefs.timeFormat == 0),
-  //   };
-  //   var locale = this.locale;
-
-  //   date = new Date(date);
-
-  //   var dateStr = date.toLocaleDateString(locale, options);
-  //   var timeStr = date.toLocaleTimeString(locale, timeOpts);
-
-  //   return {
-  //       date: dateStr,
-  //       time: timeStr,
-  //   }
-  // },
-
-  // formatMimeDate: function(dateStr) {
-  //   var dtStr = dateStr.replace(/ [+-].*/, "");
-  //   var tzStr = dateStr.replace(/.* ([+-])/, "$1");
-  //   var d = this.DateFmt(dtStr);
-
-  //   if (tzStr) d.time += " " + tzStr;
-
-  //   return d.date + ", " + d.time;
-  // },
-
-};
-
-// -----------------------------------------------
-// Get Mime headers (adapted from SmartTemplates4)
-// -----------------------------------------------
-var MimeHeaders = function(messageURI) {
-
-  const Ci = Components.interfaces,
-        Cc = Components.classes;
-  let   messenger = Cc["@mozilla.org/messenger;1"] .createInstance(Ci.nsIMessenger),
-        messageService = messenger.messageServiceFromURI(messageURI),
-        messageStream = Cc["@mozilla.org/network/sync-stream-listener;1"]
-                        .createInstance().QueryInterface(Ci.nsIInputStream),
-        inputStream   = Cc["@mozilla.org/scriptableinputstream;1"]
-                        .createInstance().QueryInterface(Ci.nsIScriptableInputStream),
-        headers       = Cc["@mozilla.org/messenger/mimeheaders;1"]
-                        .createInstance().QueryInterface(Ci.nsIMimeHeaders);
-
-  let contentCache = "";
-
-  inputStream.init(messageStream);
-  try {
-      messageService.streamMessage(messageURI, messageStream, msgWindow, null, false, null);
-  }
-  catch (ex) {
-      return null;
-  }
-
-
-  function _init() {
-      let msgContent = "";
-
-      try {
-          while (inputStream.available()) {
-              msgContent = msgContent + inputStream.read(2048);
-              let p = msgContent.search(/\r\n\r\n|\r\r|\n\n/);
-              // note: it would be faster to just search in the new block
-              // (but would also need to check the last 3 bytes)
-              if (p > 0) {
-                  contentCache = msgContent.substr(p + (msgContent[p] == msgContent[p+1] ? 2 : 4));
-                  msgContent = msgContent.substr(0, p) + "\r\n";
-                  break;
-              }
-              if (msgContent.length > 2048 * 32) {
-                  break;
-              }
-          }
-      }
-      catch(ex) {
-          if (!msgContent) throw(ex);
-      }
-
-      headers.initialize(msgContent, msgContent.length);
-  }
-
-
-  function get(header, get_all_occurences) {
-      return headers.extractHeader(header, get_all_occurences);
-  }
-
-  function content(size) {
-      while (inputStream.available() && contentCache.length < size)
-          contentCache += inputStream.read(2048);
-
-      if (contentCache.length > size)
-          return contentCache.substr(0, size);
-      else
-          return contentCache;
-  }
-
-  _init();
-
-  return {
-      get: get,
-      content: content,
-  }
 };
 
 // Getting Add-On name & version #

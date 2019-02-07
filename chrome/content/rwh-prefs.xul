@@ -25,8 +25,8 @@
             onload="ReplyWithHeader.Prefs.init();">
 
     <script type="application/javascript" src="chrome://replywithheader/content/core.js"/>
-    <script type="application/javascript" src="chrome://replywithheader/content/rwh-prefs.js"/>
-    <script type="application/javascript" src="chrome://replywithheader/content/rwh-i18n.js"/>
+    <script type="application/javascript" src="chrome://replywithheader/content/prefs.js"/>
+    <script type="application/javascript" src="chrome://replywithheader/content/i18n.js"/>
 
     <prefpane id="rwhPane" orient="vertical">
         <preferences id="rwhGlobalPref">
@@ -44,18 +44,13 @@
             <preference id="pref-spaceAfterHdr" name="extensions.replywithheader.header.space.after" type="int" instantApply="true" />
             <preference id="pref-hdrSepLineSize" name="extensions.replywithheader.header.separator.line.size" type="int" instantApply="true" />
             <preference id="pref-hdrSepLineColor" name="extensions.replywithheader.header.separator.line.color" type="string" instantApply="true" />
-            <!-- <preference id="pref-autoSelectLang" name="extensions.replywithheader.auto.select.lang" type="bool" instantApply="true" />
-            <preference id="pref-autoSelectLangRegexList" name="extensions.replywithheader.auto.select.lang.regex.list" type="string" instantApply="true" /> -->
             <preference id="pref-transSubjectPrefix" name="extensions.replywithheader.trans.subject.prefix" type="bool" instantApply="true" />
             <preference id="pref-cleanBlockQuote" name="extensions.replywithheader.clean.blockquote" type="bool" instantApply="true" />
             <preference id="pref-cleanNewBlockQuote" name="extensions.replywithheader.clean.new.blockquote" type="bool" instantApply="true" />
             <preference id="pref-cleanGreaterThanChar" name="extensions.replywithheader.clean.char.greaterthan" type="bool" instantApply="true" />
             <preference id="pref-cleanOnlyNewQuoteChar" name="extensions.replywithheader.clean.only.new.quote.char" type="bool" instantApply="true" />
             <preference id="pref-excludePlainTextHdrPrefix" name="extensions.replywithheader.clean.pln.hdr.prefix" type="bool" instantApply="true" />
-            <!-- <preference id="pref-useSenderDate" name="extensions.replywithheader.use.sender.date" type="bool" instantApply="true" />
-            <preference id="pref-useLocalDateRegexList" name="extensions.replywithheader.use.local.date.regex.list" type="string" instantApply="true" /> -->
             <preference id="pref-quotDateAttributionStyle" name="extensions.replywithheader.header.date.format" type="int" instantApply="true" />
-            <!-- <preference id="pref-quotDateStyle" name="extensions.replywithheader.header.date.style" type="int" instantApply="true" /> -->
             <preference id="pref-quotTimeAttributionStyle" name="extensions.replywithheader.header.time.format" type="int" instantApply="true" />
             <preference id="pref-quotDateIncludeTimezone" name="extensions.replywithheader.header.date.timezone" type="bool" instantApply="true" />
             <preference id="pref-enableRwhDebugMode" name="extensions.replywithheader.debug" type="bool" instantApply="true" />
@@ -68,11 +63,11 @@
             <image src='chrome://replywithheader/skin/language.png' width='21' height='21' style="margin-right:3px;margin-top:3px;" />
             <menulist id="hdrLocale" preference="pref-hdrLocale" style="margin-right:4px;">
               <menupopup>
-              <!-- populated by rwh-prefs.js:populateLocale -->
+              <!-- populated by prefs.js:populateLocale -->
               </menupopup>
             </menulist>
         </hbox>
-        <tabbox style="margin-bottom:7px;margin-top:5px;width:500px;">
+        <tabbox style="margin-bottom:7px;margin-top:5px;">
             <tabs>
                 <tab label="Manage Headers" selected="true" />
                 <tab label="Misc" />
@@ -120,13 +115,6 @@
                             <radio value="1" label="International timezone (UTC)" />
                         </radiogroup>
                     </hbox>
-                    <!-- <hbox align="center" style="margin-top:-2px">
-                        <radiogroup id="quotDateStyle" preference="pref-quotDateStyle"
-                                  class="horizontal">
-                            <radio value="0" label="Full (ddd, MMM d, yyyy)" />
-                            <radio value="1" label="ISO (yyyy-MM-dd)" />
-                        </radiogroup>
-                    </hbox> -->
                     <hbox align="center" style="margin-top:-2px">
                         <radiogroup id="quotTimeAttributionStyle" preference="pref-quotTimeAttributionStyle"
                                   class="horizontal">
@@ -134,7 +122,7 @@
                             <radio value="1" label="24 hours format" />
                         </radiogroup>
                     </hbox>
-                    <hbox align="center" style="margin-left:20px">
+                    <hbox align="center" style="margin-left:20px;margin-top:-3px">
                         <checkbox id="quotDateIncludeTimezone" label="Include short timezone info" preference="pref-quotDateIncludeTimezone" 
                             class="horizontal" />
                     </hbox>
@@ -221,18 +209,6 @@
                     </hbox>
                 </tabpanel>
                 <tabpanel orient="vertical">
-                    <!-- <hbox align="center">
-                        <label id="lblAutoSelectLang" value="Automatic language selection" />
-                    </hbox>
-                    <hbox align="center" style="margin-left:15px;margin-bottom:7px;">
-                        <checkbox id="autoSelectLang" label="Select language based on account's email" preference="pref-autoSelectLang"
-                          oncommand="ReplyWithHeader.Prefs.toggleAutoSelectLangRegexList();" />
-                    </hbox>
-                    <vbox align="left" style="margin-left:21px; margin-bottom:10px; font-size:12px">
-                        <label id="lblAutoSelectLangRegexList" value="email => language mappings"/>
-                        <textbox id="autoSelectLangRegexList" preference="pref-autoSelectLangRegexList" multiline="true" rows="3"
-                          style="width:290px;" />
-                    </vbox> -->
                     <hbox id="hboxCntFormat" align="center" style="margin-top:5px">
                         <label id="lblCntFormat" value="Content formatting and cleanups" />
                     </hbox>
@@ -262,18 +238,6 @@
                     <hbox align="center" style="margin-left:15px">
                         <checkbox id="excludePlainTextHdrPrefix" label="Don't include plain text header prefix" preference="pref-excludePlainTextHdrPrefix" />
                     </hbox>
-                    <!-- <hbox align="center" style="margin-top:5px">
-                        <label id="lblUseSenderDate" value="Date source" />
-                    </hbox>
-                    <hbox align="center" style="margin-left:15px">
-                        <checkbox id="useSenderDate" label="Use sender's date (MIME date)" preference="pref-useSenderDate"
-                                  oncommand="this.parentNode.nextSibling.hidden = ! this.checked;" />
-                    </hbox>
-                    <vbox align="left" style="margin-left:21px; margin-top:5px; margin-bottom:7px; font-size:12px">
-                        <label id="lblUseLocalDateRegexList" value="Use received date instead of sender's for authors matching" />
-                        <textbox id="useLocalDateRegexList" preference="pref-useLocalDateRegexList" multiline="true" rows="3"
-                          style="width:290px;" />
-                    </vbox> -->
                 </tabpanel>
                 <tabpanel orient="vertical">
                     <vbox align="center" style="margin-top: 30px">

@@ -67,10 +67,6 @@ ReplyWithHeader.Prefs = {
     return this.getIntPref('header.date.format');
   },
 
-  // get dateStyle() {
-  //   return this.getIntPref('header.date.style');
-  // },
-
   get headerTimeFormat() {
     return this.getIntPref('header.time.format');
   },
@@ -107,14 +103,6 @@ ReplyWithHeader.Prefs = {
     return this.getBoolPref('trans.subject.prefix');
   },
 
-  // get autoSelectLang() {
-  //   return this.getBoolPref('auto.select.lang');
-  // },
-
-  // get autoSelectLangRegexList() {
-  //   return this.getStringPref('auto.select.lang.regex.list');
-  // },
-
   get cleanBlockQuote() {
     return this.getBoolPref('clean.blockquote');
   },
@@ -134,14 +122,6 @@ ReplyWithHeader.Prefs = {
   get excludePlainTxtHdrPrefix() {
     return this.getBoolPref('clean.pln.hdr.prefix');
   },
-
-  // get useSenderDate() {
-  //   return this.getBoolPref('use.sender.date');
-  // },
-
-  // get useLocalDateRegexList() {
-  //   return this.getStringPref('use.local.date.regex.list');
-  // },
 
   openWebsite: function() {
     ReplyWithHeader.openUrl(ReplyWithHeader.homepageUrl);
@@ -246,8 +226,6 @@ ReplyWithHeader.Prefs = {
   init: function() {
     this.toggleRwh();
 
-    // ReplyWithHeader.byId('useSenderDate').doCommand();
-
     // Assigning RWH name and version #
     ReplyWithHeader.byId('abtRwhCaption').value = ReplyWithHeader.addOnName + ' v' + ReplyWithHeader.addOnVersion;
 
@@ -264,8 +242,6 @@ ReplyWithHeader.Prefs = {
 
     this.toggleQuoteChar();
 
-    // this.toggleAutoSelectLangRegexList();
-
     this.forPostbox(true);
 
     // Apply platform style
@@ -274,17 +250,6 @@ ReplyWithHeader.Prefs = {
 
   toggleRwh: function() {
     let rwh = ReplyWithHeader.byId('enableRwh');
-    // var ids = ['lblFromAttribution', 'fromAttributionStyle', 'lblHeaderToCcAttrib', 'toccAttributionStyle',
-    //   'lblHdrDate', 'quotDateAttributionStyle', 'lblTypography', 'lblFontface', 'hdrFontface', 'lblFontsize',
-    //   'hdrFontsize', 'lblFontcolor', 'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr',
-    //   'lblAfterHeader', 'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblSepLineSize', 'lblSepLineColor',
-    //   'hdrSepLineSize', 'hdrSepLineColor', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle', 'quotTimeAttributionStyle',
-    //   'quotDateStyle', 'lblHeaderCleanups', 'hdrLocale', 'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat',
-    //   'autoSelectLang', 'lblAutoSelectLang', 'autoSelectLangRegexList', 'lblAutoSelectLangRegexList',
-    //   'cleanBlockQuote', 'cleanNewBlockQuote', 'cleanGreaterThanChar', 'lblHeaderFormat', 'excludePlainTextHdrPrefix',
-    //   'useSenderDate', 'lblUseSenderDate', 'useLocalDateRegexList','lblUseLocalDateRegexList',
-    //   'cleanOnlyNewQuoteChar', 'enableRwhDebugMode'
-    // ];
     var ids = ['lblFromAttribution', 'fromAttributionStyle', 'lblHeaderToCcAttrib', 'toccAttributionStyle',
       'lblHdrDate', 'quotDateAttributionStyle', 'lblTypography', 'lblFontface', 'hdrFontface', 'lblFontsize',
       'hdrFontsize', 'lblFontcolor', 'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr',
@@ -330,17 +295,6 @@ ReplyWithHeader.Prefs = {
     let cqc = ReplyWithHeader.byId('cleanGreaterThanChar');
     this.toggle('cleanOnlyNewQuoteChar', !cqc.checked);
   },
-
-  // toggleAutoSelectLangRegexList: function() {
-  //   let obj = ReplyWithHeader.byId('autoSelectLang');
-  //   if (obj.checked) {
-  //     obj.style.marginBottom = '0px';
-  //     obj.parentNode.nextSibling.hidden = false;
-  //   } else {
-  //     obj.style.marginBottom = '9px';
-  //     obj.parentNode.nextSibling.hidden = true;
-  //   }
-  // },
 
   applyPlatformStyle: function() {
     if (rwhhost.isMacOSX) {
