@@ -14,7 +14,7 @@
 var i18n = {
   "lang": {
     "en-US": "English",
-    "en-UK": "English",
+    "en-GB": "English",
     "en-AU": "English",
     "fr": "French - Français",
     "de": "German - Deutsch",
@@ -26,7 +26,7 @@ var i18n = {
   },
   "from": {
     "en-US": "From:",
-    "en-UK": "From:",
+    "en-GB": "From:",
     "en-AU": "From:",
     "fr": "De :",
     "de": "Von:",
@@ -38,7 +38,7 @@ var i18n = {
   },
   "to": {
     "en-US": "To:",
-    "en-UK": "To:",
+    "en-GB": "To:",
     "en-AU": "To:",
     "fr": "Pour :",
     "de": "An:",
@@ -50,7 +50,7 @@ var i18n = {
   },
   "cc": {
     "en-US": "Cc:",
-    "en-UK": "Cc:",
+    "en-GB": "Cc:",
     "en-AU": "Cc:",
     "fr": "Cc :",
     "de": "Cc:",
@@ -62,7 +62,7 @@ var i18n = {
   },
   "subject": {
     "en-US": "Subject:",
-    "en-UK": "Subject:",
+    "en-GB": "Subject:",
     "en-AU": "Subject:",
     "fr": "Objet :",
     "de": "Betreff:",
@@ -74,7 +74,7 @@ var i18n = {
   },
   "date": {
     "en-US": "Date:",
-    "en-UK": "Date:",
+    "en-GB": "Date:",
     "en-AU": "Date:",
     "fr": "Date :",
     "de": "Datum:",
@@ -86,7 +86,7 @@ var i18n = {
   },
   "sent": {
     "en-US": "Sent:",
-    "en-UK": "Sent:",
+    "en-GB": "Sent:",
     "en-AU": "Sent:",
     "fr": "Envoyé :",
     "de": "Gesendet:",
@@ -98,7 +98,7 @@ var i18n = {
   },
   "forwarded_message": {
     "en-US": "Forwarded Message",
-    "en-UK": "Forwarded Message",
+    "en-GB": "Forwarded Message",
     "en-AU": "Forwarded Message",
     "fr": "Message transféré",
     "de": "Weitergeleitete Nachricht",
@@ -110,7 +110,7 @@ var i18n = {
   },
   "original_message": {
     "en-US": "Original Message",
-    "en-UK": "Original Message",
+    "en-GB": "Original Message",
     "en-AU": "Original Message",
     "fr": "Message d'origine",
     "de": "Ursprüngliche Nachricht",
