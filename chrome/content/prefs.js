@@ -168,7 +168,7 @@ ReplyWithHeader.Prefs = {
   migrate: function() {
     // header locale value
     if (this.headerLocale == 0) {
-      return this.branch.setStringPref('header.locale', 'en-US');
+      return this.branch.setStringPref('extensions.replywithheader.header.locale', 'en-US');
     }
   },
 
