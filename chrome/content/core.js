@@ -363,10 +363,9 @@ var ReplyWithHeader = {
       let fontColor = this.Prefs.headerFontColor;
       rwhlog.debug('Font face: ' + fontFace + '\tFont size: ' + fontSize + fontSizeUnit + '\tColor: ' + fontColor);
 
-      let htmlTagPrefix = '<span style="margin: -1.3px 0 0 0 !important;"><font face="' + fontFace + '" color="'
-        + fontColor + '" style="font: ' + fontSize + fontSizeUnit + ' '
-        + fontFace + ' !important; color: ' + fontColor + ' !important;">';
-      let htmlTagSuffix = '</font></span><br/>';
+      let htmlTagPrefix = '<div style="font-family:' + fontFace + ' !important; color:'
+        + fontColor + ' !important; font-size:' + fontSize + fontSizeUnit + ' !important;">';
+      let htmlTagSuffix = '</div>';
 
       let lineColor = this.Prefs.headerSepLineColor;
       let lineSize = this.Prefs.headerSepLineSize;
@@ -458,7 +457,7 @@ var ReplyWithHeader = {
 
     rwhHdr += '</div>';
 
-    rwhlog.debug('Composed RWH Headers: ' + rwhHdr);
+    rwhlog.debug('Composed Email Headers: ' + rwhHdr);
 
     return rwhHdr;
   },
@@ -633,7 +632,6 @@ var ReplyWithHeader = {
     // Postbox
     //
     if (this.isPostbox) {
-      rwhlog.debug('Postbox:: Forward mode');
       let hdrNode = this.getElement('__pbConvHr');
       if (!hdrNode) {
         hdrNode = this.getElement('moz-email-headers-table');
@@ -655,7 +653,6 @@ var ReplyWithHeader = {
       let mBody = gMsgCompose.editor.rootElement;
 
       if (hdrNode && this.isHtmlMail) {
-        rwhlog.debug('HTML forward mode');
         while (hdrNode.firstChild) {
           hdrNode.removeChild(hdrNode.firstChild);
         }
@@ -677,7 +674,6 @@ var ReplyWithHeader = {
         let lineSize = this.Prefs.headerSepLineSize;
         this.byIdInMail('rwhMsgHdrDivider').setAttribute('style', 'border:0;border-top:' + lineSize + 'px solid ' + lineColor + ';padding:0;margin:10px 0 5px 0;width:100%;');
       } else {
-        rwhlog.debug('Plain text forward mode');
         rwhlog.debug('Headers count: ' + this.hdrCnt);
 
         let pos = 0;
@@ -717,7 +713,6 @@ var ReplyWithHeader = {
       //
       // For Thunderbird
       //
-      rwhlog.debug('Thunderbird:: Forward mode');
       let fwdContainer = this.getElement('moz-forward-container');
       let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
       let isSignature = this.isSignaturePresent;
@@ -734,7 +729,6 @@ var ReplyWithHeader = {
       }
 
       if (this.isHtmlMail) {
-        rwhlog.debug('HTML forward mode');
         while (fwdContainer.firstChild) {
           if (this.contains(fwdContainer.firstChild.className, 'moz-email-headers-table')) {
             break;
@@ -753,7 +747,6 @@ var ReplyWithHeader = {
           // rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
         }
       } else {
-        rwhlog.debug('Plain text forward mode');
         rwhlog.debug('Headers count: ' + this.hdrCnt);
 
         // Logically removing text node header elements

@@ -27,11 +27,11 @@ var rwhhost = {
 
   get OS() {
     let platform = this.appInfo.OS.toLowerCase();
-    if (platform === 'darwin') {
+    if (platform == 'darwin') {
       return 'macOS'
-    } else if (platform === 'linux') {
+    } else if (platform == 'linux') {
       return 'Linux'
-    } else if (platform === 'winnt') {
+    } else if (platform == 'winnt') {
       return 'Windows'
     }
     return "unknown"
