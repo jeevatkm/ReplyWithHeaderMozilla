@@ -79,7 +79,7 @@ var ReplyWithHeader = {
   // This is applicable only to HTML emails
   get isSignaturePresent() {
     let rootElement;
-    if (this.isPostbox) {
+    if (rwhhost.isPostbox) {
       // This is only for Postbox,
       // since it compose email structure is different
       if (!this.isHtmlMail) {
@@ -351,7 +351,7 @@ var ReplyWithHeader = {
 
     var rwhHdr = '<div id="rwhMsgHeader">';
 
-    if (this.isThunderbird) {
+    if (rwhhost.isThunderbird) {
       rwhHdr += this.createBrTags(this.Prefs.beforeSepSpaceCnt);
     }
 
@@ -500,7 +500,7 @@ var ReplyWithHeader = {
       this.cleanEmptyTags(rwhHdr.parentNode.nextSibling);
     }
 
-    if (this.isPostbox) {
+    if (rwhhost.isPostbox) {
       let pbhr = this.getElement('__pbConvHr');
       if (pbhr) {
         pbhr.setAttribute('style', 'margin:0 !important;');
@@ -546,7 +546,7 @@ var ReplyWithHeader = {
   },
 
   decodeMime: function(str) {
-    if (this.isPostbox) {
+    if (rwhhost.isPostbox) {
       return this.mimeConverter.decodeMimeHeaderStr(str, null, false, true);
     }
 
@@ -563,7 +563,7 @@ var ReplyWithHeader = {
 
   handleReplyMessage: function() {
     let hdrNode;
-    if (this.isPostbox) {
+    if (rwhhost.isPostbox) {
       hdrNode = this.getElement('__pbConvHr');
       if (!hdrNode) {
         let tags = this.byTagName('span');
@@ -595,7 +595,7 @@ var ReplyWithHeader = {
       sigOnReply = gCurrentIdentity.getBoolAttribute('sig_on_reply');
     let rootElement = gMsgCompose.editor.rootElement;
 
-    if (this.isPostbox) {
+    if (rwhhost.isPostbox) {
       if (this.isHtmlMail) {
         let lineColor = this.Prefs.headerSepLineColor;
         let lineSize = this.Prefs.headerSepLineSize;
@@ -631,7 +631,7 @@ var ReplyWithHeader = {
     //
     // Postbox
     //
-    if (this.isPostbox) {
+    if (rwhhost.isPostbox) {
       let hdrNode = this.getElement('__pbConvHr');
       if (!hdrNode) {
         hdrNode = this.getElement('moz-email-headers-table');
@@ -665,9 +665,8 @@ var ReplyWithHeader = {
           mBody.insertBefore(sigNode, mBody.firstChild);
         }
 
-        if (this.Prefs.beforeSepSpaceCnt == 1) {
-          for (let i = 0; i < 2; i++)
-            mBody.insertBefore(gMsgCompose.editor.document.createElement('br'), mBody.firstChild);
+        for (let i = 0; i < this.Prefs.beforeSepSpaceCnt; i++) {
+          mBody.insertBefore(gMsgCompose.editor.document.createElement('br'), mBody.firstChild);
         }
 
         let lineColor = this.Prefs.headerSepLineColor;
@@ -806,7 +805,7 @@ var ReplyWithHeader = {
       }
     }
 
-    if (this.isPostbox) {
+    if (rwhhost.isPostbox) {
       let pbBody = this.getElement('__pbConvBody');
       if (pbBody) {
         pbBody.style.color = '#000000';
