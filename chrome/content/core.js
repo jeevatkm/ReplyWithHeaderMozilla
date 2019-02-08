@@ -176,28 +176,32 @@ var ReplyWithHeader = {
     let timeFormat = this.Prefs.headerTimeFormat;
     let includeTimezone = this.Prefs.headerIncludeTimeZone;
 
-    rwhlog.debug('Date format: ' + (dateFormat === 1 ? 'UTC' : 'Locale (' + locale + ')')
-                 + ', Time format: ' + (timeFormat === 1 ? '24-hour' : '12-hour')
+    rwhlog.debug('Date format: ' + (dateFormat == 1 ? 'UTC' : 'Locale (' + locale + ')')
+                 + ', Time format: ' + (timeFormat == 1 ? '24-hour' : '12-hour')
                  + (includeTimezone ? ', Include short timezone info' : ''))
 
     // Input is PR time
     let d = new Date(prTime / 1000);
     let options = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'};
 
-    if (dateFormat === 1) { // Locale date format
+    if (dateFormat == 1) { // Locale date format
       options.timeZone = 'UTC';
       options.timeZoneName = 'short';
     }
 
-    if (timeFormat === 1) {
+    if (timeFormat == 1) {
       options.hour12 = false;
+    } else {
+      options.hour12 = true;
     }
 
-    if (this.Prefs.headerIncludeTimeZone) {
+    if (includeTimezone) {
       options.timeZoneName = 'short';
     }
 
-    return new Intl.DateTimeFormat(locale, options).format(d);
+    let ds = new Intl.DateTimeFormat(locale, options).format(d);
+    ds = ds.replace(/GMT/, 'UTC');
+    return ds;
   },
 
   escapeHtml: function(str) {

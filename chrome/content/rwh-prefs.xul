@@ -86,7 +86,7 @@
                         </radiogroup>
                     </hbox>
                     <hbox align="center">
-                        <label id="lblHeaderToCcAttrib" value="Header 'To' &amp; 'Cc' attribution style" />
+                        <label id="lblHeaderToCcAttrib" value="Header 'To' &amp; 'Cc' attribution style" style="margin-top:2px" />
                     </hbox>
                     <hbox align="center">
                         <radiogroup id="toccAttributionStyle" preference="pref-toccAttributionStyle">
@@ -95,7 +95,7 @@
                         </radiogroup>
                     </hbox>
                     <hbox align="center">
-                        <label id="lblHeaderQuotSeq" value="Header quoting sequence and labels" />
+                        <label id="lblHeaderQuotSeq" value="Header quoting sequence and labels" style="margin-top:2px" />
                     </hbox>
                     <hbox align="center">
                         <radiogroup id="quotSeqAttributionStyle" preference="pref-quotSeqAttributionStyle">
@@ -106,7 +106,7 @@
                         </radiogroup>
                     </hbox>
                     <hbox align="center">
-                        <label id="lblHdrDate" value="Header date format" />
+                        <label id="lblHdrDate" value="Header date format" style="margin-top:2px" />
                     </hbox>
                     <hbox align="center">
                         <radiogroup id="quotDateAttributionStyle" preference="pref-quotDateAttributionStyle"
@@ -122,12 +122,12 @@
                             <radio value="1" label="24 hours format" />
                         </radiogroup>
                     </hbox>
-                    <hbox align="center" style="margin-left:20px;margin-top:-3px">
+                    <hbox align="center" style="margin-left:20px;">
                         <checkbox id="quotDateIncludeTimezone" label="Include short timezone info" preference="pref-quotDateIncludeTimezone" 
-                            class="horizontal" />
+                            style="font-size: 12px; margin-top:-3px;"  />
                     </hbox>
                     <hbox align="center">
-                        <label id="lblTypography" value="Header typography" />
+                        <label id="lblTypography" value="Header typography" style="margin-top:2px" />
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblFontface" value="Font face:" />
@@ -148,7 +148,7 @@
                                      preference="pref-hdrFontcolor" />
                     </hbox>
                     <hbox align="center">
-                        <label id="lblSpace" value="Header line spaces" />
+                        <label id="lblSpace" value="Header line spaces" style="margin-top:2px" />
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblBeforeHeader" value="Before header:" />
