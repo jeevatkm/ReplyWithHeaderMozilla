@@ -75,6 +75,10 @@ ReplyWithHeader.Prefs = {
     return this.getBoolPref('header.date.timezone');
   },
 
+  get tbMsgComposeFontFace() {
+    return this.branch.getStringPref('msgcompose.font_face');
+  },
+
   get headerFontFace() {
     return this.getStringPref('header.font.face');
   },
@@ -96,7 +100,12 @@ ReplyWithHeader.Prefs = {
   },
 
   get headerLocale() {
-    return this.getStringPref('header.locale');
+    let hdrLocale = this.getStringPref('header.locale');
+    if (hdrLocale == 'en') { // migrate settings value
+      this.branch.setStringPref('extensions.replywithheader.header.locale', 'en-US');
+      hdrLocale = 'en-US';
+    }
+    return hdrLocale;
   },
 
   get isSubjectPrefixEnabled() {
@@ -162,13 +171,6 @@ ReplyWithHeader.Prefs = {
       }
     } else {
       this.branch.setIntPref('mail.compose.max_recycled_windows', 0);
-    }
-  },
-
-  migrate: function() {
-    // header locale value
-    if (this.headerLocale == 0) {
-      return this.branch.setStringPref('extensions.replywithheader.header.locale', 'en-US');
     }
   },
 

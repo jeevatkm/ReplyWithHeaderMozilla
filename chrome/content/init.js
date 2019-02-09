@@ -1,5 +1,3 @@
-'use strict';
-
 /*
  * Copyright (c) Jeevanandam M. (jeeva@myjeeva.com)
  *
@@ -9,11 +7,12 @@
  * https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
  */
 
+'use strict';
+
 /* globals ReplyWithHeader */
 
 // Registering RWH into compose window of Thunderbird/Postbox
 window.setTimeout(function(){
-  ReplyWithHeader.Prefs.migrate();
   ReplyWithHeader.Prefs.fixCursorBlink();
 
   document.getElementById('msgcomposeWindow')
