@@ -1,5 +1,3 @@
-'use strict';
-
 /*
  * Copyright (c) Jeevanandam M. (jeeva@myjeeva.com)
  *
@@ -8,6 +6,8 @@
  * file, You can obtain one at
  * https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
  */
+
+'use strict';
 
 /* globals ReplyWithHeader */
 

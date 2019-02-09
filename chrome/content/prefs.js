@@ -1,5 +1,3 @@
-'use strict';
-
 /*
  * Copyright (c) Jeevanandam M. (jeeva@myjeeva.com)
  *
@@ -9,9 +7,12 @@
  * https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
  */
 
+'use strict';
+
 /* globals ReplyWithHeader */
 
 ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
+ChromeUtils.import('resource://replywithheader/host.jsm');
 
 ReplyWithHeader.Prefs = {
   getIntPref: function(p) {
@@ -62,16 +63,20 @@ ReplyWithHeader.Prefs = {
     return this.getStringPref('header.separator.line.color');
   },
 
-  get dateFormat() {
+  get headerDateFormat() {
     return this.getIntPref('header.date.format');
   },
 
-  get dateStyle() {
-    return this.getIntPref('header.date.style');
+  get headerTimeFormat() {
+    return this.getIntPref('header.time.format');
   },
 
-  get timeFormat() {
-    return this.getIntPref('header.time.format');
+  get headerIncludeTimeZone() {
+    return this.getBoolPref('header.date.timezone');
+  },
+
+  get tbMsgComposeFontFace() {
+    return this.branch.getStringPref('msgcompose.font_face');
   },
 
   get headerFontFace() {
@@ -95,19 +100,16 @@ ReplyWithHeader.Prefs = {
   },
 
   get headerLocale() {
-    return this.getStringPref('header.locale');
+    let hdrLocale = this.getStringPref('header.locale');
+    if (hdrLocale == 'en') { // migrate settings value
+      this.branch.setStringPref('extensions.replywithheader.header.locale', 'en-US');
+      hdrLocale = 'en-US';
+    }
+    return hdrLocale;
   },
 
   get isSubjectPrefixEnabled() {
     return this.getBoolPref('trans.subject.prefix');
-  },
-
-  get autoSelectLang() {
-    return this.getBoolPref('auto.select.lang');
-  },
-
-  get autoSelectLangRegexList() {
-    return this.getStringPref('auto.select.lang.regex.list');
   },
 
   get cleanBlockQuote() {
@@ -128,14 +130,6 @@ ReplyWithHeader.Prefs = {
 
   get excludePlainTxtHdrPrefix() {
     return this.getBoolPref('clean.pln.hdr.prefix');
-  },
-
-  get useSenderDate() {
-    return this.getBoolPref('use.sender.date');
-  },
-
-  get useLocalDateRegexList() {
-    return this.getStringPref('use.local.date.regex.list');
   },
 
   openWebsite: function() {
@@ -188,8 +182,8 @@ ReplyWithHeader.Prefs = {
   },
 
   loadFontFaces: function() {
-    let allFonts = Components.classes['@mozilla.org/gfx/fontenumerator;1']
-      .createInstance(Components.interfaces.nsIFontEnumerator).EnumerateAllFonts({});
+    let allFonts = Cc['@mozilla.org/gfx/fontenumerator;1']
+      .createInstance(Ci.nsIFontEnumerator).EnumerateAllFonts({});
 
     let hdrFontface = this.headerFontFace;
     let menuPopup = document.createElement('menupopup');
@@ -234,8 +228,6 @@ ReplyWithHeader.Prefs = {
   init: function() {
     this.toggleRwh();
 
-    ReplyWithHeader.byId('useSenderDate').doCommand();
-
     // Assigning RWH name and version #
     ReplyWithHeader.byId('abtRwhCaption').value = ReplyWithHeader.addOnName + ' v' + ReplyWithHeader.addOnVersion;
 
@@ -252,8 +244,6 @@ ReplyWithHeader.Prefs = {
 
     this.toggleQuoteChar();
 
-    this.toggleAutoSelectLangRegexList();
-
     this.forPostbox(true);
 
     // Apply platform style
@@ -264,14 +254,12 @@ ReplyWithHeader.Prefs = {
     let rwh = ReplyWithHeader.byId('enableRwh');
     var ids = ['lblFromAttribution', 'fromAttributionStyle', 'lblHeaderToCcAttrib', 'toccAttributionStyle',
       'lblHdrDate', 'quotDateAttributionStyle', 'lblTypography', 'lblFontface', 'hdrFontface', 'lblFontsize',
-      'hdrFontsize', 'lblFontcolor', 'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr',
+      'hdrFontsize', 'hdrFontsizeUnit', 'lblFontcolor', 'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr',
       'lblAfterHeader', 'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblSepLineSize', 'lblSepLineColor',
       'hdrSepLineSize', 'hdrSepLineColor', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle', 'quotTimeAttributionStyle',
-      'quotDateStyle', 'lblHeaderCleanups', 'hdrLocale', 'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat',
-      'autoSelectLang', 'lblAutoSelectLang', 'autoSelectLangRegexList', 'lblAutoSelectLangRegexList',
+      'lblHeaderCleanups', 'hdrLocale', 'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat',
       'cleanBlockQuote', 'cleanNewBlockQuote', 'cleanGreaterThanChar', 'lblHeaderFormat', 'excludePlainTextHdrPrefix',
-      'useSenderDate', 'lblUseSenderDate', 'useLocalDateRegexList','lblUseLocalDateRegexList',
-      'cleanOnlyNewQuoteChar', 'enableRwhDebugMode'
+      'cleanOnlyNewQuoteChar', 'enableRwhDebugMode', 'quotDateIncludeTimezone'
     ];
 
     for (let len = ids.length, i = 0; i < len; i++) {
@@ -310,22 +298,11 @@ ReplyWithHeader.Prefs = {
     this.toggle('cleanOnlyNewQuoteChar', !cqc.checked);
   },
 
-  toggleAutoSelectLangRegexList: function() {
-    let obj = ReplyWithHeader.byId('autoSelectLang');
-    if (obj.checked) {
-      obj.style.marginBottom = '0px';
-      obj.parentNode.nextSibling.hidden = false;
-    } else {
-      obj.style.marginBottom = '9px';
-      obj.parentNode.nextSibling.hidden = true;
-    }
-  },
-
   applyPlatformStyle: function() {
-    if (ReplyWithHeader.isMacOSX) {
+    if (rwhhost.isMacOSX) {
       ReplyWithHeader.byId('hboxFromAttribution').style.marginTop = '-10px';
       ReplyWithHeader.byId('hboxCntFormat').style.marginTop = '-10px';
-    } else if (ReplyWithHeader.isWindows) {
+    } else if (rwhhost.isWindows) {
       ReplyWithHeader.byId('hdrFontsize').style.marginLeft = '6px';
       ReplyWithHeader.byId('spaceBeforeSep').style.marginLeft = '.63em';
       ReplyWithHeader.byId('hdrSepLineSize').style.marginLeft = '4.15em';
@@ -334,7 +311,7 @@ ReplyWithHeader.Prefs = {
       ReplyWithHeader.byId('hboxRwhBtn').style.marginLeft = '95px';
       ReplyWithHeader.byId('hboxEnableRwhDebugMode').style.marginLeft = '170px';
       ReplyWithHeader.byId('hboxDonateBtn').style.marginLeft = '16px';
-    } else if (ReplyWithHeader.isLinux) {
+    } else if (rwhhost.isLinux) {
       ReplyWithHeader.byId('hdrFontsize').style.marginLeft = '7px';
       ReplyWithHeader.byId('spaceBeforeSep').style.marginLeft = '0px';
       ReplyWithHeader.byId('hdrSepLineSize').style.marginLeft = '4.05em';
