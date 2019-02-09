@@ -31,7 +31,7 @@ var ReplyWithHeader = {
   bqStyleStr: 'border:none !important; margin-left:0px !important; margin-right:0px !important; margin-top:0px !important; padding-left:0px !important; padding-right:0px !important',
 
   get isReply() {
-    let mct = Components.interfaces.nsIMsgCompType;
+    let mct = Ci.nsIMsgCompType;
     let ct = this.composeType;
 
     return (ct == mct.Reply || ct == mct.ReplyAll || ct == mct.ReplyToSender);
@@ -853,7 +853,12 @@ var ReplyWithHeader = {
   composeStateListener: {
     NotifyComposeFieldsReady: function() {},
     NotifyComposeBodyReady: function() {
-      ReplyWithHeader.handleMailCompose();
+      try {
+        ReplyWithHeader.handleMailCompose();
+      } catch(ex) {
+        rwhlog.errorWithException('An error occurred, please report an issue to add-on author here ' 
+          + '- https://github.com/jeevatkm/ReplyWithHeaderMozilla/issues', ex);
+      }
     },
     ComposeProcessDone: function(aResult) {},
     SaveInFolderDone: function(folderURI) {}

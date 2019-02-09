@@ -182,8 +182,8 @@ ReplyWithHeader.Prefs = {
   },
 
   loadFontFaces: function() {
-    let allFonts = Components.classes['@mozilla.org/gfx/fontenumerator;1']
-      .createInstance(Components.interfaces.nsIFontEnumerator).EnumerateAllFonts({});
+    let allFonts = Cc['@mozilla.org/gfx/fontenumerator;1']
+      .createInstance(Ci.nsIFontEnumerator).EnumerateAllFonts({});
 
     let hdrFontface = this.headerFontFace;
     let menuPopup = document.createElement('menupopup');
