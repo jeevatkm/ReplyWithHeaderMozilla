@@ -23,10 +23,10 @@
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
             title="RWH Preferences" style="width:525px"
             onload="ReplyWithHeader.Prefs.init();">
-
-    <script type="application/javascript" src="chrome://replywithheader/content/core.js"/>
-    <script type="application/javascript" src="chrome://replywithheader/content/prefs.js"/>
+            
     <script type="application/javascript" src="chrome://replywithheader/content/i18n.js"/>
+    <script type="application/javascript" src="chrome://replywithheader/content/core.js"/>
+    <script type="application/javascript" src="chrome://replywithheader/content/prefs.js"/>    
 
     <prefpane id="rwhPane" orient="vertical">
         <preferences id="rwhGlobalPref">
