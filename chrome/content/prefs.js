@@ -75,10 +75,6 @@ ReplyWithHeader.Prefs = {
     return this.getBoolPref('header.date.timezone');
   },
 
-  get tbMsgComposeFontFace() {
-    return this.branch.getStringPref('msgcompose.font_face');
-  },
-
   get headerFontFace() {
     return this.getStringPref('header.font.face');
   },

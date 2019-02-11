@@ -357,13 +357,7 @@ var ReplyWithHeader = {
 
     // for HTML emails
     if (this.isHtmlMail) {
-      let fontFace = this.Prefs.tbMsgComposeFontFace; // GitHub #64
-      rwhlog.debug('TB setting "msgcompose.font_face": ' + fontFace);
-      if (fontFace == '') {
-        rwhlog.debug('TB setting "msgcompose.font_face" value is not found, using RWH font selection');
-        fontFace = this.Prefs.headerFontFace;
-      }
-      
+      let fontFace = this.Prefs.headerFontFace;      
       let fontSize = this.Prefs.headerFontSize;
       let fontSizeUnit = this.Prefs.headerFontSizeUnit;
       let fontColor = this.Prefs.headerFontColor;
