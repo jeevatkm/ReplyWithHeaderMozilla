@@ -14,7 +14,7 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>replywithheader@myjeeva.com</em:id>
     <em:name>ReplyWithHeader</em:name>
-    <em:version>2.1.0-beta.1</em:version>
+    <em:version>2.1.0</em:version>
     <em:optionsType>3</em:optionsType>
     <em:unpack>false</em:unpack>
     <em:creator>Jeevanandam M.</em:creator>
