@@ -1,5 +1,5 @@
 # Quoting Email Headers in Thunderbird and Postbox
- [![Version](https://img.shields.io/badge/version-2.0-blue.svg)](https://github.com/jeevatkm/ReplyWithHeaderMozilla/releases/latest) [![License](https://img.shields.io/github/license/jeevatkm/ReplyWithHeaderMozilla.svg)](LICENSE)
+ [![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)](https://github.com/jeevatkm/ReplyWithHeaderMozilla/releases/latest) [![License](https://img.shields.io/github/license/jeevatkm/ReplyWithHeaderMozilla.svg)](LICENSE)
 
 ReplyWithHeaderMozilla aka [RWH Mozilla] is an add-on for Thunderbird and Postbox mail client that enables email header.
 Brings Outlook header capabilities into Thunderbird and Postbox.
