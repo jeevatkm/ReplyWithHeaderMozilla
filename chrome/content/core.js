@@ -613,7 +613,7 @@ var ReplyWithHeader = {
           rootElement.removeChild(firstNode);
         }
 
-        rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
+        //rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
       } else {
         let node = rootElement.firstChild;
         if (node.nodeName && node.nodeName.toLowerCase() == 'br') {
