@@ -244,6 +244,7 @@
                         <image id="abtRwhLogo" src='chrome://replywithheader/skin/icon-64.png' width='64' height='64' />
                         <label id="abtRwhCaption" value="ReplyWithHeader" style="font-weight:bold;" />
                         <label id="abtRwhCopyrights" value="&#169; Jeevanandam M." style="font-size:12px;" />
+                        <label id="abtRwhCopyrightsNotes" value="All rights reserved." style="font-size:12px;" />
                     </vbox>
                     <vbox align="center" style="margin-top: 60px">
                         <hbox id="hboxRwhBtn" align="center">

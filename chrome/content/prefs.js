@@ -228,7 +228,7 @@ ReplyWithHeader.Prefs = {
     ReplyWithHeader.byId('abtRwhCaption').value = ReplyWithHeader.addOnName + ' v' + ReplyWithHeader.addOnVersion;
 
     let d = new Date();
-    ReplyWithHeader.byId('abtRwhCopyrights').value = 'Ⓒ ' + d.getFullYear() + ' Jeevanandam M.'
+    ReplyWithHeader.byId('abtRwhCopyrights').value = 'Ⓒ 2015-' + d.getFullYear() + ' Jeevanandam M.'
 
     this.loadFontFaces();
 
@@ -298,23 +298,6 @@ ReplyWithHeader.Prefs = {
     if (rwhhost.isMacOSX) {
       ReplyWithHeader.byId('hboxFromAttribution').style.marginTop = '-10px';
       ReplyWithHeader.byId('hboxCntFormat').style.marginTop = '-10px';
-    } else if (rwhhost.isWindows) {
-      ReplyWithHeader.byId('hdrFontsize').style.marginLeft = '6px';
-      ReplyWithHeader.byId('spaceBeforeSep').style.marginLeft = '.63em';
-      ReplyWithHeader.byId('hdrSepLineSize').style.marginLeft = '4.15em';
-      ReplyWithHeader.byId('abtRwhLogo').style.marginLeft = '132px';
-      ReplyWithHeader.byId('abtRwhCopyrights').style.marginLeft = '-133px';
-      ReplyWithHeader.byId('hboxRwhBtn').style.marginLeft = '95px';
-      ReplyWithHeader.byId('hboxEnableRwhDebugMode').style.marginLeft = '170px';
-      ReplyWithHeader.byId('hboxDonateBtn').style.marginLeft = '16px';
-    } else if (rwhhost.isLinux) {
-      ReplyWithHeader.byId('hdrFontsize').style.marginLeft = '7px';
-      ReplyWithHeader.byId('spaceBeforeSep').style.marginLeft = '0px';
-      ReplyWithHeader.byId('hdrSepLineSize').style.marginLeft = '4.05em';
-      ReplyWithHeader.byId('abtRwhLogo').style.marginLeft = '110px';
-      ReplyWithHeader.byId('abtRwhCopyrights').style.marginLeft = '-164px';
-      ReplyWithHeader.byId('hboxRwhBtn').style.marginLeft = '65px';
-      ReplyWithHeader.byId('hboxDonateBtn').style.marginLeft = '19px';
     }
   }
 };
