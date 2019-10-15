@@ -11,7 +11,7 @@
 
 var EXPORTED_SYMBOLS = ["rwhlog"];
 
-ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
+var { XPCOMUtils } = ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
 
 // RWH logger
 var rwhlog = {

@@ -11,9 +11,9 @@
 
 var EXPORTED_SYMBOLS = ["rwhhost"];
 
-ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
+var { XPCOMUtils } = ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
 
- // Host related definitions
+// Host related definitions
 var rwhhost = {
   get app() {
     let appId = this.appInfo.ID;

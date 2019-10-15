@@ -11,10 +11,10 @@
 
 var EXPORTED_SYMBOLS = ['ReplyWithHeader'];
 
-ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
-ChromeUtils.import('resource://gre/modules/AddonManager.jsm');
-ChromeUtils.import('resource://replywithheader/log.jsm');
-ChromeUtils.import('resource://replywithheader/host.jsm');
+var { XPCOMUtils } = ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
+var { AddonManager } = ChromeUtils.import('resource://gre/modules/AddonManager.jsm');
+var { rwhlog } = ChromeUtils.import('resource://replywithheader/log.jsm');
+var { rwhhost } = ChromeUtils.import('resource://replywithheader/host.jsm');
 
 // ReplyWithHeader Add-On ID
 const ReplyWithHeaderAddOnID = 'replywithheader@myjeeva.com';
@@ -988,4 +988,3 @@ XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'mimeConverter',
     };
   }
 })();
-

@@ -10,9 +10,8 @@
 'use strict';
 
 /* globals ReplyWithHeader */
-
-ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
-ChromeUtils.import('resource://replywithheader/host.jsm');
+var { XPCOMUtils } = ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
+var { rwhhost } = ChromeUtils.import('resource://replywithheader/host.jsm');
 
 ReplyWithHeader.Prefs = {
   getIntPref: function(p) {

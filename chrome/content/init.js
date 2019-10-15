@@ -11,10 +11,14 @@
 
 /* globals ReplyWithHeader */
 
-// Registering RWH into compose window of Thunderbird/Postbox
-window.setTimeout(function(){
-  ReplyWithHeader.Prefs.fixCursorBlink();
+// Registering RWH into compose window of Thunderbird
+// window.setTimeout(function(){
+//   ReplyWithHeader.Prefs.fixCursorBlink();
+//   document.getElementById('msgcomposeWindow')
+//               .addEventListener('compose-window-init', ReplyWithHeader.init, false);
+// },15);
 
-  document.getElementById('msgcomposeWindow')
-              .addEventListener('compose-window-init', ReplyWithHeader.init, false);
-},15);
+window.addEventListener("compose-window-init", function() { 
+  ReplyWithHeader.Prefs.fixCursorBlink();
+  ReplyWithHeader.init()
+}, true);
