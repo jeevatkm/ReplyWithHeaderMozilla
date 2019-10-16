@@ -937,7 +937,7 @@ var ReplyWithHeader = {
 };
 
 // Getting Add-On name & version #
-AddonManager.getAddonByID(ReplyWithHeaderAddOnID, function(addOn) {
+AddonManager.getAddonByID(ReplyWithHeaderAddOnID).then(function(addOn) {
   ReplyWithHeader.addOnName = addOn.name;
   ReplyWithHeader.addOnVersion = addOn.version;
 });

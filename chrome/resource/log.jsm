@@ -11,11 +11,13 @@
 
 var EXPORTED_SYMBOLS = ["rwhlog"];
 
-var { XPCOMUtils } = ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
+var { Services } = ChromeUtils.import('resource://gre/modules/Services.jsm');
 
 // RWH logger
 var rwhlog = {
     enableDebug: false,
+    console: Services.console, // nsIConsoleService
+
     info: function(msg) {
       this._toConsole('INFO', msg);
     },
@@ -50,8 +52,3 @@ var rwhlog = {
       this.console.logStringMessage('RWH  '+ l + '   ' + m);
     }
 };
-
-// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIConsoleService
-XPCOMUtils.defineLazyServiceGetter(rwhlog, 'console',
-                                   '@mozilla.org/consoleservice;1',
-                                   'nsIConsoleService');

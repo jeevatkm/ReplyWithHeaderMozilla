@@ -11,19 +11,22 @@
 
 /* globals ReplyWithHeader */
 var { XPCOMUtils } = ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
+var { Services } = ChromeUtils.import('resource://gre/modules/Services.jsm');
 var { rwhhost } = ChromeUtils.import('resource://replywithheader/host.jsm');
 
 ReplyWithHeader.Prefs = {
+  prefService: Services.prefs,
+
   getIntPref: function(p) {
-    return this.branch.getIntPref('extensions.replywithheader.' + p);
+    return this.prefService.getIntPref('extensions.replywithheader.' + p);
   },
 
   getBoolPref: function(p) {
-    return this.branch.getBoolPref('extensions.replywithheader.' + p);
+    return this.prefService.getBoolPref('extensions.replywithheader.' + p);
   },
 
   getStringPref: function(p) {
-    return this.branch.getCharPref('extensions.replywithheader.' + p);
+    return this.prefService.getCharPref('extensions.replywithheader.' + p);
   },
 
   get isEnabled() {
@@ -97,7 +100,7 @@ ReplyWithHeader.Prefs = {
   get headerLocale() {
     let hdrLocale = this.getStringPref('header.locale');
     if (hdrLocale == 'en') { // migrate settings value
-      this.branch.setStringPref('extensions.replywithheader.header.locale', 'en-US');
+      this.prefService.setStringPref('extensions.replywithheader.header.locale', 'en-US');
       hdrLocale = 'en-US';
     }
     return hdrLocale;
@@ -159,13 +162,13 @@ ReplyWithHeader.Prefs = {
     // Ref: Due this Bug 567240 - Cursor does not blink when replying
     // (https://bugzilla.mozilla.org/show_bug.cgi?id=567240)
     // RWH is setting this 'mail.compose.max_recycled_windows' value to 0
-    if (this.branch.getPrefType('mail.compose.max_recycled_windows')) {
-      let maxRecycledWindows = this.branch.getIntPref('mail.compose.max_recycled_windows');
+    if (this.prefService.getPrefType('mail.compose.max_recycled_windows')) {
+      let maxRecycledWindows = this.prefService.getIntPref('mail.compose.max_recycled_windows');
       if (maxRecycledWindows == 1) {
-        this.branch.setIntPref('mail.compose.max_recycled_windows', 0);
+        this.prefService.setIntPref('mail.compose.max_recycled_windows', 0);
       }
     } else {
-      this.branch.setIntPref('mail.compose.max_recycled_windows', 0);
+      this.prefService.setIntPref('mail.compose.max_recycled_windows', 0);
     }
   },
 
@@ -302,10 +305,6 @@ ReplyWithHeader.Prefs = {
 };
 
 // Initializing Services
-XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader.Prefs, 'branch',
-                                   '@mozilla.org/preferences-service;1',
-                                   'nsIPrefBranch');
-
 XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader.Prefs, 'clipboard',
                                   '@mozilla.org/widget/clipboardhelper;1',
                                   'nsIClipboardHelper');

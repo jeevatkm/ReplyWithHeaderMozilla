@@ -11,12 +11,14 @@
 
 var EXPORTED_SYMBOLS = ["rwhhost"];
 
-var { XPCOMUtils } = ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
+var { Services } = ChromeUtils.import('resource://gre/modules/Services.jsm');
 
 // Host related definitions
 var rwhhost = {
+  appinfo: Services.appinfo, // nsIXULAppInfo, nsIXULRuntime
+
   get app() {
-    let appId = this.appInfo.ID;
+    let appId = this.appinfo.ID;
     if (appId == '{3550f703-e582-4d05-9a08-453d09bdfdc6}') {
       return 'Thunderbird';
     } else if (appId == 'postbox@postbox-inc.com') {
@@ -26,7 +28,7 @@ var rwhhost = {
   },
 
   get OS() {
-    let platform = this.appInfo.OS.toLowerCase();
+    let platform = this.appinfo.OS.toLowerCase();
     if (platform == 'darwin') {
       return 'macOS'
     } else if (platform == 'linux') {
@@ -38,11 +40,11 @@ var rwhhost = {
   },
 
   get version() {
-    return this.appRuntime.version;
+    return this.appinfo.version;
   },
 
   get buildID() {
-    return this.appRuntime.appBuildID;
+    return this.appinfo.appBuildID;
   },
 
   get isMacOSX() {
@@ -65,14 +67,3 @@ var rwhhost = {
     return (this.app == 'Thunderbird');
   }
 };
-
-// Initializing Services
-// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIXULAppInfo
-XPCOMUtils.defineLazyServiceGetter(rwhhost, 'appInfo',
-                                   '@mozilla.org/xre/app-info;1',
-                                   'nsIXULAppInfo');
-
-// https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIXULRuntime
-XPCOMUtils.defineLazyServiceGetter(rwhhost, 'appRuntime',
-                                  '@mozilla.org/xre/app-info;1',
-                                  'nsIXULRuntime');

@@ -5,7 +5,6 @@
     "version": "2.2.0-beta",
     "author": "Jeevanandam M.",
     "homepage_url": "https://myjeeva.com/replywithheader-mozilla",
-    "xpi-name": "replywithheader",
     "applications": {
         "gecko": {
             "id": "replywithheader@myjeeva.com",
@@ -16,5 +15,11 @@
         "64": "skin/icon-64.png",
         "128": "icon.png"
     },
-    "legacy": true    
+    "legacy": {
+        "type": "xul",
+        "options": {
+            "page": "chrome://replywithheader/content/rwh-prefs.xul",
+            "open_in_tab": true
+        }
+    }
 }

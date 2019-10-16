@@ -11,13 +11,7 @@
 
 /* globals ReplyWithHeader */
 
-// Registering RWH into compose window of Thunderbird
-// window.setTimeout(function(){
-//   ReplyWithHeader.Prefs.fixCursorBlink();
-//   document.getElementById('msgcomposeWindow')
-//               .addEventListener('compose-window-init', ReplyWithHeader.init, false);
-// },15);
-
+// Registering RWH into compose window of Thunderbird - msgcomposeWindow
 window.addEventListener("compose-window-init", function() { 
   ReplyWithHeader.Prefs.fixCursorBlink();
   ReplyWithHeader.init()

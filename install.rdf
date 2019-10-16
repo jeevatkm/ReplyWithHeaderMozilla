@@ -21,7 +21,6 @@
     <em:description>Outlook style headers and few goodies for Thunderbird.</em:description>
     <em:homepageURL>https://myjeeva.com/replywithheader-mozilla</em:homepageURL>
     <em:optionsURL>chrome://replywithheader/content/rwh-prefs.xul</em:optionsURL>
-    <em:iconURL>chrome://replywithheader/icon.png</em:icon64URL>
     <em:icon64URL>chrome://replywithheader/skin/icon-64.png</em:icon64URL>
 
     <!-- Thunderbird -->
