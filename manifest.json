@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "ReplyWithHeader",
     "description": "Outlook style headers and few goodies for Thunderbird",
-    "version": "2.2.0-beta",
+    "version": "2.2.1-beta",
     "author": "Jeevanandam M.",
     "homepage_url": "https://myjeeva.com/replywithheader-mozilla",
     "applications": {
@@ -16,10 +16,8 @@
         "128": "icon.png"
     },
     "legacy": {
-        "type": "xul",
         "options": {
-            "page": "chrome://replywithheader/content/rwh-prefs.xul",
-            "open_in_tab": true
+            "page": "chrome://replywithheader/content/rwh-prefs.xul"
         }
     }
 }

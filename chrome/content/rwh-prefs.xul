@@ -19,50 +19,29 @@
   https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
   -->
 
-<prefwindow id="rwhPrefsDialog"
-            xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-            title="RWH Preferences" style="width:525px"
-            onload="ReplyWithHeader.Prefs.init();">
-            
+<dialog id="rwhAddonPrefsDialog"
+        buttons="accept"
+        xmlns:html="http://www.w3.org/1999/xhtml"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        title="RWH Preferences" style="width:525px"
+        onload="ReplyWithHeader.Prefs.init();">
+    
+    <script src="chrome://global/content/globalOverlay.js"/>
+    <script src="chrome://global/content/editMenuOverlay.js"/>
     <script type="application/javascript" src="chrome://replywithheader/content/i18n.js"/>
     <script type="application/javascript" src="chrome://replywithheader/content/core.js"/>
     <script type="application/javascript" src="chrome://replywithheader/content/prefs.js"/>    
 
     <prefpane id="rwhPane" orient="vertical">
-        <preferences id="rwhGlobalPref">
-            <preference id="pref-enableRwh" name="extensions.replywithheader.enable" type="bool" instantApply="true" />
-            <preference id="pref-fromAttributionStyle" name="extensions.replywithheader.header.from.style" type="int" instantApply="true" />
-            <preference id="pref-toccAttributionStyle" name="extensions.replywithheader.header.tocc.style" type="int" instantApply="true" />
-            <preference id="pref-quotSeqAttributionStyle" name="extensions.replywithheader.header.lblseq.style" type="int" instantApply="true" />
-            <preference id="pref-hdrLocale" name="extensions.replywithheader.header.locale" type="string" instantApply="true" />
-            <preference id="pref-hdrFontface" name="extensions.replywithheader.header.font.face" type="string" instantApply="true" />
-            <preference id="pref-hdrFontsize" name="extensions.replywithheader.header.font.size" type="int" instantApply="true" />
-            <preference id="pref-hdrFontsizeUnit" name="extensions.replywithheader.header.font.size.unit" type="string" instantApply="true" />
-            <preference id="pref-hdrFontcolor" name="extensions.replywithheader.header.font.color" type="string" instantApply="true" />
-            <preference id="pref-spaceBeforeSep" name="extensions.replywithheader.header.separator.space.before" type="int" instantApply="true" />
-            <preference id="pref-spaceBeforeHdr" name="extensions.replywithheader.header.space.before" type="int" instantApply="true" />
-            <preference id="pref-spaceAfterHdr" name="extensions.replywithheader.header.space.after" type="int" instantApply="true" />
-            <preference id="pref-hdrSepLineSize" name="extensions.replywithheader.header.separator.line.size" type="int" instantApply="true" />
-            <preference id="pref-hdrSepLineColor" name="extensions.replywithheader.header.separator.line.color" type="string" instantApply="true" />
-            <preference id="pref-transSubjectPrefix" name="extensions.replywithheader.trans.subject.prefix" type="bool" instantApply="true" />
-            <preference id="pref-cleanBlockQuote" name="extensions.replywithheader.clean.blockquote" type="bool" instantApply="true" />
-            <preference id="pref-cleanNewBlockQuote" name="extensions.replywithheader.clean.new.blockquote" type="bool" instantApply="true" />
-            <preference id="pref-cleanGreaterThanChar" name="extensions.replywithheader.clean.char.greaterthan" type="bool" instantApply="true" />
-            <preference id="pref-cleanOnlyNewQuoteChar" name="extensions.replywithheader.clean.only.new.quote.char" type="bool" instantApply="true" />
-            <preference id="pref-excludePlainTextHdrPrefix" name="extensions.replywithheader.clean.pln.hdr.prefix" type="bool" instantApply="true" />
-            <preference id="pref-quotDateAttributionStyle" name="extensions.replywithheader.header.date.format" type="int" instantApply="true" />
-            <preference id="pref-quotTimeAttributionStyle" name="extensions.replywithheader.header.time.format" type="int" instantApply="true" />
-            <preference id="pref-quotDateIncludeTimezone" name="extensions.replywithheader.header.date.timezone" type="bool" instantApply="true" />
-            <preference id="pref-enableRwhDebugMode" name="extensions.replywithheader.debug" type="bool" instantApply="true" />
-        </preferences>
-
         <hbox align="center">
-            <checkbox id="enableRwh" label="Enable" preference="pref-enableRwh"
-                    oncommand="ReplyWithHeader.Prefs.toggleRwh();" />
+            <checkbox id="enableRwh" label="Enable" 
+                preference="extensions.replywithheader.enable"
+                oncommand="ReplyWithHeader.Prefs.toggleRwh();" />
             <spacer flex="1" />
             <image src='chrome://replywithheader/skin/language.png' width='21' height='21' style="margin-right:3px;margin-top:3px;" />
-            <menulist id="hdrLocale" preference="pref-hdrLocale" style="margin-right:4px;">
-              <menupopup>
+            <menulist id="hdrLocale" style="margin-right:4px;"
+                preference="extensions.replywithheader.header.locale" >
+              <menupopup id="hdrLocalePopup">
               <!-- populated by prefs.js:populateLocale -->
               </menupopup>
             </menulist>
@@ -79,7 +58,8 @@
                         <label id="lblFromAttribution" value="Header 'From' attribution style" />
                     </hbox>
                     <hbox align="center">
-                        <radiogroup id="fromAttributionStyle" preference="pref-fromAttributionStyle">
+                        <radiogroup id="fromAttributionStyle" 
+                            preference="extensions.replywithheader.header.from.style">
                             <radio value="0" label="Default" />
                             <radio value="1" label="Outlook Simple (From: Name)" />
                             <radio value="2" label="Outlook Extended (From: Name [mailto:email-address])" />
@@ -89,7 +69,8 @@
                         <label id="lblHeaderToCcAttrib" value="Header 'To' &amp; 'Cc' attribution style" style="margin-top:2px" />
                     </hbox>
                     <hbox align="center">
-                        <radiogroup id="toccAttributionStyle" preference="pref-toccAttributionStyle">
+                        <radiogroup id="toccAttributionStyle" 
+                            preference="extensions.replywithheader.header.tocc.style">
                             <radio value="0" label="Default (To: Name1 &lt;email-address1&gt;, ...)" />
                             <radio value="1" label="Outlook (To: Name1; Name2; ...)" />
                         </radiogroup>
@@ -98,7 +79,8 @@
                         <label id="lblHeaderQuotSeq" value="Header quoting sequence and labels" style="margin-top:2px" />
                     </hbox>
                     <hbox align="center">
-                        <radiogroup id="quotSeqAttributionStyle" preference="pref-quotSeqAttributionStyle">
+                        <radiogroup id="quotSeqAttributionStyle" 
+                            preference="extensions.replywithheader.header.lblseq.style">
                             <radio value="0" label="Default (Subject, Date, From, To, Cc)" />
                             <radio value="1" label="Outlook (From, Sent, To, Cc, Subject)" />
                             <radio value="2" label="Simple (From, Sent, Subject)" />
@@ -109,21 +91,24 @@
                         <label id="lblHdrDate" value="Header date format" style="margin-top:2px" />
                     </hbox>
                     <hbox align="center">
-                        <radiogroup id="quotDateAttributionStyle" preference="pref-quotDateAttributionStyle"
+                        <radiogroup id="quotDateAttributionStyle" 
+                            preference="extensions.replywithheader.header.date.format"
                                     class="horizontal">
                             <radio value="0" label="Locale timezone" />
                             <radio value="1" label="International timezone (UTC)" />
                         </radiogroup>
                     </hbox>
                     <hbox align="center" style="margin-top:-2px">
-                        <radiogroup id="quotTimeAttributionStyle" preference="pref-quotTimeAttributionStyle"
+                        <radiogroup id="quotTimeAttributionStyle" 
+                            preference="extensions.replywithheader.header.time.format"
                                   class="horizontal">
                             <radio value="0" label="12 hours format" />
                             <radio value="1" label="24 hours format" />
                         </radiogroup>
                     </hbox>
                     <hbox align="center" style="margin-left:20px;">
-                        <checkbox id="quotDateIncludeTimezone" label="Include short timezone info" preference="pref-quotDateIncludeTimezone" 
+                        <checkbox id="quotDateIncludeTimezone" label="Include short timezone info" 
+                            preference="extensions.replywithheader.header.date.timezone" 
                             style="font-size: 12px; margin-top:-3px;"  />
                     </hbox>
                     <hbox align="center">
@@ -131,12 +116,15 @@
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblFontface" value="Font face:" />
-                        <menulist id="hdrFontface" style="width:275px" preference="pref-hdrFontface" />
+                        <menulist id="hdrFontface" style="width:275px" 
+                            preference="extensions.replywithheader.header.font.face" />
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblFontsize" value="Font size:" />
-                        <menulist id="hdrFontsize" style="width:60px;margin-left:.35em;" preference="pref-hdrFontsize" />
-                        <menulist id="hdrFontsizeUnit" style="width:80px;" preference="pref-hdrFontsizeUnit">
+                        <menulist id="hdrFontsize" style="width:60px;margin-left:.35em;" 
+                            preference="extensions.replywithheader.header.font.size" />
+                        <menulist id="hdrFontsizeUnit" style="width:80px;" 
+                            preference="extensions.replywithheader.header.font.size.unit">
                           <menupopup>
                               <menuitem label="Pixel" value="px" />
                               <menuitem label="Point" value="pt" />
@@ -144,8 +132,8 @@
                         </menulist>
                         <spacer width="20px" />
                         <label id="lblFontcolor" value="Color:" />
-                        <colorpicker id="hdrFontColor" type="button" value="" style="max-width:35px;"
-                                     preference="pref-hdrFontcolor" />
+                        <html:input id="hdrFontColor" type="color" style="max-width:35px;"
+                            preference="extensions.replywithheader.header.font.color" />
                     </hbox>
                     <hbox align="center">
                         <label id="lblSpace" value="Header line spaces" style="margin-top:2px" />
@@ -153,7 +141,8 @@
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblBeforeHeader" value="Before header:" />
                         <spacer width="16px" />
-                        <menulist id="spaceBeforeHdr" style="width:65px" preference="pref-spaceBeforeHdr">
+                        <menulist id="spaceBeforeHdr" style="width:65px" 
+                            preference="extensions.replywithheader.header.space.before">
                             <menupopup>
                                 <menuitem label="0" value="0" />
                                 <menuitem label="1" value="1" />
@@ -165,7 +154,8 @@
                         </menulist>
                         <spacer width="20px" />
                         <label id="lblAfterHeader" value="After header:" />
-                        <menulist id="spaceAfterHdr" style="width:65px" preference="pref-spaceAfterHdr">
+                        <menulist id="spaceAfterHdr" style="width:65px" 
+                            preference="extensions.replywithheader.header.space.after">
                             <menupopup>
                                 <menuitem label="0" value="0" />
                                 <menuitem label="1" value="1" />
@@ -178,7 +168,8 @@
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblBeforeSeparator" value="Before separator:" />
-                        <menulist id="spaceBeforeSep" style="width:65px;margin-left:.25em;" preference="pref-spaceBeforeSep">
+                        <menulist id="spaceBeforeSep" style="width:65px;margin-left:.25em;" 
+                            preference="extensions.replywithheader.header.separator.space.before">
                             <menupopup>
                                 <menuitem label="0" value="0" />
                                 <menuitem label="1" value="1" />
@@ -192,7 +183,8 @@
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblSepLineSize" value="Line size:" />
-                        <menulist id="hdrSepLineSize" style="width:65px;margin-left:3.9em;" preference="pref-hdrSepLineSize">
+                        <menulist id="hdrSepLineSize" style="width:65px;margin-left:3.9em;" 
+                            preference="extensions.replywithheader.header.separator.line.size">
                           <menupopup>
                               <menuitem label="1px" value="1" />
                               <menuitem label="2px" value="2" />
@@ -204,8 +196,8 @@
                         </menulist>
                         <spacer width="20px" />
                         <label id="lblSepLineColor" value="Line color:" />
-                        <colorpicker id="hdrSepLineColor" type="button" value="" style="max-width:35px;"
-                                     preference="pref-hdrSepLineColor" />
+                        <html:input id="hdrSepLineColor" type="color" style="max-width:35px;"
+                            preference="extensions.replywithheader.header.separator.line.color" />
                     </hbox>
                 </tabpanel>
                 <tabpanel orient="vertical">
@@ -213,30 +205,36 @@
                         <label id="lblCntFormat" value="Content formatting and cleanups" />
                     </hbox>
                     <hbox align="center" style="margin-left:15px">
-                        <checkbox id="cleanBlockQuote" label="Cleanup the blockquote colors" preference="pref-cleanBlockQuote"
-                          oncommand="ReplyWithHeader.Prefs.toggleBlockQuote();" />
+                        <checkbox id="cleanBlockQuote" label="Cleanup the blockquote colors" 
+                            preference="extensions.replywithheader.clean.blockquote"
+                            oncommand="ReplyWithHeader.Prefs.toggleBlockQuote();" />
                     </hbox>
                     <hbox align="center" style="margin-left:35px">
-                        <checkbox id="cleanNewBlockQuote" label="Cleanup only new blockquote color" preference="pref-cleanNewBlockQuote" />
+                        <checkbox id="cleanNewBlockQuote" label="Cleanup only new blockquote color" 
+                            preference="extensions.replywithheader.clean.new.blockquote" />
                     </hbox>
                     <hbox align="center" style="margin-left:15px">
-                        <checkbox id="cleanGreaterThanChar" label="Cleanup the quote character '>'" preference="pref-cleanGreaterThanChar"
-                          oncommand="ReplyWithHeader.Prefs.toggleQuoteChar();" />
+                        <checkbox id="cleanGreaterThanChar" label="Cleanup the quote character '>'" 
+                            preference="extensions.replywithheader.clean.char.greaterthan"
+                            oncommand="ReplyWithHeader.Prefs.toggleQuoteChar();" />
                     </hbox>
                     <hbox align="center" style="margin-left:35px">
-                        <checkbox id="cleanOnlyNewQuoteChar" label="Cleanup only new quote character" preference="pref-cleanOnlyNewQuoteChar" />
+                        <checkbox id="cleanOnlyNewQuoteChar" label="Cleanup only new quote character" 
+                            preference="extensions.replywithheader.clean.only.new.quote.char" />
                     </hbox>
                     <hbox align="center" style="margin-top:5px">
                         <label id="lblHeaderFormat" value="Subject reformatting" />
                     </hbox>
                     <hbox align="center" style="margin-left:15px">
-                        <checkbox id="transSubjectPrefix" label="Transform subject prefix (Re -> RE and Fwd -> FW)" preference="pref-transSubjectPrefix" />
+                        <checkbox id="transSubjectPrefix" label="Transform subject prefix (Re -> RE and Fwd -> FW)" 
+                            preference="extensions.replywithheader.trans.subject.prefix" />
                     </hbox>
                     <hbox align="center" style="margin-top:5px">
                         <label id="lblHeaderCleanups" value="Header cleanups" />
                     </hbox>
                     <hbox align="center" style="margin-left:15px">
-                        <checkbox id="excludePlainTextHdrPrefix" label="Don't include plain text header prefix" preference="pref-excludePlainTextHdrPrefix" />
+                        <checkbox id="excludePlainTextHdrPrefix" label="Don't include plain text header prefix" 
+                            preference="extensions.replywithheader.clean.pln.hdr.prefix" />
                     </hbox>
                 </tabpanel>
                 <tabpanel orient="vertical">
@@ -254,8 +252,9 @@
                         </hbox>
                     </vbox>                                
                     <vbox id="hboxEnableRwhDebugMode" align="center" style="margin: 15px 0">
-                        <checkbox id="enableRwhDebugMode" label="Enable debug mode" preference="pref-enableRwhDebugMode"
-                          tooltiptext="Add-on logs useful debug details in the Error Console" />
+                        <checkbox id="enableRwhDebugMode" label="Enable debug mode" 
+                            preference="extensions.replywithheader.debug"
+                            tooltiptext="Add-on logs useful debug details in the Error Console" />
                     </vbox>
                     <vbox align="center" style="margin-top:140px;">
                         <label value="Support ReplyWithHeader" style="font-weight:bold" />
@@ -280,4 +279,7 @@
         </tabbox>
     </prefpane>
 
-</prefwindow>
+    <script type="application/javascript" src="chrome://global/content/preferencesBindings.js" />
+    <script type="application/javascript" src="chrome://replywithheader/content/rwh-prefs.js" />
+
+</dialog>

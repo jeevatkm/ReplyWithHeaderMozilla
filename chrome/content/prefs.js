@@ -12,6 +12,7 @@
 /* globals ReplyWithHeader */
 var { XPCOMUtils } = ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
 var { Services } = ChromeUtils.import('resource://gre/modules/Services.jsm');
+var { rwhlog } = ChromeUtils.import('resource://replywithheader/log.jsm');
 var { rwhhost } = ChromeUtils.import('resource://replywithheader/host.jsm');
 
 ReplyWithHeader.Prefs = {
@@ -213,7 +214,10 @@ ReplyWithHeader.Prefs = {
   },
 
   populateLocale: function() {
-    var menu = ReplyWithHeader.byId('hdrLocale').firstChild;
+    var menu = ReplyWithHeader.byId('hdrLocalePopup');
+    if (!menu) {
+      rwhlog.error('It seems TB introduced the breaking changes, contact addon author.')
+    }
 
     for (var lang in i18n.lang) {
       menu.appendChild(this.createMenuItem(

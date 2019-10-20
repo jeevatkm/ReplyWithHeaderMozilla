@@ -38,7 +38,7 @@ var ReplyWithHeader = {
   },
 
   get isForward() {
-    return (this.composeType == Components.interfaces.nsIMsgCompType.ForwardInline);
+    return (this.composeType == Ci.nsIMsgCompType.ForwardInline);
   },
 
   get isOkayToMoveOn() {

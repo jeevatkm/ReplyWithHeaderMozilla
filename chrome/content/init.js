@@ -12,7 +12,7 @@
 /* globals ReplyWithHeader */
 
 // Registering RWH into compose window of Thunderbird - msgcomposeWindow
-window.addEventListener("compose-window-init", function() { 
+window.addEventListener('compose-window-init', function() { 
   ReplyWithHeader.Prefs.fixCursorBlink();
   ReplyWithHeader.init()
 }, true);
