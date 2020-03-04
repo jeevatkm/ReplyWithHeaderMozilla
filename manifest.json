@@ -1,0 +1,23 @@
+{
+    "manifest_version": 2,
+    "name": "ReplyWithHeader",
+    "description": "Outlook style headers and few goodies for Thunderbird",
+    "version": "2.2.1",
+    "author": "Jeevanandam M.",
+    "homepage_url": "https://myjeeva.com/replywithheader-mozilla",
+    "applications": {
+        "gecko": {
+            "id": "replywithheader@myjeeva.com",
+            "strict_min_version": "68.0"
+        }
+    },
+    "icons": {
+        "64": "skin/icon-64.png",
+        "128": "icon.png"
+    },
+    "legacy": {
+        "options": {
+            "page": "chrome://replywithheader/content/rwh-prefs.xul"
+        }
+    }
+}

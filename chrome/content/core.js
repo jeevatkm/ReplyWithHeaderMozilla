@@ -11,10 +11,10 @@
 
 var EXPORTED_SYMBOLS = ['ReplyWithHeader'];
 
-ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
-ChromeUtils.import('resource://gre/modules/AddonManager.jsm');
-ChromeUtils.import('resource://replywithheader/log.jsm');
-ChromeUtils.import('resource://replywithheader/host.jsm');
+var { XPCOMUtils } = ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
+var { AddonManager } = ChromeUtils.import('resource://gre/modules/AddonManager.jsm');
+var { rwhlog } = ChromeUtils.import('resource://replywithheader/log.jsm');
+var { rwhhost } = ChromeUtils.import('resource://replywithheader/host.jsm');
 
 // ReplyWithHeader Add-On ID
 const ReplyWithHeaderAddOnID = 'replywithheader@myjeeva.com';
@@ -38,7 +38,7 @@ var ReplyWithHeader = {
   },
 
   get isForward() {
-    return (this.composeType == Components.interfaces.nsIMsgCompType.ForwardInline);
+    return (this.composeType == Ci.nsIMsgCompType.ForwardInline);
   },
 
   get isOkayToMoveOn() {
@@ -937,7 +937,7 @@ var ReplyWithHeader = {
 };
 
 // Getting Add-On name & version #
-AddonManager.getAddonByID(ReplyWithHeaderAddOnID, function(addOn) {
+AddonManager.getAddonByID(ReplyWithHeaderAddOnID).then(function(addOn) {
   ReplyWithHeader.addOnName = addOn.name;
   ReplyWithHeader.addOnVersion = addOn.version;
 });
@@ -988,4 +988,3 @@ XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader, 'mimeConverter',
     };
   }
 })();
-
