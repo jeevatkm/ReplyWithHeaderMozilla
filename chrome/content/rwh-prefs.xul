@@ -38,7 +38,7 @@
                 preference="extensions.replywithheader.enable"
                 oncommand="ReplyWithHeader.Prefs.toggleRwh();" />
             <spacer flex="1" />
-            <image src='chrome://replywithheader/skin/language.png' width='21' height='21' style="margin-right:3px;margin-top:3px;" />
+            <image src='resource://replywithheader/skin/language.png' width='21' height='21' style="margin-right:3px;margin-top:3px;" />
             <menulist id="hdrLocale" style="margin-right:4px;"
                 preference="extensions.replywithheader.header.locale" >
               <menupopup id="hdrLocalePopup">
@@ -239,7 +239,7 @@
                 </tabpanel>
                 <tabpanel orient="vertical">
                     <vbox align="center" style="margin-top: 30px">
-                        <image id="abtRwhLogo" src='chrome://replywithheader/skin/icon-64.png' width='64' height='64' />
+                        <image id="abtRwhLogo" src='resource://replywithheader/skin/rwh-icon64.png' width='64' height='64' />
                         <label id="abtRwhCaption" value="ReplyWithHeader" style="font-weight:bold;" />
                         <label id="abtRwhCopyrights" value="&#169; Jeevanandam M." style="font-size:12px;" />
                         <label id="abtRwhCopyrightsNotes" value="All rights reserved." style="font-size:12px;" />
@@ -261,14 +261,14 @@
                     </vbox>
                     <vbox align="center" style="margin-top:10px;">
                         <hbox id="hboxDonateBtn" align="center" style="margin-bottom:10px;margin-top:5px">
-                            <image src='chrome://replywithheader/skin/bitcoin-24.png' width='24' height='24'
+                            <image src='resource://replywithheader/skin/bitcoin-24.png' width='24' height='24'
                                 onclick="ReplyWithHeader.Prefs.copyBtcAddress();"
                                 tooltiptext="Click here to copy BTC address."
                                 style="cursor: pointer" />
                             <label value="1FG6G5tCmFm7vrc7BzUyRxr3RBrMDJA6zp" style="font-size:11px;cursor:pointer"
                                 onclick="ReplyWithHeader.Prefs.copyBtcAddress();"
                                 tooltiptext="Click here to copy BTC address." />
-                            <image src='chrome://replywithheader/skin/paypal-btn.png' width='142' height='27'
+                            <image src='resource://replywithheader/skin/paypal-btn.png' width='142' height='27'
                                 onclick="ReplyWithHeader.Prefs.openPaypal();"
                                 style="cursor: pointer;margin-left:15px"
                                 tooltiptext="Click here to Donate via Paypal." />

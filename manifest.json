@@ -1,23 +1,63 @@
 {
-    "manifest_version": 2,
     "name": "ReplyWithHeader",
+    "short_name": "RWH",
     "description": "Outlook style headers and few goodies for Thunderbird",
-    "version": "2.2.1",
+    "version": "2.3.0-beta",
     "author": "Jeevanandam M.",
     "homepage_url": "https://myjeeva.com/replywithheader-mozilla",
+
     "applications": {
         "gecko": {
             "id": "replywithheader@myjeeva.com",
-            "strict_min_version": "68.0"
+            "strict_min_version": "68.0",
+            "strict_max_version": "78.*"
         }
     },
+
+    // "default_locale": "en",
+
+    // "permissions": [
+    //     "compose",
+    //     "storage"
+    // ],
+
     "icons": {
-        "64": "skin/icon-64.png",
-        "128": "icon.png"
+        "16": "chrome/skin/rwh-icon16.png",
+        "24": "chrome/skin/rwh-icon24.png",
+        "32": "chrome/skin/rwh-icon32.png",
+        "48": "chrome/skin/rwh-icon48.png",
+        "64": "chrome/skin/rwh-icon64.png",
+        "96": "chrome/skin/rwh-icon96.png",
+        "128": "chrome/skin/rwh-icon128.png"
     },
-    "legacy": {
-        "options": {
-            "page": "chrome://replywithheader/content/rwh-prefs.xul"
+
+    "background": {
+        "scripts": [
+            "scripts/background.js"
+        ]
+    },
+
+    // "options_ui": {
+    //     "page": "html/options.html",
+    //     "open_in_tab": false
+    // },
+
+    // "legacy": {
+    //     "options": {
+    //         "page": "chrome://replywithheader/content/rwh-prefs.xul"
+    //     }
+    // },
+
+    "experiment_apis": {
+        "WindowListener": {
+            "schema": "experiment/api/WindowListener/schema.json",
+            "parent": {
+                "scopes": ["addon_parent"],
+                "paths": [["WindowListener"]],
+                "script": "experiment/api/WindowListener/implementation.js"
+            }
         }
-    }
+    },
+
+    "manifest_version": 2
 }

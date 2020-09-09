@@ -13,8 +13,8 @@ var EXPORTED_SYMBOLS = ['ReplyWithHeader'];
 
 var { XPCOMUtils } = ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
 var { AddonManager } = ChromeUtils.import('resource://gre/modules/AddonManager.jsm');
-var { rwhlog } = ChromeUtils.import('resource://replywithheader/log.jsm');
-var { rwhhost } = ChromeUtils.import('resource://replywithheader/host.jsm');
+var { rwhlog } = ChromeUtils.import('chrome://replywithheader/content/log.jsm');
+var { rwhhost } = ChromeUtils.import('chrome://replywithheader/content/host.jsm');
 
 // ReplyWithHeader Add-On ID
 const ReplyWithHeaderAddOnID = 'replywithheader@myjeeva.com';
@@ -918,7 +918,7 @@ var ReplyWithHeader = {
   showAlert: function(str) {
     if (str) {
       try {
-        this.alerts.showAlertNotification('chrome://replywithheader/skin/icon-64.png',
+        this.alerts.showAlertNotification('resource://replywithheader/skin/rwh-icon64.png',
           'ReplyWithHeader', str, false, '', null, '');
       } catch (ex) {
         rwhlog.errorWithException('Unable to show RWH notify alert.', ex);

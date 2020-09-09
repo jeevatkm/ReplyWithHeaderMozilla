@@ -12,8 +12,8 @@
 /* globals ReplyWithHeader */
 var { XPCOMUtils } = ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
 var { Services } = ChromeUtils.import('resource://gre/modules/Services.jsm');
-var { rwhlog } = ChromeUtils.import('resource://replywithheader/log.jsm');
-var { rwhhost } = ChromeUtils.import('resource://replywithheader/host.jsm');
+var { rwhlog } = ChromeUtils.import('chrome://replywithheader/content/log.jsm');
+var { rwhhost } = ChromeUtils.import('chrome://replywithheader/content/host.jsm');
 
 ReplyWithHeader.Prefs = {
   prefService: Services.prefs,
