@@ -16,9 +16,10 @@
     // "default_locale": "en",
 
     "permissions": [
+      "messagesRead",
+      "accountsRead",
       "compose",
-      "storage",
-      "accountsRead"
+      "storage"
     ],
 
     "icons": {
@@ -37,9 +38,30 @@
 
     "background": {
       "scripts": [
-        "scripts/log.js",
-        "scripts/background.js"
+        "scripts/base.js",
+        "scripts/compose.js",
+        "scripts/rwh.js"
       ]
+    },
+
+    "experiment_apis": {
+      "MsgCompose": {
+        "schema": "experiment/api/MsgCompose/schema.json",
+        "parent": {
+          "scopes": ["addon_parent"],
+          "paths": [["MsgCompose"]],
+          "script": "experiment/api/MsgCompose/implementation.js"
+        }
+      },
+
+      "MsgIdentity": {
+        "schema": "experiment/api/MsgIdentity/schema.json",
+        "parent": {
+          "scopes": ["addon_parent"],
+          "paths": [["MsgIdentity"]],
+          "script": "experiment/api/MsgIdentity/implementation.js"
+        }
+      }
     },
 
     "manifest_version": 2

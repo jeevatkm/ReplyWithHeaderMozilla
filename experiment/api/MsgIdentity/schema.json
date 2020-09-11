@@ -1,0 +1,21 @@
+[
+    {
+      "namespace": "MsgIdentity",
+      "functions": [
+        {
+          "name": "getIdentitySettings",
+          "type": "function",
+          "async": true,
+          "description": "todo",
+          "parameters": [
+            {
+              "name": "identityId",
+              "type": "string",
+              "description": "Identity Id"
+            }
+          ]
+        }        
+      ]
+    }
+  ]
+  

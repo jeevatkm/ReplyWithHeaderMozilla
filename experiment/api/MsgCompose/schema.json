@@ -1,0 +1,49 @@
+[
+    {
+      "namespace": "MsgCompose",
+      "functions": [
+        {
+          "name": "resetModificationCount",
+          "type": "function",
+          "async": true,
+          "description": "todo",
+          "parameters": [
+            {
+              "name": "tabId",
+              "type": "integer",
+              "description": "Tab Id"
+            }
+          ]
+        },
+
+        {
+          "name": "beginningOfDocument",
+          "type": "function",
+          "async": true,
+          "description": "todo",
+          "parameters": [
+            {
+              "name": "tabId",
+              "type": "integer",
+              "description": "Tab Id"
+            }
+          ]
+        },
+
+        {
+          "name": "endOfDocument",
+          "type": "function",
+          "async": true,
+          "description": "todo",
+          "parameters": [
+            {
+              "name": "tabId",
+              "type": "integer",
+              "description": "Tab Id"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+  
