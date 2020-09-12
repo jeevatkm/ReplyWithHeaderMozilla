@@ -3,6 +3,20 @@
       "namespace": "MsgCompose",
       "functions": [
         {
+          "name": "getComposeDetails",
+          "type": "function",
+          "async": true,
+          "description": "todo",
+          "parameters": [
+            {
+              "name": "tabId",
+              "type": "integer",
+              "description": "Tab Id"
+            }
+          ]
+        },
+
+        {
           "name": "resetModificationCount",
           "type": "function",
           "async": true,
@@ -46,4 +60,3 @@
       ]
     }
   ]
-  

@@ -13,6 +13,26 @@ else if (rwh.runtime && rwh.runtime.name != 'replywithheader-mail-extension@myje
   throw new Error("RWH mail extension may not work due to namespace 'rwh' conflict");
 }
 
+// It is important TB provides out-of-the-box like interface 'nsIMsgCompType'
+const TbMsgCompType = Object.freeze({
+  New: 0,
+  Reply: 1,
+  ReplyAll: 2,
+  ForwardAsAttachment: 3,
+  ForwardInline: 4,
+  NewsPost: 5,
+  ReplyToSender: 6,
+  ReplyToGroup: 7,
+  ReplyToSenderAndGroup: 8,
+  Draft: 9,
+  Template: 10,
+  MailToUrl: 11,
+  ReplyWithTemplate: 12,
+  fromValue: function(v) {
+    return Object.keys(TbMsgCompType).find(k => TbMsgCompType[k] === v);
+  },
+});
+
 async function initLogger() {
   if (typeof rwh.log !== 'undefined') {
     console.error('rwh is already defined - ref base');
@@ -28,25 +48,37 @@ async function initLogger() {
 
   // RWH simple logger module
   rwh.log = {
+    levelToName: function(level) {
+      return Object.keys(levels).find(k => levels[k] === level) || 'unknown';
+    },
     debug: rwh.logLevel <= levels.debug ? console.debug.bind(window.console, 'RWH') : noop,
     info: rwh.logLevel <= levels.info ? console.info.bind(window.console, 'RWH') : noop,
     warn: rwh.logLevel <= levels.warn ? console.warn.bind(window.console, 'RWH') : noop,
     error: rwh.logLevel <= levels.error ? console.error.bind(window.console, 'RWH') : noop
   };
 
-  if (rwh.logLevel <= levels.debug) {
-    rwh.log.info('Debug mode enabled');
-  }
-
+  console.info(`RWH Log level: ${rwh.log.levelToName(rwh.logLevel).toUpperCase()}`);
 }
 
-async function loadRuntimeInfo() {
+async function initInfo() {
+  let manifest = await messenger.runtime.getManifest();
+
+  // Defining about info
+  let about = {};
+  Object.defineProperties(about, {
+    homepageUrl: { value: manifest.homepage_url, enumerable: true },
+    addonUrl: { value: 'https://addons.mozilla.org/en-US/thunderbird/addon/replywithheader/', enumerable: true },
+    supportUrl: { value: 'https://github.com/jeevatkm/ReplyWithHeaderMozilla/issues', enumerable: true },
+    btcAddress: { value: '1FG6G5tCmFm7vrc7BzUyRxr3RBrMDJA6zp', enumerable: true },
+    paypalDonateUrl: { value: 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=Jeevanandam%20M%2e&item_number=ReplyWithHeaderMozilla&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted', enumerable: true },
+  });
+  Object.defineProperty(rwh, 'about', { value: about, enumerable: true })
+
+  // Defining runtime info
   let pi = await messenger.runtime.getPlatformInfo();
   let bi = await messenger.runtime.getBrowserInfo();
-  let manifest = await messenger.runtime.getManifest();
   let osFullName = { mac: 'macOS', win: 'Windows', linux: 'Linux' };
   let runtime = {};
-
   Object.defineProperties(runtime, {
     name: { value: manifest.name, enumerable: true },
     version: { value: manifest.version, enumerable: true },
@@ -59,11 +91,9 @@ async function loadRuntimeInfo() {
     isWindows: { get() { return this.os == osFullName.win; }, enumerable: true }
   });
   Object.defineProperty(rwh, 'runtime', { value: runtime, enumerable: true })
-
-  rwh.log.debug('Runtime Info', rwh.runtime);
 }
 
 async function initBase() {
   await initLogger();
-  await loadRuntimeInfo();
+  await initInfo();
 }

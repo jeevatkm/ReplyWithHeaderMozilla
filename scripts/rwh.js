@@ -16,14 +16,29 @@ async function addListeners() {
   messenger.tabs.onCreated.addListener(async function(tab) {
     if (tab.status != 'complete') { return; }
 
+    // TODO: Check RWH is enabled or not
+
+    // Check compose type before proceeding
+    let composeDetails = await messenger.MsgCompose.getComposeDetails(tab.id).catch(rwh.log.error);
+    let composeType = composeDetails.composeType;
+    if (!rwh.compose.isSupportedType(composeType)) {
+      // if not supported, exit here gracefully
+      rwh.log.info(`MailExtension does not support compose type: ${TbMsgCompType.fromValue(composeType)}(${composeType}), exits gracefully`);
+      return;
+    }
+
     // get window and check the window type is "messageCompose"
     let mcWin = await messenger.windows.get(tab.windowId);
     if (mcWin && mcWin.type != 'messageCompose') { return; }
 
     rwh.log.debug('messenger.tabs.onCreated', tab, 'window', mcWin);
 
-    await rwh.processCompose(tab, mcWin);
-
+    rwh.compose.inferValues({tabId: tab.id, windowId: tab.windowId})
+      .then(rwh.compose.processHeaders)
+      .then(rwh.compose.composeHeaders)
+      .then(rwh.compose.injectHeaders)
+      .then(rwh.handOffToUser)
+      .catch(rwh.log.error)
   });
 
   // messenger.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
@@ -37,6 +52,9 @@ async function addListeners() {
 
   // });
 
+
+  // FIXME: This is a workaround to get message id and header
+  // since method 'messenger.compose.getComposeDetails' does not provide message id.
   messenger.messageDisplay.onMessageDisplayed.addListener(async function(tab, message) {
     rwh.currentMessageTab = tab;
     rwh.currentMessageHeader = message;
@@ -52,6 +70,13 @@ async function addListeners() {
   //   console.log('window onRemoved', winId, 'rw', rw);
   // });
 }
+
+
+rwh.handOffToUser = async function(data) {
+  rwh.log.debug('handOffToUser input:', data);
+
+}
+
 
 // RWH Initialize
 async function init() {

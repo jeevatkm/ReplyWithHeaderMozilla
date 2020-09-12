@@ -12,20 +12,122 @@ if (typeof rwh === 'undefined') {
   throw new Error('RWH mail extension encountered an unexpected error');
 }
 
-rwh.processCompose = async function(tab, win) {
-  let details = await messenger.compose.getComposeDetails(tab.id);
-  this.log.debug(details);
+rwh.compose = {
+  get log() { return rwh.log; },
 
-  rwh.log.debug('this.currentMessageHeader', this.currentMessageHeader)
-  let message = await messenger.messages.getFull(this.currentMessageHeader.id);
-  rwh.log.debug('message', message);
+  isReply: function(ct) {
+    return TbMsgCompType.ForwardInline !== ct
+  },
 
-  // let messageDetails = await messenger.messageDisplay.getDisplayedMessage(tab.id);
-  // this.log.debug('messageDetails', messageDetails);
+  isForward: function(ct) {
+    return TbMsgCompType.ForwardInline === ct
+  },
 
-  let settings = await messenger.MsgIdentity.getIdentitySettings(details.identityId).catch(console.log);
-  this.log.debug(settings);
-}
+  isSupportedType: function(ct) {
+    // this.log.debug(`Message compose type: ${TbMsgComposeType.fromValue(ct)}(${ct})`);
+    // Supported types: 1=Reply, 2=ReplyAll, 4=ForwardInline, 6=ReplyToSender
+    return [
+      TbMsgCompType.Reply,
+      TbMsgCompType.ReplyAll,
+      TbMsgCompType.ForwardInline,
+      TbMsgCompType.ReplyToSender,
+    ].includes(ct)
+  },
+
+  escapeHtml: function(str) {
+    return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  },
+
+  inferValues: async function(data) {
+    this.log.debug('inferValues input:', data);
+    let composeDetails1 = await messenger.compose.getComposeDetails(data.tabId).catch(rwh.log.error);
+
+    // Using experiment APIs
+    let composeDetails2 = await messenger.MsgCompose.getComposeDetails(data.tabId).catch(rwh.log.error);
+    let identitySettings = await messenger.MsgIdentity.getIdentitySettings(composeDetails1.identityId).catch(rwh.log.error);
+
+    // Currently, this is workaround way to get message header
+    let msgHeader = rwh.currentMessageHeader;
+    let rawHeaders = {
+      from: msgHeader.author,
+      to: msgHeader.recipients,
+      ccList: msgHeader.ccList,
+      subject: msgHeader.subject,
+      date: msgHeader.date
+    };
+
+    return {
+      ...data,
+      identity: {
+        id: composeDetails1.identityId,
+        settings: identitySettings
+      },
+      message: {
+        rawHeaders: rawHeaders,
+        composeType: composeDetails2.composeType,
+        isPlainText: composeDetails1.isPlainText,
+        plainTextBody: composeDetails1.plainTextBody,
+        htmlBody: composeDetails1.body
+      }
+    };
+  },
+
+  processHeaders: async function(data) {
+    rwh.log.debug('processHeaders input:', data);
+
+    let result = {...data};
+
+    result.msg.headers = {
+      newvalue1: 'newValue 1'
+    }
+
+
+    return result;
+  },
+
+  composeHeaders: async function(data) {
+    rwh.log.debug('composeHeaders input:', data);
+
+    let result = {...data};
+
+    result.msg.rwhHeaders = {
+      from: 'from value',
+      to: 'to value'
+    };
+
+
+
+    return result;
+  },
+
+  injectHeaders: async function(data) {
+    rwh.log.debug('injectHeaders input:', data);
+
+    // throw new Error('test error from injectHeaders');
+    return data;
+  }
+};
+
+// rwh.processCompose = async function(tab, win) {
+//   let composeDetails1 = await messenger.compose.getComposeDetails(tab.id).catch(rwh.log.error);
+//   this.log.debug('composeDetails1', composeDetails1);
+
+//   rwh.log.debug('this.currentMessageHeader', this.currentMessageHeader)
+//   let message = await messenger.messages.getFull(this.currentMessageHeader.id);
+//   rwh.log.debug('message', message);
+
+//   let composeDetails2 = await messenger.MsgCompose.getComposeDetails(tab.id).catch(rwh.log.error);
+//   this.log.debug('composeDetails2', composeDetails2);
+
+//   // let messageDetails = await messenger.messageDisplay.getDisplayedMessage(tab.id);
+//   // this.log.debug('messageDetails', messageDetails);
+
+//   let settings = await messenger.MsgIdentity.getIdentitySettings(composeDetails1.identityId).catch(console.log);
+//   this.log.debug(settings);
+
+//   // let composeType = await messenger.MsgCompose.composeType(tab.id).catch(console.log);
+//   // rwh.log.debug('msgComposeType', await rwh.compose.msgComposeType(tab.id))
+// }
 
 
 // 'use strict';

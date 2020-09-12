@@ -1,7 +1,7 @@
 var { ExtensionCommon } = ChromeUtils.import('resource://gre/modules/ExtensionCommon.jsm');
 
 var MsgCompose = class extends ExtensionCommon.ExtensionAPI {
-  getAPI(context) {    
+  getAPI(context) {
     let { extension } = context;
     let { tabManager } = extension;
     let COMPOSE_WINDOW_URI = 'chrome://messenger/content/messengercompose/messengercompose.xhtml';
@@ -16,9 +16,18 @@ var MsgCompose = class extends ExtensionCommon.ExtensionAPI {
       }
       return tab;
     }
-    
+
     return {
       MsgCompose: {
+        getComposeDetails: function(tabId) {
+          let tab = getComposeTab(tabId);
+          let composeWindow = tab.nativeTab;
+
+          return {
+            composeType: composeWindow.gMsgCompose.type
+          };
+        },
+
         resetModificationCount: function(tabId) {
           let tab = getComposeTab(tabId);
           let composeWindow = tab.nativeTab;
