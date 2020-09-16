@@ -86,7 +86,7 @@ async function init() {
   // await addEventListeners();
 
   // let manifest = messenger.runtime.getManifest();
-  rwh.log.info(`MailExtension v${rwh.runtime.version} loaded successfully`);
+  rwh.log.info(`MailExtension v${rwh.about.version} loaded successfully`);
 }
 
 init().catch(console.error);

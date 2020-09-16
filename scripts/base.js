@@ -33,18 +33,35 @@ const TbMsgCompType = Object.freeze({
   },
 });
 
-async function initLogger() {
-  if (typeof rwh.log !== 'undefined') {
-    console.error('rwh is already defined - ref base');
-    return; // already defined
-  }
+async function initStorage() {
+  let results = await messenger.storage.sync.get('options');
 
+  rwh.storage = {
+    __options: results.options,
+
+    get options() {
+      return this.__options;
+    },
+
+    set options(v) {
+      if (typeof v === 'function' || Object.prototype.toString.call(v) === '[object Array]' || v == null) {
+        throw new Error('Given value is not a valid object');
+      }
+      this.__options = v;
+      this.persist();
+    },
+
+    persist: function() {
+      messenger.storage.sync.set({ options: this.__options });
+    }
+  };
+}
+
+async function initLogger() {
   let noop = function(){};
   let levels = { debug: 0, info: 1, warn: 2, error: 3 };
 
-  // await messenger.storage.local.set({options: {debug: true}});
-  let results = await messenger.storage.local.get('options');
-  rwh.logLevel = results.options && results.options.logLevel || 0;
+  rwh.logLevel = rwh.storage.options.logLevel || 0;
 
   // RWH simple logger module
   rwh.log = {
@@ -60,12 +77,15 @@ async function initLogger() {
   console.info(`RWH Log level: ${rwh.log.levelToName(rwh.logLevel).toUpperCase()}`);
 }
 
-async function initInfo() {
+async function initAbout() {
   let manifest = await messenger.runtime.getManifest();
 
   // Defining about info
   let about = {};
   Object.defineProperties(about, {
+    id: { value: messenger.runtime.id, enumerable: true },
+    name: { value: manifest.name, enumerable: true },
+    version: { value: manifest.version, enumerable: true },
     homepageUrl: { value: manifest.homepage_url, enumerable: true },
     addonUrl: { value: 'https://addons.mozilla.org/en-US/thunderbird/addon/replywithheader/', enumerable: true },
     supportUrl: { value: 'https://github.com/jeevatkm/ReplyWithHeaderMozilla/issues', enumerable: true },
@@ -73,15 +93,15 @@ async function initInfo() {
     paypalDonateUrl: { value: 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=Jeevanandam%20M%2e&item_number=ReplyWithHeaderMozilla&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted', enumerable: true },
   });
   Object.defineProperty(rwh, 'about', { value: about, enumerable: true })
+}
 
+async function initRuntimeInfo() {
   // Defining runtime info
   let pi = await messenger.runtime.getPlatformInfo();
   let bi = await messenger.runtime.getBrowserInfo();
   let osFullName = { mac: 'macOS', win: 'Windows', linux: 'Linux' };
   let runtime = {};
   Object.defineProperties(runtime, {
-    name: { value: manifest.name, enumerable: true },
-    version: { value: manifest.version, enumerable: true },
     appName: { value: bi.name, enumerable: true },
     appVersion: { value: bi.version, enumerable: true },
     os: { value: osFullName[pi.os], enumerable: true },
@@ -94,6 +114,9 @@ async function initInfo() {
 }
 
 async function initBase() {
-  await initLogger();
-  await initInfo();
+  await initStorage()
+        .then(initLogger)
+        .then(initAbout)
+        .then(initRuntimeInfo)
+        .catch(console.error);
 }

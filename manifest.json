@@ -32,7 +32,7 @@
     },
 
     "options_ui": {
-      "page": "html/options.html",
+      "page": "html/options-ui.html",
       "open_in_tab": false
     },
 
