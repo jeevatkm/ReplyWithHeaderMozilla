@@ -17,17 +17,17 @@
 
     "background": {
         "scripts": [
-            "background.js"
+            "scripts/background.js"
         ]
     },
 
     "experiment_apis": {
         "WindowListener": {
-            "schema": "api/WindowListener/schema.json",
+            "schema": "experiment/api/WindowListener/schema.json",
             "parent": {
                 "scopes": ["addon_parent"],
                 "paths": [["WindowListener"]],
-                "script": "api/WindowListener/implementation.js"
+                "script": "experiment/api/WindowListener/implementation.js"
             }
         }
     },
