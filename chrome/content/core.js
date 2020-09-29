@@ -13,8 +13,8 @@ var EXPORTED_SYMBOLS = ['ReplyWithHeader'];
 
 var { XPCOMUtils } = ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
 var { AddonManager } = ChromeUtils.import('resource://gre/modules/AddonManager.jsm');
-var { rwhlog } = ChromeUtils.import('resource://replywithheader/log.jsm');
-var { rwhhost } = ChromeUtils.import('resource://replywithheader/host.jsm');
+var { rwhlog } = ChromeUtils.import('chrome://replywithheader/content/log.jsm');
+var { rwhhost } = ChromeUtils.import('chrome://replywithheader/content/host.jsm');
 
 // ReplyWithHeader Add-On ID
 const ReplyWithHeaderAddOnID = 'replywithheader@myjeeva.com';
@@ -357,7 +357,7 @@ var ReplyWithHeader = {
 
     // for HTML emails
     if (this.isHtmlMail) {
-      let fontFace = this.Prefs.headerFontFace;      
+      let fontFace = this.Prefs.headerFontFace;
       let fontSize = this.Prefs.headerFontSize;
       let fontSizeUnit = this.Prefs.headerFontSizeUnit;
       let fontColor = this.Prefs.headerFontColor;
@@ -850,7 +850,7 @@ var ReplyWithHeader = {
       try {
         ReplyWithHeader.handleMailCompose();
       } catch(ex) {
-        rwhlog.errorWithException('An error occurred, please report an issue to add-on author here ' 
+        rwhlog.errorWithException('An error occurred, please report an issue to add-on author here '
           + '- https://github.com/jeevatkm/ReplyWithHeaderMozilla/issues', ex);
       }
     },
@@ -861,17 +861,17 @@ var ReplyWithHeader = {
   handleMailCompose: function() {
     let prefs = this.Prefs;
     rwhlog.enableDebug = prefs.isDebugEnabled;
-    
-    rwhlog.debug('Initializing ' + ReplyWithHeader.addOnName + ' v' + ReplyWithHeader.addOnVersion 
-      + ' (' + rwhhost.app + ' ' + rwhhost.version 
+
+    rwhlog.debug('Initializing ' + ReplyWithHeader.addOnName + ' v' + ReplyWithHeader.addOnVersion
+      + ' (' + rwhhost.app + ' ' + rwhhost.version
       + ', ' + rwhhost.OS + ', ' + rwhhost.buildID + ')');
-      
+
     /*
      * ReplyWithHeader has to be enabled; extensions.replywithheader.enable=true and
      * ReplyWithHeader.isOkayToMoveOn must return true
      * Add-On comes into play :)
      */
-    
+
     if (prefs.isEnabled && this.isOkayToMoveOn) {
       this.hdrCnt = 4; // From, To, Subject, Date
 
@@ -918,7 +918,7 @@ var ReplyWithHeader = {
   showAlert: function(str) {
     if (str) {
       try {
-        this.alerts.showAlertNotification('chrome://replywithheader/skin/icon-64.png',
+        this.alerts.showAlertNotification('resource://replywithheader/icon-64.png',
           'ReplyWithHeader', str, false, '', null, '');
       } catch (ex) {
         rwhlog.errorWithException('Unable to show RWH notify alert.', ex);

@@ -8,9 +8,9 @@
 #
 
 content replywithheader chrome/content/
-resource replywithheader chrome/resource/
+#resource replywithheader chrome/resource/
 
-skin    replywithheader default/1.0 skin/
+resource    replywithheader default/1.0 skin/
 
 # messengercompose.xul [MailCompose Window]
 overlay chrome://messenger/content/messengercompose/messengercompose.xul    chrome://replywithheader/content/messengerComposeOverlay.xul
