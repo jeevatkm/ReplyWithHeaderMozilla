@@ -1,5 +1,4 @@
 {
-    "manifest_version": 2,
     "name": "ReplyWithHeader",
     "description": "Outlook style headers and few goodies for Thunderbird",
     "version": "2.3.0-beta",
@@ -15,9 +14,23 @@
         "64": "skin/icon-64.png",
         "128": "icon.png"
     },
-    "legacy": {
-        "options": {
-            "page": "chrome://replywithheader/content/rwh-prefs.xul"
+
+    "background": {
+        "scripts": [
+            "background.js"
+        ]
+    },
+
+    "experiment_apis": {
+        "WindowListener": {
+            "schema": "api/WindowListener/schema.json",
+            "parent": {
+                "scopes": ["addon_parent"],
+                "paths": [["WindowListener"]],
+                "script": "api/WindowListener/implementation.js"
+            }
         }
-    }
+    },
+
+    "manifest_version": 2
 }
