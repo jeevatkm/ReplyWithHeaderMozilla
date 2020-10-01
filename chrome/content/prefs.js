@@ -174,7 +174,7 @@ ReplyWithHeader.Prefs = {
   },
 
   createMenuItem: function(v, l) {
-    var menuItem = document.createElement('menuitem');
+    var menuItem = document.createXULElement('menuitem');
     menuItem.setAttribute('value', v);
     menuItem.setAttribute('label', l);
     return menuItem;
@@ -185,7 +185,7 @@ ReplyWithHeader.Prefs = {
       .createInstance(Ci.nsIFontEnumerator).EnumerateAllFonts({});
 
     let hdrFontface = this.headerFontFace;
-    let menuPopup = document.createElement('menupopup');
+    let menuPopup = document.createXULElement('menupopup');
     let selectedIdx = 0;
 
     for (let fontCount = allFonts.length, i = 0; i < fontCount; i++) {
@@ -201,7 +201,7 @@ ReplyWithHeader.Prefs = {
   },
 
   loadFontSizes: function() {
-    let menuPopup = document.createElement('menupopup');
+    let menuPopup = document.createXULElement('menupopup');
     let selectedIdx = 0;
 
     for (let i = 7, j = 0; i < 35; i++, j++) {
