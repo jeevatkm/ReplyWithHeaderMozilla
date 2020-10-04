@@ -25,5 +25,5 @@ function onLoad(activatedWhileWindowOpen) {
 }
 
 function onUnload(deactivatedWhileWindowOpen) {
-
+  /* unused */
 }
