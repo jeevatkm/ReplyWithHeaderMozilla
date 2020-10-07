@@ -5,7 +5,7 @@
         radio { font-size: 12px; margin-top:-2px; }
         radio:first-child { margin-top:0px; }
         radiogroup { margin-left:20px; }
-        radiogroup.horizontal { display:inline-block; }
+        radiogroup.horizontal { display:inline-block; display: flex; }
         .horizontal radio { margin-right:20px; }
         button { cursor: pointer }
         " type="text/css"?>
@@ -23,22 +23,22 @@
         buttons="accept"
         xmlns:html="http://www.w3.org/1999/xhtml"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-        title="RWH Preferences" style="width:525px"
+        title="RWH Preferences" style="width:625px"
         onload="ReplyWithHeader.Prefs.init();">
-    
+
     <script src="chrome://global/content/globalOverlay.js"/>
     <script src="chrome://global/content/editMenuOverlay.js"/>
     <script type="application/javascript" src="chrome://replywithheader/content/i18n.js"/>
     <script type="application/javascript" src="chrome://replywithheader/content/core.js"/>
-    <script type="application/javascript" src="chrome://replywithheader/content/prefs.js"/>    
+    <script type="application/javascript" src="chrome://replywithheader/content/prefs.js"/>
 
     <prefpane id="rwhPane" orient="vertical">
         <hbox align="center">
-            <checkbox id="enableRwh" label="Enable" 
+            <checkbox id="enableRwh" label="Enable"
                 preference="extensions.replywithheader.enable"
                 oncommand="ReplyWithHeader.Prefs.toggleRwh();" />
             <spacer flex="1" />
-            <image src='chrome://replywithheader/skin/language.png' width='21' height='21' style="margin-right:3px;margin-top:3px;" />
+            <image src='resource://replywithheader/language.png' width='21' height='21' style="margin-right:3px;margin-top:3px;" />
             <menulist id="hdrLocale" style="margin-right:4px;"
                 preference="extensions.replywithheader.header.locale" >
               <menupopup id="hdrLocalePopup">
@@ -58,7 +58,7 @@
                         <label id="lblFromAttribution" value="Header 'From' attribution style" />
                     </hbox>
                     <hbox align="center">
-                        <radiogroup id="fromAttributionStyle" 
+                        <radiogroup id="fromAttributionStyle"
                             preference="extensions.replywithheader.header.from.style">
                             <radio value="0" label="Default" />
                             <radio value="1" label="Outlook Simple (From: Name)" />
@@ -69,7 +69,7 @@
                         <label id="lblHeaderToCcAttrib" value="Header 'To' &amp; 'Cc' attribution style" style="margin-top:2px" />
                     </hbox>
                     <hbox align="center">
-                        <radiogroup id="toccAttributionStyle" 
+                        <radiogroup id="toccAttributionStyle"
                             preference="extensions.replywithheader.header.tocc.style">
                             <radio value="0" label="Default (To: Name1 &lt;email-address1&gt;, ...)" />
                             <radio value="1" label="Outlook (To: Name1; Name2; ...)" />
@@ -79,7 +79,7 @@
                         <label id="lblHeaderQuotSeq" value="Header quoting sequence and labels" style="margin-top:2px" />
                     </hbox>
                     <hbox align="center">
-                        <radiogroup id="quotSeqAttributionStyle" 
+                        <radiogroup id="quotSeqAttributionStyle"
                             preference="extensions.replywithheader.header.lblseq.style">
                             <radio value="0" label="Default (Subject, Date, From, To, Cc)" />
                             <radio value="1" label="Outlook (From, Sent, To, Cc, Subject)" />
@@ -91,7 +91,7 @@
                         <label id="lblHdrDate" value="Header date format" style="margin-top:2px" />
                     </hbox>
                     <hbox align="center">
-                        <radiogroup id="quotDateAttributionStyle" 
+                        <radiogroup id="quotDateAttributionStyle"
                             preference="extensions.replywithheader.header.date.format"
                                     class="horizontal">
                             <radio value="0" label="Locale timezone" />
@@ -99,7 +99,7 @@
                         </radiogroup>
                     </hbox>
                     <hbox align="center" style="margin-top:-2px">
-                        <radiogroup id="quotTimeAttributionStyle" 
+                        <radiogroup id="quotTimeAttributionStyle"
                             preference="extensions.replywithheader.header.time.format"
                                   class="horizontal">
                             <radio value="0" label="12 hours format" />
@@ -107,8 +107,8 @@
                         </radiogroup>
                     </hbox>
                     <hbox align="center" style="margin-left:20px;">
-                        <checkbox id="quotDateIncludeTimezone" label="Include short timezone info" 
-                            preference="extensions.replywithheader.header.date.timezone" 
+                        <checkbox id="quotDateIncludeTimezone" label="Include short timezone info"
+                            preference="extensions.replywithheader.header.date.timezone"
                             style="font-size: 12px; margin-top:-3px;"  />
                     </hbox>
                     <hbox align="center">
@@ -116,14 +116,14 @@
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblFontface" value="Font face:" />
-                        <menulist id="hdrFontface" style="width:275px" 
+                        <menulist id="hdrFontface" style="width:275px"
                             preference="extensions.replywithheader.header.font.face" />
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblFontsize" value="Font size:" />
-                        <menulist id="hdrFontsize" style="width:60px;margin-left:.35em;" 
+                        <menulist id="hdrFontsize" style="width:60px;margin-left:.35em;"
                             preference="extensions.replywithheader.header.font.size" />
-                        <menulist id="hdrFontsizeUnit" style="width:80px;" 
+                        <menulist id="hdrFontsizeUnit" style="width:80px;"
                             preference="extensions.replywithheader.header.font.size.unit">
                           <menupopup>
                               <menuitem label="Pixel" value="px" />
@@ -141,7 +141,7 @@
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblBeforeHeader" value="Before header:" />
                         <spacer width="16px" />
-                        <menulist id="spaceBeforeHdr" style="width:65px" 
+                        <menulist id="spaceBeforeHdr" style="width:65px"
                             preference="extensions.replywithheader.header.space.before">
                             <menupopup>
                                 <menuitem label="0" value="0" />
@@ -154,7 +154,7 @@
                         </menulist>
                         <spacer width="20px" />
                         <label id="lblAfterHeader" value="After header:" />
-                        <menulist id="spaceAfterHdr" style="width:65px" 
+                        <menulist id="spaceAfterHdr" style="width:65px"
                             preference="extensions.replywithheader.header.space.after">
                             <menupopup>
                                 <menuitem label="0" value="0" />
@@ -168,7 +168,7 @@
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblBeforeSeparator" value="Before separator:" />
-                        <menulist id="spaceBeforeSep" style="width:65px;margin-left:.25em;" 
+                        <menulist id="spaceBeforeSep" style="width:65px;margin-left:.25em;"
                             preference="extensions.replywithheader.header.separator.space.before">
                             <menupopup>
                                 <menuitem label="0" value="0" />
@@ -183,7 +183,7 @@
                     </hbox>
                     <hbox align="center" style="margin-left:30px">
                         <label id="lblSepLineSize" value="Line size:" />
-                        <menulist id="hdrSepLineSize" style="width:65px;margin-left:3.9em;" 
+                        <menulist id="hdrSepLineSize" style="width:65px;margin-left:3.9em;"
                             preference="extensions.replywithheader.header.separator.line.size">
                           <menupopup>
                               <menuitem label="1px" value="1" />
@@ -205,41 +205,41 @@
                         <label id="lblCntFormat" value="Content formatting and cleanups" />
                     </hbox>
                     <hbox align="center" style="margin-left:15px">
-                        <checkbox id="cleanBlockQuote" label="Cleanup the blockquote colors" 
+                        <checkbox id="cleanBlockQuote" label="Cleanup the blockquote colors"
                             preference="extensions.replywithheader.clean.blockquote"
                             oncommand="ReplyWithHeader.Prefs.toggleBlockQuote();" />
                     </hbox>
                     <hbox align="center" style="margin-left:35px">
-                        <checkbox id="cleanNewBlockQuote" label="Cleanup only new blockquote color" 
+                        <checkbox id="cleanNewBlockQuote" label="Cleanup only new blockquote color"
                             preference="extensions.replywithheader.clean.new.blockquote" />
                     </hbox>
                     <hbox align="center" style="margin-left:15px">
-                        <checkbox id="cleanGreaterThanChar" label="Cleanup the quote character '>'" 
+                        <checkbox id="cleanGreaterThanChar" label="Cleanup the quote character '>'"
                             preference="extensions.replywithheader.clean.char.greaterthan"
                             oncommand="ReplyWithHeader.Prefs.toggleQuoteChar();" />
                     </hbox>
                     <hbox align="center" style="margin-left:35px">
-                        <checkbox id="cleanOnlyNewQuoteChar" label="Cleanup only new quote character" 
+                        <checkbox id="cleanOnlyNewQuoteChar" label="Cleanup only new quote character"
                             preference="extensions.replywithheader.clean.only.new.quote.char" />
                     </hbox>
                     <hbox align="center" style="margin-top:5px">
                         <label id="lblHeaderFormat" value="Subject reformatting" />
                     </hbox>
                     <hbox align="center" style="margin-left:15px">
-                        <checkbox id="transSubjectPrefix" label="Transform subject prefix (Re -> RE and Fwd -> FW)" 
+                        <checkbox id="transSubjectPrefix" label="Transform subject prefix (Re -> RE and Fwd -> FW)"
                             preference="extensions.replywithheader.trans.subject.prefix" />
                     </hbox>
                     <hbox align="center" style="margin-top:5px">
                         <label id="lblHeaderCleanups" value="Header cleanups" />
                     </hbox>
                     <hbox align="center" style="margin-left:15px">
-                        <checkbox id="excludePlainTextHdrPrefix" label="Don't include plain text header prefix" 
+                        <checkbox id="excludePlainTextHdrPrefix" label="Don't include plain text header prefix"
                             preference="extensions.replywithheader.clean.pln.hdr.prefix" />
                     </hbox>
                 </tabpanel>
                 <tabpanel orient="vertical">
                     <vbox align="center" style="margin-top: 30px">
-                        <image id="abtRwhLogo" src='chrome://replywithheader/skin/icon-64.png' width='64' height='64' />
+                        <image id="abtRwhLogo" src='resource://replywithheader/icon-64.png' width='64' height='64' />
                         <label id="abtRwhCaption" value="ReplyWithHeader" style="font-weight:bold;" />
                         <label id="abtRwhCopyrights" value="&#169; Jeevanandam M." style="font-size:12px;" />
                         <label id="abtRwhCopyrightsNotes" value="All rights reserved." style="font-size:12px;" />
@@ -250,9 +250,9 @@
                             <button label="Write a Review" oncommand="ReplyWithHeader.Prefs.openReviews();" />
                             <button label="Report Issues" oncommand="ReplyWithHeader.Prefs.reportIssues();" />
                         </hbox>
-                    </vbox>                                
+                    </vbox>
                     <vbox id="hboxEnableRwhDebugMode" align="center" style="margin: 15px 0">
-                        <checkbox id="enableRwhDebugMode" label="Enable debug mode" 
+                        <checkbox id="enableRwhDebugMode" label="Enable debug mode"
                             preference="extensions.replywithheader.debug"
                             tooltiptext="Add-on logs useful debug details in the Error Console" />
                     </vbox>
@@ -261,14 +261,14 @@
                     </vbox>
                     <vbox align="center" style="margin-top:10px;">
                         <hbox id="hboxDonateBtn" align="center" style="margin-bottom:10px;margin-top:5px">
-                            <image src='chrome://replywithheader/skin/bitcoin-24.png' width='24' height='24'
+                            <image src='resource://replywithheader/bitcoin-24.png' width='24' height='24'
                                 onclick="ReplyWithHeader.Prefs.copyBtcAddress();"
                                 tooltiptext="Click here to copy BTC address."
                                 style="cursor: pointer" />
                             <label value="1FG6G5tCmFm7vrc7BzUyRxr3RBrMDJA6zp" style="font-size:11px;cursor:pointer"
                                 onclick="ReplyWithHeader.Prefs.copyBtcAddress();"
                                 tooltiptext="Click here to copy BTC address." />
-                            <image src='chrome://replywithheader/skin/paypal-btn.png' width='142' height='27'
+                            <image src='resource://replywithheader/paypal-btn.png' width='142' height='27'
                                 onclick="ReplyWithHeader.Prefs.openPaypal();"
                                 style="cursor: pointer;margin-left:15px"
                                 tooltiptext="Click here to Donate via Paypal." />
