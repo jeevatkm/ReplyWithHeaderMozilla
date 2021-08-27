@@ -146,7 +146,7 @@ var i18n = {
     "pt": "Enviado:",
     "pt-BR": "Enviado:",
     "ko": "보낸 날짜:",
-    "nl": "Datum:",
+    "nl": "Verzonden:",
     "nb": "Sendt:",
     "ru": "Отправлено:",
     "sv": "Skickat",
