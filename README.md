@@ -30,4 +30,4 @@ Have a look on [Contributors](https://github.com/jeevatkm/ReplyWithHeaderMozilla
 
 # License
 
-ReplyWithHeader Mozilla is released under [MLP-2.0 License](LICENSE)
+ReplyWithHeader Mozilla is released under [MPL-2.0 License](LICENSE)
