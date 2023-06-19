@@ -825,6 +825,9 @@ var ReplyWithHeader = {
       } else {
         mailBody.innerHTML = mailBody.innerHTML.replace(/<br>(&gt;)+ ?/g, '<br>').replace(/(<\/?span [^>]+>)(&gt;)+ /g, '$1');
       }
+
+      // remove all <...> text blocks ( &lt; whatever &gt; ) in mail body
+      mailBody.innerHTML = mailBody.innerHTML.replaceAll(/(&lt;)((?!&gt;).)*(&gt;)+/g, '');
     }
   },
 
