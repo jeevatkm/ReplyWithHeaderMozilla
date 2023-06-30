@@ -11,7 +11,9 @@
 
 var EXPORTED_SYMBOLS = ["rwhhost"];
 
-var { Services } = ChromeUtils.import('resource://gre/modules/Services.jsm');
+var Services = globalThis.Services || ChromeUtils.import(
+  'resource://gre/modules/Services.jsm'
+).Services;
 
 // Host related definitions
 var rwhhost = {

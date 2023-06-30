@@ -8,7 +8,9 @@
  */
 
 // Import any needed modules.
-var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+var Services = globalThis.Services || ChromeUtils.import(
+  "resource://gre/modules/Services.jsm"
+).Services;
 
 // Load an additional JavaScript file.
 Services.scriptloader.loadSubScript('chrome://replywithheader/content/core.js', window, 'UTF-8');
