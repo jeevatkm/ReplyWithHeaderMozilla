@@ -2,8 +2,7 @@
     "name": "ReplyWithHeader",
     "short_name": "RWH",
     "description": "Outlook style headers and few goodies for Thunderbird",
-    "version_name": "2.5.0",
-    "version": "2.5.0",
+    "version": "2.6.0",
     "author": "Jeevanandam M.",
     "homepage_url": "https://myjeeva.com/replywithheader-mozilla",
     "applications": {
