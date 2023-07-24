@@ -27,6 +27,20 @@
     },
 
     "experiment_apis": {
+        "LegacyPrefs": {
+            "schema": "experiment/api/LegacyPrefs/schema.json",
+            "parent": {
+                "scopes": [
+                    "addon_parent"
+                ],
+                "paths": [
+                    [
+                        "LegacyPrefs"
+                    ]
+                ],
+                "script": "experiment/api/LegacyPrefs/implementation.js"
+            }
+        },
         "WindowListener": {
             "schema": "experiment/api/WindowListener/schema.json",
             "parent": {
