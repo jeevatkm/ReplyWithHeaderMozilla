@@ -72,8 +72,6 @@ async function init () {
     ["resource", "replywithheader", "skin/"]
   ]);
 
-  messenger.WindowListener.registerOptionsPage("chrome://replywithheader/content/rwh-prefs.xhtml");
-
   messenger.WindowListener.registerWindow(
     "chrome://messenger/content/messengercompose/messengercompose.xhtml",
     "chrome://replywithheader/content/scripts/messengercompose.js"

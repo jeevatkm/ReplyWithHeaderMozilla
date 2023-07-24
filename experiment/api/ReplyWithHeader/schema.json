@@ -1,0 +1,13 @@
+[
+  {
+    "namespace": "ReplyWithHeader",
+    "functions": [
+      {
+        "name": "getInstalledFonts",
+        "type": "function",
+        "async": true,
+        "parameters": []
+      }
+    ]
+  }
+]

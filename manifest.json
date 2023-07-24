@@ -25,8 +25,25 @@
             "scripts/background.js"
         ]
     },
-
+    "options_ui": {
+        "page": "/options/options.html",
+        "browser_style": true
+    },
     "experiment_apis": {
+        "ReplyWithHeader": {
+            "schema": "experiment/api/ReplyWithHeader/schema.json",
+            "parent": {
+                "scopes": [
+                    "addon_parent"
+                ],
+                "paths": [
+                    [
+                        "ReplyWithHeader"
+                    ]
+                ],
+                "script": "experiment/api/ReplyWithHeader/implementation.js"
+            }
+        },
         "LegacyPrefs": {
             "schema": "experiment/api/LegacyPrefs/schema.json",
             "parent": {
