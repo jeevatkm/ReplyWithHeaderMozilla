@@ -67,17 +67,9 @@ async function init () {
     await browser.LegacyPrefs.setDefaultPref(`${PREF_PREFIX}${name}`, value);
   }
  
-  messenger.WindowListener.registerChromeUrl([
-    ["content",  "replywithheader", "chrome/content/"],
-    ["resource", "replywithheader", "skin/"]
-  ]);
-
-  messenger.WindowListener.registerWindow(
-    "chrome://messenger/content/messengercompose/messengercompose.xhtml",
-    "chrome://replywithheader/content/scripts/messengercompose.js"
-  );
-
-  messenger.WindowListener.startListening();
-
+  browser.tabs.onCreated.addListener(tab => {
+    browser.ReplyWithHeader.patchTab(tab.id);
+  });
 }
+
 init();

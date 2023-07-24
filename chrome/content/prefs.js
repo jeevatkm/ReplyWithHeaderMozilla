@@ -10,24 +10,19 @@
 'use strict';
 
 /* globals ReplyWithHeader */
-var { XPCOMUtils } = ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
-var { Services } = ChromeUtils.import('resource://gre/modules/Services.jsm');
-var { rwhlog } = ChromeUtils.import('chrome://replywithheader/content/log.jsm');
-var { rwhhost } = ChromeUtils.import('chrome://replywithheader/content/host.jsm');
 
-ReplyWithHeader.Prefs = {
-  prefService: Services.prefs,
+var prefs = {
 
   getIntPref: function(p) {
-    return this.prefService.getIntPref('extensions.replywithheader.' + p);
+    return Services.prefs.getIntPref('extensions.replywithheader.' + p);
   },
 
   getBoolPref: function(p) {
-    return this.prefService.getBoolPref('extensions.replywithheader.' + p);
+    return Services.prefs.getBoolPref('extensions.replywithheader.' + p);
   },
 
   getStringPref: function(p) {
-    return this.prefService.getCharPref('extensions.replywithheader.' + p);
+    return Services.prefs.getCharPref('extensions.replywithheader.' + p);
   },
 
   get isEnabled() {
@@ -101,7 +96,7 @@ ReplyWithHeader.Prefs = {
   get headerLocale() {
     let hdrLocale = this.getStringPref('header.locale');
     if (hdrLocale == 'en') { // migrate settings value
-      this.prefService.setStringPref('extensions.replywithheader.header.locale', 'en-US');
+      Services.prefs.setStringPref('extensions.replywithheader.header.locale', 'en-US');
       hdrLocale = 'en-US';
     }
     return hdrLocale;
@@ -131,184 +126,4 @@ ReplyWithHeader.Prefs = {
     return this.getBoolPref('clean.pln.hdr.prefix');
   },
 
-  openWebsite: function() {
-    ReplyWithHeader.openUrl(ReplyWithHeader.homepageUrl);
-  },
-
-  openReviews: function() {
-    ReplyWithHeader.openUrl(ReplyWithHeader.reviewsPageUrl);
-  },
-
-  reportIssues: function() {
-    ReplyWithHeader.openUrl(ReplyWithHeader.issuesPageUrl);
-  },
-
-  openPaypal: function() {
-    ReplyWithHeader.showAlert('Opening PayPal Service. Thanks for supporting ReplyWithHeader.');
-    ReplyWithHeader.openUrl(ReplyWithHeader.paypalDonateUrl);
-  },
-
-  copyBtcAddress: function() {
-    this.copyToClipboard(ReplyWithHeader.btcAddress);
-    ReplyWithHeader.showAlert('BTC address is copied. Thanks for supporting ReplyWithHeader.');
-  },
-
-  copyToClipboard: function(str) {
-    if (str) {
-      this.clipboard.copyString(str);
-    }
-  },
-
-  fixCursorBlink: function() {
-    // Ref: Due this Bug 567240 - Cursor does not blink when replying
-    // (https://bugzilla.mozilla.org/show_bug.cgi?id=567240)
-    // RWH is setting this 'mail.compose.max_recycled_windows' value to 0
-    if (this.prefService.getPrefType('mail.compose.max_recycled_windows')) {
-      let maxRecycledWindows = this.prefService.getIntPref('mail.compose.max_recycled_windows');
-      if (maxRecycledWindows == 1) {
-        this.prefService.setIntPref('mail.compose.max_recycled_windows', 0);
-      }
-    } else {
-      this.prefService.setIntPref('mail.compose.max_recycled_windows', 0);
-    }
-  },
-
-  createMenuItem: function(v, l) {
-    var menuItem = document.createXULElement('menuitem');
-    menuItem.setAttribute('value', v);
-    menuItem.setAttribute('label', l);
-    return menuItem;
-  },
-
-  loadFontFaces: function() {
-    let allFonts = Cc['@mozilla.org/gfx/fontenumerator;1']
-      .createInstance(Ci.nsIFontEnumerator).EnumerateAllFonts({});
-
-    let hdrFontface = this.headerFontFace;
-    let menuPopup = document.createXULElement('menupopup');
-    let selectedIdx = 0;
-
-    for (let fontCount = allFonts.length, i = 0; i < fontCount; i++) {
-      if (allFonts[i] == hdrFontface) {
-        selectedIdx = i;
-      }
-      menuPopup.appendChild(this.createMenuItem(allFonts[i], allFonts[i]));
-    }
-
-    let hdrFontfaceObj = ReplyWithHeader.byId('hdrFontface');
-    hdrFontfaceObj.appendChild(menuPopup);
-    hdrFontfaceObj.selectedIndex = selectedIdx;
-  },
-
-  loadFontSizes: function() {
-    let menuPopup = document.createXULElement('menupopup');
-    let selectedIdx = 0;
-
-    for (let i = 7, j = 0; i < 35; i++, j++) {
-      menuPopup.appendChild(this.createMenuItem(i, i));
-    }
-
-    let hdrFontsizeObj = ReplyWithHeader.byId('hdrFontsize');
-    hdrFontsizeObj.appendChild(menuPopup);
-    hdrFontsizeObj.selectedIndex = this.headerFontSize - 7;
-  },
-
-  populateLocale: function() {
-    var menu = ReplyWithHeader.byId('hdrLocalePopup');
-    if (!menu) {
-      rwhlog.error('It seems TB introduced the breaking changes, contact addon author.')
-    }
-
-    for (var lang in i18n.lang) {
-      menu.appendChild(this.createMenuItem(
-        lang, i18n.lang[lang] + ' (' + lang + ')'
-      ));
-    }
-    menu.parentNode.value = this.headerLocale;
-  },
-
-  init: function() {
-    this.toggleRwh();
-
-    // Assigning RWH name and version #
-    ReplyWithHeader.byId('abtRwhCaption').value = ReplyWithHeader.addOnName + ' v' + ReplyWithHeader.addOnVersion;
-
-    let d = new Date();
-    ReplyWithHeader.byId('abtRwhCopyrights').value = 'Ⓒ 2015-' + d.getFullYear() + ' Jeevanandam M.'
-
-    this.loadFontFaces();
-
-    this.loadFontSizes();
-
-    this.populateLocale();
-
-    this.toggleBlockQuote();
-
-    this.toggleQuoteChar();
-
-    this.forPostbox(true);
-
-    // Apply platform style
-    this.applyPlatformStyle();
-  },
-
-  toggleRwh: function() {
-    let rwh = ReplyWithHeader.byId('enableRwh');
-    var ids = ['lblFromAttribution', 'fromAttributionStyle', 'lblHeaderToCcAttrib', 'toccAttributionStyle',
-      'lblHdrDate', 'quotDateAttributionStyle', 'lblTypography', 'lblFontface', 'hdrFontface', 'lblFontsize',
-      'hdrFontsize', 'hdrFontsizeUnit', 'lblFontcolor', 'hdrFontColor', 'lblSpace', 'lblBeforeHeader', 'spaceBeforeHdr',
-      'lblAfterHeader', 'spaceAfterHdr', 'lblBeforeSeparator', 'spaceBeforeSep', 'lblSepLineSize', 'lblSepLineColor',
-      'hdrSepLineSize', 'hdrSepLineColor', 'lblHeaderQuotSeq', 'quotSeqAttributionStyle', 'quotTimeAttributionStyle',
-      'lblHeaderCleanups', 'hdrLocale', 'transSubjectPrefix', 'lblNotAppBeforeSeparator', 'lblCntFormat',
-      'cleanBlockQuote', 'cleanNewBlockQuote', 'cleanGreaterThanChar', 'lblHeaderFormat', 'excludePlainTextHdrPrefix',
-      'cleanOnlyNewQuoteChar', 'enableRwhDebugMode', 'quotDateIncludeTimezone'
-    ];
-
-    for (let len = ids.length, i = 0; i < len; i++) {
-      this.toggle(ids[i], !rwh.checked);
-    }
-
-    this.forPostbox(true);
-  },
-
-  toggle: function(id, v) {
-    let obj = ReplyWithHeader.byId(id);
-    if (obj) {
-      obj.disabled = v;
-    } else {
-      ReplyWithHeader.Log.debug('func: toggle - Element not found ['+ id +']');
-    }
-  },
-
-  forPostbox: function(v) {
-    if (ReplyWithHeader.isPostbox) {
-      this.toggle('lblBeforeSeparator', v);
-      this.toggle('spaceBeforeSep', v);
-      this.toggle('lblNotAppBeforeSeparator', v);
-    } else {
-      ReplyWithHeader.byId('lblNotAppBeforeSeparator').style.display = 'none';
-    }
-  },
-
-  toggleBlockQuote: function() {
-    let cbq = ReplyWithHeader.byId('cleanBlockQuote');
-    this.toggle('cleanNewBlockQuote', !cbq.checked);
-  },
-
-  toggleQuoteChar: function() {
-    let cqc = ReplyWithHeader.byId('cleanGreaterThanChar');
-    this.toggle('cleanOnlyNewQuoteChar', !cqc.checked);
-  },
-
-  applyPlatformStyle: function() {
-    if (rwhhost.isMacOSX) {
-      ReplyWithHeader.byId('hboxFromAttribution').style.marginTop = '-10px';
-      ReplyWithHeader.byId('hboxCntFormat').style.marginTop = '-10px';
-    }
-  }
 };
-
-// Initializing Services
-XPCOMUtils.defineLazyServiceGetter(ReplyWithHeader.Prefs, 'clipboard',
-                                  '@mozilla.org/widget/clipboardhelper;1',
-                                  'nsIClipboardHelper');

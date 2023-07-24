@@ -9,12 +9,8 @@
 
 'use strict';
 
-var EXPORTED_SYMBOLS = ["rwhlog"];
-
-var { Services } = ChromeUtils.import('resource://gre/modules/Services.jsm');
-
 // RWH logger
-var rwhlog = {
+var log = {
     enableDebug: false,
     console: Services.console, // nsIConsoleService
 

@@ -7,6 +7,17 @@
         "type": "function",
         "async": true,
         "parameters": []
+      },
+      {
+        "name": "patchTab",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "tabId",
+            "type": "integer"
+          }
+        ]
       }
     ]
   }

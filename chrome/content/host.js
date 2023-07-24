@@ -9,12 +9,8 @@
 
 'use strict';
 
-var EXPORTED_SYMBOLS = ["rwhhost"];
-
-var { Services } = ChromeUtils.import('resource://gre/modules/Services.jsm');
-
 // Host related definitions
-var rwhhost = {
+var host = {
   appinfo: Services.appinfo, // nsIXULAppInfo, nsIXULRuntime
 
   get app() {
