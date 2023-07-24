@@ -79,23 +79,7 @@ var ReplyWithHeader = {
 
   // This is applicable only to HTML emails
   get isSignaturePresent() {
-    let rootElement;
-    if (rwhhost.isPostbox) {
-      // This is only for Postbox,
-      // since it compose email structure is different
-      if (!this.isHtmlMail) {
-        return false;
-      }
-
-      rootElement = gMsgCompose.editor.rootElement;
-    } else {
-      // if (this.isForward) {
-      //   rootElement = this.getElement('moz-forward-container');
-      // } else {
-      //   rootElement = gMsgCompose.editor.rootElement;
-      // }
-      rootElement = gMsgCompose.editor.rootElement;
-    }
+    let rootElement = gMsgCompose.editor.rootElement;
 
     let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
     let sigOnFwd = gCurrentIdentity.getBoolAttribute('sig_on_fwd');
@@ -499,18 +483,6 @@ var ReplyWithHeader = {
     } else if (rwhHdr.parentNode.nextSibling) {
       this.cleanEmptyTags(rwhHdr.parentNode.nextSibling);
     }
-
-    if (rwhhost.isPostbox) {
-      let pbhr = this.getElement('__pbConvHr');
-      if (pbhr) {
-        pbhr.setAttribute('style', 'margin:0 !important;');
-      }
-
-      // Signature
-      if (this.isSignaturePresent) {
-        this.cleanEmptyTags(this.getElement('moz-signature').nextSibling);
-      }
-    }
   },
 
   cleanEmptyTags: function(node) {
@@ -546,10 +518,6 @@ var ReplyWithHeader = {
   },
 
   decodeMime: function(str) {
-    if (rwhhost.isPostbox) {
-      return this.mimeConverter.decodeMimeHeaderStr(str, null, false, true);
-    }
-
     return this.mimeConverter.decodeMimeHeader(str, null, false, true);
   },
 
@@ -562,18 +530,7 @@ var ReplyWithHeader = {
   },
 
   handleReplyMessage: function() {
-    let hdrNode;
-    if (rwhhost.isPostbox) {
-      hdrNode = this.getElement('__pbConvHr');
-      if (!hdrNode) {
-        let tags = this.byTagName('span');
-        if (tags.length > 0) {
-          hdrNode = tags[0];
-        }
-      }
-    } else {
-      hdrNode = this.getElement('moz-cite-prefix');
-    }
+    let hdrNode = this.getElement('moz-cite-prefix');
 
     if (!hdrNode) {
       rwhlog.error('Due to internal changes in Thunderbird. '
@@ -595,30 +552,18 @@ var ReplyWithHeader = {
       sigOnReply = gCurrentIdentity.getBoolAttribute('sig_on_reply');
     let rootElement = gMsgCompose.editor.rootElement;
 
-    if (rwhhost.isPostbox) {
-      if (this.isHtmlMail) {
-        let lineColor = this.Prefs.headerSepLineColor;
-        let lineSize = this.Prefs.headerSepLineSize;
-        this.byIdInMail('rwhMsgHdrDivider').setAttribute('style', 'border:0;border-top:' + lineSize + 'px solid ' + lineColor + ';padding:0;margin:10px 0 5px 0;width:100%;');
+    if ((sigOnReply || sigOnFwd) && !sigOnBtm && isSignature) {
+      let firstNode = gMsgCompose.editor.rootElement.firstChild;
+      if (firstNode && firstNode.nodeName &&
+        firstNode.nodeName.toLowerCase() == 'p') {
+        rootElement.removeChild(firstNode);
       }
 
-      if ((sigOnReply || sigOnFwd) && !sigOnBtm && isSignature) {
-        rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
-      }
+      //rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
     } else {
-      if ((sigOnReply || sigOnFwd) && !sigOnBtm && isSignature) {
-        let firstNode = gMsgCompose.editor.rootElement.firstChild;
-        if (firstNode && firstNode.nodeName &&
-          firstNode.nodeName.toLowerCase() == 'p') {
-          rootElement.removeChild(firstNode);
-        }
-
-        //rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
-      } else {
-        let node = rootElement.firstChild;
-        if (node.nodeName && node.nodeName.toLowerCase() == 'br') {
-          rootElement.removeChild(node);
-        }
+      let node = rootElement.firstChild;
+      if (node.nodeName && node.nodeName.toLowerCase() == 'br') {
+        rootElement.removeChild(node);
       }
     }
 
@@ -627,157 +572,71 @@ var ReplyWithHeader = {
 
   handleForwardMessage: function() {
     let hdrRwhNode = this.parseFragment(gMsgCompose.editor.document, this.createRwhHeader, true);
+    let fwdContainer = this.getElement('moz-forward-container');
+    let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
+    let isSignature = this.isSignaturePresent;
+    let rootElement = gMsgCompose.editor.rootElement;
+    let sigNode;
 
-    //
-    // Postbox
-    //
-    if (rwhhost.isPostbox) {
-      let hdrNode = this.getElement('__pbConvHr');
-      if (!hdrNode) {
-        hdrNode = this.getElement('moz-email-headers-table');
+    rwhlog.debug('Is signature present: ' + isSignature);
+
+    // signature present and location above quoted email (top)
+    if (!sigOnBtm && isSignature) {
+      sigNode = this.getElement('moz-signature').cloneNode(true);
+      rootElement.removeChild(this.getElement('moz-signature'));
+      rwhlog.debug('Thunderbird signature node: ' + sigNode);
+    }
+
+    if (this.isHtmlMail) {
+      while (fwdContainer.firstChild) {
+        if (this.contains(fwdContainer.firstChild.className, 'moz-email-headers-table')) {
+          break;
+        }
+        fwdContainer.removeChild(fwdContainer.firstChild);
       }
 
-      let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
-      let isSignature = this.isSignaturePresent;
-      let sigNode;
+      fwdContainer.replaceChild(hdrRwhNode, this.getElement('moz-email-headers-table'));
 
-      rwhlog.debug('Is signature present: ' + isSignature);
-
-      // signature present and location above quoted email (top)
+      // put signature back to the place
       if (!sigOnBtm && isSignature) {
-        sigNode = this.getElement('moz-signature').cloneNode(true);
-        gMsgCompose.editor.rootElement.removeChild(this.getElement('moz-signature'));
-        rwhlog.debug('Postbox signature node: ' + sigNode);
-      }
+        rootElement.insertBefore(sigNode, fwdContainer);
+        this.cleanEmptyTags(rootElement.firstChild);
 
-      let mBody = gMsgCompose.editor.rootElement;
-
-      if (hdrNode && this.isHtmlMail) {
-        while (hdrNode.firstChild) {
-          hdrNode.removeChild(hdrNode.firstChild);
-        }
-
-        this.cleanEmptyTags(mBody.firstChild);
-        hdrNode.appendChild(hdrRwhNode);
-
-        // put signature back to the place
-        if (!sigOnBtm && isSignature) {
-          mBody.insertBefore(sigNode, mBody.firstChild);
-        }
-
-        for (let i = 0; i < this.Prefs.beforeSepSpaceCnt; i++) {
-          mBody.insertBefore(gMsgCompose.editor.document.createElement('br'), mBody.firstChild);
-        }
-
-        let lineColor = this.Prefs.headerSepLineColor;
-        let lineSize = this.Prefs.headerSepLineSize;
-        this.byIdInMail('rwhMsgHdrDivider').setAttribute('style', 'border:0;border-top:' + lineSize + 'px solid ' + lineColor + ';padding:0;margin:10px 0 5px 0;width:100%;');
-      } else {
-        rwhlog.debug('Headers count: ' + this.hdrCnt);
-
-        let pos = 0;
-        for (let i = 0; i < mBody.childNodes.length; i++) {
-          let node = mBody.childNodes[i];
-          if (Node.TEXT_NODE == node.nodeType) {
-            let str = node.nodeValue.trim();
-            if (str.startsWith('--------') && str.endsWith('--------')) {
-              pos = i;
-              break;
-            }
-          }
-        }
-
-        // removing forward header elements from the position
-        let lc = this.hdrCnt * 2; // for br's
-        if (isSignature) {
-          lc = lc + 1; // for signature div
-        }
-
-        for (let i = pos; i <= (pos + lc); i++) {
-          let fnode = mBody.childNodes[i];
-          if (fnode.nodeValue) {
-            rwhlog.debug('Plain Text Hdr ==> ' + fnode.nodeValue);
-          }
-
-          if (this.isReplyToNode(fnode)) {
-            lc = lc + 2;
-            rwhlog.debug('Reply-To header found');
-          }
-          mBody.removeChild(fnode);
-        }
-
-        mBody.insertBefore(hdrRwhNode, mBody.childNodes[pos - 1]);
+        // let rootElement = gMsgCompose.editor.rootElement;
+        // rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
       }
     } else {
-      //
-      // For Thunderbird
-      //
-      let fwdContainer = this.getElement('moz-forward-container');
-      let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
-      let isSignature = this.isSignaturePresent;
-      let rootElement = gMsgCompose.editor.rootElement;
-      let sigNode;
+      rwhlog.debug('Headers count: ' + this.hdrCnt);
 
-      rwhlog.debug('Is signature present: ' + isSignature);
+      // Logically removing text node header elements
+      this.deleteNode(fwdContainer.firstChild);
 
-      // signature present and location above quoted email (top)
-      if (!sigOnBtm && isSignature) {
-        sigNode = this.getElement('moz-signature').cloneNode(true);
-        rootElement.removeChild(this.getElement('moz-signature'));
-        rwhlog.debug('Thunderbird signature node: ' + sigNode);
+      // Logically removing forward header elements
+      let lc = (this.hdrCnt * 2) + 1; // for br's
+      if (isSignature) {
+        lc = lc + 1; // for signature div
       }
 
-      if (this.isHtmlMail) {
-        while (fwdContainer.firstChild) {
-          if (this.contains(fwdContainer.firstChild.className, 'moz-email-headers-table')) {
-            break;
-          }
-          fwdContainer.removeChild(fwdContainer.firstChild);
+      for (let i = 0; i <= lc; i++) {
+        let fnode = fwdContainer.firstChild;
+        if (fnode.nodeValue) {
+          rwhlog.debug('Plain Text Hdr ==> ' + fnode.nodeValue);
         }
 
-        fwdContainer.replaceChild(hdrRwhNode, this.getElement('moz-email-headers-table'));
-
-        // put signature back to the place
-        if (!sigOnBtm && isSignature) {
-          rootElement.insertBefore(sigNode, fwdContainer);
-          this.cleanEmptyTags(rootElement.firstChild);
-
-          // let rootElement = gMsgCompose.editor.rootElement;
-          // rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
-        }
-      } else {
-        rwhlog.debug('Headers count: ' + this.hdrCnt);
-
-        // Logically removing text node header elements
-        this.deleteNode(fwdContainer.firstChild);
-
-        // Logically removing forward header elements
-        let lc = (this.hdrCnt * 2) + 1; // for br's
-        if (isSignature) {
-          lc = lc + 1; // for signature div
+        if (this.isReplyToNode(fnode)) {
+          lc = lc + 2;
+          rwhlog.debug('Reply-To header found');
         }
 
-        for (let i = 0; i <= lc; i++) {
-          let fnode = fwdContainer.firstChild;
-          if (fnode.nodeValue) {
-            rwhlog.debug('Plain Text Hdr ==> ' + fnode.nodeValue);
-          }
+        this.deleteNode(fnode);
+      }
 
-          if (this.isReplyToNode(fnode)) {
-            lc = lc + 2;
-            rwhlog.debug('Reply-To header found');
-          }
+      fwdContainer.replaceChild(hdrRwhNode, fwdContainer.firstChild);
 
-          this.deleteNode(fnode);
-        }
-
-        fwdContainer.replaceChild(hdrRwhNode, fwdContainer.firstChild);
-
-        // put signature back to the place
-        if (!sigOnBtm && isSignature) {
-          rootElement.insertBefore(sigNode, fwdContainer);
-          this.cleanEmptyTags(rootElement.firstChild);
-        }
+      // put signature back to the place
+      if (!sigOnBtm && isSignature) {
+        rootElement.insertBefore(sigNode, fwdContainer);
+        this.cleanEmptyTags(rootElement.firstChild);
       }
     }
 
@@ -802,15 +661,6 @@ var ReplyWithHeader = {
     if (blockquotes.length > 0) {
       for (let i = 0, len = this.Prefs.cleanNewBlockQuote ? 1 : blockquotes.length; i < len; i++) {
         blockquotes[i].setAttribute('style', this.bqStyleStr);
-      }
-    }
-
-    if (rwhhost.isPostbox) {
-      let pbBody = this.getElement('__pbConvBody');
-      if (pbBody) {
-        pbBody.style.color = '#000000';
-        pbBody.style.marginLeft = '0px';
-        pbBody.style.marginRight = '0px';
       }
     }
   },
