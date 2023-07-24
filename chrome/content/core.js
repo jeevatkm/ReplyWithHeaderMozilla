@@ -15,6 +15,7 @@ var { XPCOMUtils } = ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm')
 var { AddonManager } = ChromeUtils.import('resource://gre/modules/AddonManager.jsm');
 var { rwhlog } = ChromeUtils.import('chrome://replywithheader/content/log.jsm');
 var { rwhhost } = ChromeUtils.import('chrome://replywithheader/content/host.jsm');
+var { MailServices } = ChromeUtils.import("resource:///modules/MailServices.jsm");
 
 // ReplyWithHeader Add-On ID
 const ReplyWithHeaderAddOnID = 'replywithheader@myjeeva.com';
@@ -159,8 +160,7 @@ var ReplyWithHeader = {
 
   getMsgHeader: function(mUri) {
     try {
-      // Ref: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMessenger
-      let messengerService = gMessenger.messageServiceFromURI(mUri);
+      let messengerService = MailServices.messageServiceFromURI(mUri);
 
       // Ref: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMsgDBHdr
       return messengerService.messageURIToMsgHdr(mUri);
