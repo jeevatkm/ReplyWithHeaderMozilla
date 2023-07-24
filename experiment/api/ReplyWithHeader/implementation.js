@@ -34,7 +34,7 @@ async function install(window) {
   }
 
   // Do this for each new open composer, just to be sure.
-  //fixCursorBlink();
+  fixCursorBlink();
   await composeWindowIsReady(window);
   
   // Load an additional JavaScript file.
