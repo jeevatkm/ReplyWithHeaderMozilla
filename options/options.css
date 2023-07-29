@@ -1,0 +1,97 @@
+fieldset {
+    border: 1px solid var(--color-gray-20);
+    border-top-width: 26px;
+    margin: 1ex 0 1ex 0;
+}
+
+fieldset legend {
+    background: var(--color-gray-20);
+    line-height: 26px;
+}
+
+html,
+body {
+    background-color: var(--color-gray-10);
+}
+
+body {
+    margin: 1em;
+}
+
+.vbox {
+    display: flex;
+    flex-direction: column;
+}
+.center {
+    align-items: center;
+}
+
+button {
+    margin: 3px;
+}
+
+.hbox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.table {
+    display: grid;
+    grid-template-columns: 1fr 80%;
+}
+
+.table>div {
+    margin: 2px;
+    padding: 1px;
+}
+
+.right {
+    flex-direction: row-reverse;
+}
+
+.spacer {
+    flex-grow: 10;
+}
+
+#tablist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    cursor: default;
+}
+
+#tablist li {
+    background-color: var(--color-gray-10);
+    border: 1px solid var(--color-gray-20);
+    border-bottom: none;
+    display: inline;
+    height: 1em;
+    padding: 3px 10px;
+    margin: 0px;
+
+}
+
+#tablist li:focus,
+#tablist li:hover {
+    background-color: var(--color-blue-20);
+}
+
+#tablist li[aria-selected="true"] {
+    background-color: white;
+}
+
+#tabcontent {
+    background-color: white;
+    border: 1px solid var(--color-gray-20);
+    margin: 0px;
+    padding: 1em;
+}
+
+[aria-hidden="true"] {
+    display: none;
+}
+
+[aria-hidden="false"] {
+    display: block;
+}

@@ -9,12 +9,9 @@
 
 'use strict';
 
-var EXPORTED_SYMBOLS = ['ReplyWithHeader'];
-
 var { XPCOMUtils } = ChromeUtils.import('resource://gre/modules/XPCOMUtils.jsm');
 var { AddonManager } = ChromeUtils.import('resource://gre/modules/AddonManager.jsm');
-var { rwhlog } = ChromeUtils.import('chrome://replywithheader/content/log.jsm');
-var { rwhhost } = ChromeUtils.import('chrome://replywithheader/content/host.jsm');
+var { MailServices } = ChromeUtils.import("resource:///modules/MailServices.jsm");
 
 // ReplyWithHeader Add-On ID
 const ReplyWithHeaderAddOnID = 'replywithheader@myjeeva.com';
@@ -58,16 +55,16 @@ var ReplyWithHeader = {
     if (this.isDefined(gMsgCompose.originalMsgURI)) {
       msgUri = gMsgCompose.originalMsgURI;
     } else {
-      rwhlog.debug('gMsgCompose.originalMsgURI is not defined, fallback');
+      this.log.debug('gMsgCompose.originalMsgURI is not defined, fallback');
       let selectedURIs = GetSelectedMessages();
       try {
         msgUri = selectedURIs[0]; // only first message
       } catch (ex) {
-        rwhlog.errorWithException('Error occurred while getting selected message.', ex);
+        this.log.errorWithException('Error occurred while getting selected message.', ex);
         return false;
       }
     }
-    rwhlog.debug('Message URI: ' + msgUri);
+    this.log.debug('Message URI: ' + msgUri);
 
     return msgUri;
   },
@@ -78,23 +75,7 @@ var ReplyWithHeader = {
 
   // This is applicable only to HTML emails
   get isSignaturePresent() {
-    let rootElement;
-    if (rwhhost.isPostbox) {
-      // This is only for Postbox,
-      // since it compose email structure is different
-      if (!this.isHtmlMail) {
-        return false;
-      }
-
-      rootElement = gMsgCompose.editor.rootElement;
-    } else {
-      // if (this.isForward) {
-      //   rootElement = this.getElement('moz-forward-container');
-      // } else {
-      //   rootElement = gMsgCompose.editor.rootElement;
-      // }
-      rootElement = gMsgCompose.editor.rootElement;
-    }
+    let rootElement = gMsgCompose.editor.rootElement;
 
     let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
     let sigOnFwd = gCurrentIdentity.getBoolAttribute('sig_on_fwd');
@@ -102,11 +83,11 @@ var ReplyWithHeader = {
     let found = false;
 
     if (sigOnBtm) {
-      rwhlog.debug('Signature settings: inserts after the quote');
+      this.log.debug('Signature settings: inserts after the quote');
       for (let i = rootElement.childNodes.length - 1; i >= 0; i--) {
         let el = rootElement.childNodes[i];
 
-        rwhlog.debug('Element node type: ' + el.nodeType);
+        this.log.debug('Element node type: ' + el.nodeType);
         if (el.nodeType != 1) { // check is it Node.ELEMENT_NODE
           continue;
         }
@@ -117,12 +98,12 @@ var ReplyWithHeader = {
         }
 
         if (el.nodeName.toLowerCase() == 'blockquote') {
-          rwhlog.debug('Signature not exists');
+          this.log.debug('Signature not exists');
           break;
         }
       }
     } else {
-      rwhlog.debug('Signature settings: inserts above the quote');
+      this.log.debug('Signature settings: inserts above the quote');
       for (let i = 0; i < rootElement.childNodes.length; i++) {
         let el = rootElement.childNodes[i];
 
@@ -136,7 +117,7 @@ var ReplyWithHeader = {
         }
 
         if (el.nodeName.toLowerCase() == 'blockquote') {
-          rwhlog.debug('Signature not exists');
+          this.log.debug('Signature not exists');
           break;
         }
       }
@@ -159,24 +140,23 @@ var ReplyWithHeader = {
 
   getMsgHeader: function(mUri) {
     try {
-      // Ref: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMessenger
-      let messengerService = gMessenger.messageServiceFromURI(mUri);
+      let messengerService = MailServices.messageServiceFromURI(mUri);
 
       // Ref: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMsgDBHdr
       return messengerService.messageURIToMsgHdr(mUri);
     } catch (ex) {
-      rwhlog.errorWithException('Unable to get message [' + mUri + ']', ex);
+      this.log.errorWithException('Unable to get message [' + mUri + ']', ex);
       return null;
     }
   },
 
   parseDate: function(prTime) {
-    let locale = this.Prefs.headerLocale;
-    let dateFormat = this.Prefs.headerDateFormat;
-    let timeFormat = this.Prefs.headerTimeFormat;
-    let includeTimezone = this.Prefs.headerIncludeTimeZone;
+    let locale = this.prefs.headerLocale;
+    let dateFormat = this.prefs.headerDateFormat;
+    let timeFormat = this.prefs.headerTimeFormat;
+    let includeTimezone = this.prefs.headerIncludeTimeZone;
 
-    rwhlog.debug('Date format: ' + (dateFormat == 1 ? 'UTC' : 'Locale (' + locale + ')')
+    this.log.debug('Date format: ' + (dateFormat == 1 ? 'UTC' : 'Locale (' + locale + ')')
                  + ', Time format: ' + (timeFormat == 1 ? '24-hour' : '12-hour')
                  + (includeTimezone ? ', Include short timezone info' : ''))
 
@@ -249,7 +229,7 @@ var ReplyWithHeader = {
      * 1 = Outlook Simple (From: Name)
      * 2 = Outlook Extended (From: Name [mailto:email-address])
      */
-    let fromLblStyle = this.Prefs.fromLabelStyle;
+    let fromLblStyle = this.prefs.fromLabelStyle;
 
     author = this.cleanEmail(author);
     if (author && fromLblStyle != 0) { // jshint ignore:line
@@ -293,7 +273,7 @@ var ReplyWithHeader = {
      * 0 = Default (To: Name1 <email-address1>, ...)
      * 1 = Outlook (To: Name1; Name2; ...)
      */
-    let toccLblStyle = this.Prefs.toccLabelStyle;
+    let toccLblStyle = this.prefs.toccLabelStyle;
     recipients = this.cleanEmail(recipients);
 
     if (recipients && toccLblStyle == 1) {
@@ -334,130 +314,130 @@ var ReplyWithHeader = {
       this.hdrCnt += 1; // for Cc header
     }
 
-    rwhlog.debug('From: ' + header.from);
-    rwhlog.debug('To: ' + header.to);
-    rwhlog.debug('Cc: ' + header.cc);
-    rwhlog.debug('Subject: ' + header.subject);
-    rwhlog.debug('Date: ' + header.date);
+    this.log.debug('From: ' + header.from);
+    this.log.debug('To: ' + header.to);
+    this.log.debug('Cc: ' + header.cc);
+    this.log.debug('Subject: ' + header.subject);
+    this.log.debug('Date: ' + header.date);
 
     return header;
   },
 
   get createRwhHeader() {
-    let locale = this.Prefs.headerLocale;
+    let locale = this.prefs.headerLocale;
     let rawHdr = this.getMsgHeader(this.messageUri);
     let pHeader = this.parseMsgHeader(rawHdr);
-    let headerQuotLblSeq = this.Prefs.headerQuotLblSeq;
+    let headerQuotLblSeq = this.prefs.headerQuotLblSeq;
 
     var rwhHdr = '<div id="rwhMsgHeader">';
 
-    if (rwhhost.isThunderbird) {
-      rwhHdr += this.createBrTags(this.Prefs.beforeSepSpaceCnt);
+    if (this.host.isThunderbird) {
+      rwhHdr += this.createBrTags(this.prefs.beforeSepSpaceCnt);
     }
 
     // for HTML emails
     if (this.isHtmlMail) {
-      let fontFace = this.Prefs.headerFontFace;
-      let fontSize = this.Prefs.headerFontSize;
-      let fontSizeUnit = this.Prefs.headerFontSizeUnit;
-      let fontColor = this.Prefs.headerFontColor;
-      rwhlog.debug('Font face: ' + fontFace + '\tFont size: ' + fontSize + fontSizeUnit + '\tColor: ' + fontColor);
+      let fontFace = this.prefs.headerFontFace;
+      let fontSize = this.prefs.headerFontSize;
+      let fontSizeUnit = this.prefs.headerFontSizeUnit;
+      let fontColor = this.prefs.headerFontColor;
+      this.log.debug('Font face: ' + fontFace + '\tFont size: ' + fontSize + fontSizeUnit + '\tColor: ' + fontColor);
 
       let htmlTagPrefix = '<div style="font-family:' + fontFace + ' !important; color:'
         + fontColor + ' !important; font-size:' + fontSize + fontSizeUnit + ' !important;">';
       let htmlTagSuffix = '</div>';
 
-      let lineColor = this.Prefs.headerSepLineColor;
-      let lineSize = this.Prefs.headerSepLineSize;
+      let lineColor = this.prefs.headerSepLineColor;
+      let lineSize = this.prefs.headerSepLineSize;
       rwhHdr += '<hr id="rwhMsgHdrDivider" style="border:0;border-top:' + lineSize + 'px solid ' + lineColor + ';padding:0;margin:10px 0 5px 0;width:100%;">';
 
-      rwhHdr += this.createBrTags(this.Prefs.beforeHdrSpaceCnt);
+      rwhHdr += this.createBrTags(this.prefs.beforeHdrSpaceCnt);
 
-      rwhHdr += htmlTagPrefix + '<b>' + i18n.from[locale] + '</b> ' + pHeader.from + htmlTagSuffix;
+      rwhHdr += htmlTagPrefix + '<b>' + this.i18n.from[locale] + '</b> ' + pHeader.from + htmlTagSuffix;
 
       if (headerQuotLblSeq == 0) { // jshint ignore:line
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.date[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.to[locale] + '</b> ' + pHeader.to + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.date[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.to[locale] + '</b> ' + pHeader.to + htmlTagSuffix;
 
         if (pHeader.cc) {
-          rwhHdr += htmlTagPrefix + '<b>' + i18n.cc[locale] + '</b> ' + pHeader.cc + htmlTagSuffix;
+          rwhHdr += htmlTagPrefix + '<b>' + this.i18n.cc[locale] + '</b> ' + pHeader.cc + htmlTagSuffix;
         }
       } else if (headerQuotLblSeq == 3) {
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.to[locale] + '</b> ' + pHeader.to + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.to[locale] + '</b> ' + pHeader.to + htmlTagSuffix;
 
         if (pHeader.cc) {
-          rwhHdr += htmlTagPrefix + '<b>' + i18n.cc[locale] + '</b> ' + pHeader.cc + htmlTagSuffix;
+          rwhHdr += htmlTagPrefix + '<b>' + this.i18n.cc[locale] + '</b> ' + pHeader.cc + htmlTagSuffix;
         }
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.date[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.date[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
       } else if (headerQuotLblSeq == 1) {
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.sent[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.to[locale] + '</b> ' + pHeader.to + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.sent[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.to[locale] + '</b> ' + pHeader.to + htmlTagSuffix;
 
         if (pHeader.cc) {
-          rwhHdr += htmlTagPrefix + '<b>' + i18n.cc[locale] + '</b> ' + pHeader.cc + htmlTagSuffix;
+          rwhHdr += htmlTagPrefix + '<b>' + this.i18n.cc[locale] + '</b> ' + pHeader.cc + htmlTagSuffix;
         }
 
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
 
       } else if (headerQuotLblSeq == 2) {
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.sent[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
-        rwhHdr += htmlTagPrefix + '<b>' + i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.sent[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
+        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
       }
 
     } else { // for plain/text emails
-      if (!this.Prefs.excludePlainTxtHdrPrefix) {
+      if (!this.prefs.excludePlainTxtHdrPrefix) {
         rwhHdr += (this.isForward
-          ? '-------- ' + i18n.forwarded_message[locale] + ' --------<br/>'
-          : '-------- ' + i18n.original_message[locale] + ' --------<br/>');
+          ? '-------- ' + this.i18n.forwarded_message[locale] + ' --------<br/>'
+          : '-------- ' + this.i18n.original_message[locale] + ' --------<br/>');
       } else {
         if (this.isForward) {
           rwhHdr += '<br/>';
         }
       }
 
-      rwhHdr += this.createBrTags(this.Prefs.beforeHdrSpaceCnt);
+      rwhHdr += this.createBrTags(this.prefs.beforeHdrSpaceCnt);
 
-      rwhHdr += i18n.from[locale] + ' ' + pHeader.from + '<br/>';
+      rwhHdr += this.i18n.from[locale] + ' ' + pHeader.from + '<br/>';
 
       if (headerQuotLblSeq == 0) { // jshint ignore:line
-        rwhHdr += i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
-        rwhHdr += i18n.date[locale] + ' ' + pHeader.date + '<br/>';
-        rwhHdr += i18n.to[locale] + ' ' + pHeader.to + '<br/>';
+        rwhHdr += this.i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
+        rwhHdr += this.i18n.date[locale] + ' ' + pHeader.date + '<br/>';
+        rwhHdr += this.i18n.to[locale] + ' ' + pHeader.to + '<br/>';
 
         if (pHeader.cc) {
-          rwhHdr += i18n.cc[locale] + ' ' + pHeader.cc + '<br/>';
+          rwhHdr += this.i18n.cc[locale] + ' ' + pHeader.cc + '<br/>';
         }
       } else if (headerQuotLblSeq == 3) {
-        rwhHdr += i18n.to[locale] + ' ' + pHeader.to + '<br/>';
+        rwhHdr += this.i18n.to[locale] + ' ' + pHeader.to + '<br/>';
 
         if (pHeader.cc) {
-          rwhHdr += i18n.cc[locale] + ' ' + pHeader.cc + '<br/>';
+          rwhHdr += this.i18n.cc[locale] + ' ' + pHeader.cc + '<br/>';
         }
-        rwhHdr += i18n.date[locale] + ' ' + pHeader.date + '<br/>';
-        rwhHdr += i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
+        rwhHdr += this.i18n.date[locale] + ' ' + pHeader.date + '<br/>';
+        rwhHdr += this.i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
       } else if (headerQuotLblSeq == 1) {
-        rwhHdr += i18n.sent[locale] + ' ' + pHeader.date + '<br/>';
-        rwhHdr += i18n.to[locale] + ' ' + pHeader.to + '<br/>';
+        rwhHdr += this.i18n.sent[locale] + ' ' + pHeader.date + '<br/>';
+        rwhHdr += this.i18n.to[locale] + ' ' + pHeader.to + '<br/>';
 
         if (pHeader.cc) {
-          rwhHdr += i18n.cc[locale] + ' ' + pHeader.cc + '<br/>';
+          rwhHdr += this.i18n.cc[locale] + ' ' + pHeader.cc + '<br/>';
         }
 
-        rwhHdr += i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
+        rwhHdr += this.i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
 
       } else if (headerQuotLblSeq == 2) {
-        rwhHdr += i18n.sent[locale] + ' ' + pHeader.date + '<br/>';
-        rwhHdr += i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
+        rwhHdr += this.i18n.sent[locale] + ' ' + pHeader.date + '<br/>';
+        rwhHdr += this.i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
       }
     }
 
-    rwhHdr += this.createBrTags(this.Prefs.afterHdrSpaceCnt);
+    rwhHdr += this.createBrTags(this.prefs.afterHdrSpaceCnt);
 
     rwhHdr += '</div>';
 
-    rwhlog.debug('Composed Email Headers: ' + rwhHdr);
+    this.log.debug('Composed Email Headers: ' + rwhHdr);
 
     return rwhHdr;
   },
@@ -499,18 +479,6 @@ var ReplyWithHeader = {
     } else if (rwhHdr.parentNode.nextSibling) {
       this.cleanEmptyTags(rwhHdr.parentNode.nextSibling);
     }
-
-    if (rwhhost.isPostbox) {
-      let pbhr = this.getElement('__pbConvHr');
-      if (pbhr) {
-        pbhr.setAttribute('style', 'margin:0 !important;');
-      }
-
-      // Signature
-      if (this.isSignaturePresent) {
-        this.cleanEmptyTags(this.getElement('moz-signature').nextSibling);
-      }
-    }
   },
 
   cleanEmptyTags: function(node) {
@@ -538,7 +506,7 @@ var ReplyWithHeader = {
       }
 
       if (toDelete) {
-        // rwhlog.debug('Delete node: \t' + node.nodeName + '	' + node.nodeValue);
+        // this.log.debug('Delete node: \t' + node.nodeName + '	' + node.nodeValue);
         this.deleteNode(node);
         node = nextNode;
       }
@@ -546,10 +514,6 @@ var ReplyWithHeader = {
   },
 
   decodeMime: function(str) {
-    if (rwhhost.isPostbox) {
-      return this.mimeConverter.decodeMimeHeaderStr(str, null, false, true);
-    }
-
     return this.mimeConverter.decodeMimeHeader(str, null, false, true);
   },
 
@@ -562,21 +526,10 @@ var ReplyWithHeader = {
   },
 
   handleReplyMessage: function() {
-    let hdrNode;
-    if (rwhhost.isPostbox) {
-      hdrNode = this.getElement('__pbConvHr');
-      if (!hdrNode) {
-        let tags = this.byTagName('span');
-        if (tags.length > 0) {
-          hdrNode = tags[0];
-        }
-      }
-    } else {
-      hdrNode = this.getElement('moz-cite-prefix');
-    }
+    let hdrNode = this.getElement('moz-cite-prefix');
 
     if (!hdrNode) {
-      rwhlog.error('Due to internal changes in Thunderbird. '
+      this.log.error('Due to internal changes in Thunderbird. '
       + 'RWH add-on having difficulties in processing mail headers '
       + ', contact add-on author here - ' + this.issuesPageUrl);
       return;
@@ -595,30 +548,18 @@ var ReplyWithHeader = {
       sigOnReply = gCurrentIdentity.getBoolAttribute('sig_on_reply');
     let rootElement = gMsgCompose.editor.rootElement;
 
-    if (rwhhost.isPostbox) {
-      if (this.isHtmlMail) {
-        let lineColor = this.Prefs.headerSepLineColor;
-        let lineSize = this.Prefs.headerSepLineSize;
-        this.byIdInMail('rwhMsgHdrDivider').setAttribute('style', 'border:0;border-top:' + lineSize + 'px solid ' + lineColor + ';padding:0;margin:10px 0 5px 0;width:100%;');
+    if ((sigOnReply || sigOnFwd) && !sigOnBtm && isSignature) {
+      let firstNode = gMsgCompose.editor.rootElement.firstChild;
+      if (firstNode && firstNode.nodeName &&
+        firstNode.nodeName.toLowerCase() == 'p') {
+        rootElement.removeChild(firstNode);
       }
 
-      if ((sigOnReply || sigOnFwd) && !sigOnBtm && isSignature) {
-        rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
-      }
+      //rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
     } else {
-      if ((sigOnReply || sigOnFwd) && !sigOnBtm && isSignature) {
-        let firstNode = gMsgCompose.editor.rootElement.firstChild;
-        if (firstNode && firstNode.nodeName &&
-          firstNode.nodeName.toLowerCase() == 'p') {
-          rootElement.removeChild(firstNode);
-        }
-
-        //rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
-      } else {
-        let node = rootElement.firstChild;
-        if (node.nodeName && node.nodeName.toLowerCase() == 'br') {
-          rootElement.removeChild(node);
-        }
+      let node = rootElement.firstChild;
+      if (node.nodeName && node.nodeName.toLowerCase() == 'br') {
+        rootElement.removeChild(node);
       }
     }
 
@@ -627,157 +568,71 @@ var ReplyWithHeader = {
 
   handleForwardMessage: function() {
     let hdrRwhNode = this.parseFragment(gMsgCompose.editor.document, this.createRwhHeader, true);
+    let fwdContainer = this.getElement('moz-forward-container');
+    let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
+    let isSignature = this.isSignaturePresent;
+    let rootElement = gMsgCompose.editor.rootElement;
+    let sigNode;
 
-    //
-    // Postbox
-    //
-    if (rwhhost.isPostbox) {
-      let hdrNode = this.getElement('__pbConvHr');
-      if (!hdrNode) {
-        hdrNode = this.getElement('moz-email-headers-table');
+    this.log.debug('Is signature present: ' + isSignature);
+
+    // signature present and location above quoted email (top)
+    if (!sigOnBtm && isSignature) {
+      sigNode = this.getElement('moz-signature').cloneNode(true);
+      rootElement.removeChild(this.getElement('moz-signature'));
+      this.log.debug('Thunderbird signature node: ' + sigNode);
+    }
+
+    if (this.isHtmlMail) {
+      while (fwdContainer.firstChild) {
+        if (this.contains(fwdContainer.firstChild.className, 'moz-email-headers-table')) {
+          break;
+        }
+        fwdContainer.removeChild(fwdContainer.firstChild);
       }
 
-      let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
-      let isSignature = this.isSignaturePresent;
-      let sigNode;
+      fwdContainer.replaceChild(hdrRwhNode, this.getElement('moz-email-headers-table'));
 
-      rwhlog.debug('Is signature present: ' + isSignature);
-
-      // signature present and location above quoted email (top)
+      // put signature back to the place
       if (!sigOnBtm && isSignature) {
-        sigNode = this.getElement('moz-signature').cloneNode(true);
-        gMsgCompose.editor.rootElement.removeChild(this.getElement('moz-signature'));
-        rwhlog.debug('Postbox signature node: ' + sigNode);
-      }
+        rootElement.insertBefore(sigNode, fwdContainer);
+        this.cleanEmptyTags(rootElement.firstChild);
 
-      let mBody = gMsgCompose.editor.rootElement;
-
-      if (hdrNode && this.isHtmlMail) {
-        while (hdrNode.firstChild) {
-          hdrNode.removeChild(hdrNode.firstChild);
-        }
-
-        this.cleanEmptyTags(mBody.firstChild);
-        hdrNode.appendChild(hdrRwhNode);
-
-        // put signature back to the place
-        if (!sigOnBtm && isSignature) {
-          mBody.insertBefore(sigNode, mBody.firstChild);
-        }
-
-        for (let i = 0; i < this.Prefs.beforeSepSpaceCnt; i++) {
-          mBody.insertBefore(gMsgCompose.editor.document.createElement('br'), mBody.firstChild);
-        }
-
-        let lineColor = this.Prefs.headerSepLineColor;
-        let lineSize = this.Prefs.headerSepLineSize;
-        this.byIdInMail('rwhMsgHdrDivider').setAttribute('style', 'border:0;border-top:' + lineSize + 'px solid ' + lineColor + ';padding:0;margin:10px 0 5px 0;width:100%;');
-      } else {
-        rwhlog.debug('Headers count: ' + this.hdrCnt);
-
-        let pos = 0;
-        for (let i = 0; i < mBody.childNodes.length; i++) {
-          let node = mBody.childNodes[i];
-          if (Node.TEXT_NODE == node.nodeType) {
-            let str = node.nodeValue.trim();
-            if (str.startsWith('--------') && str.endsWith('--------')) {
-              pos = i;
-              break;
-            }
-          }
-        }
-
-        // removing forward header elements from the position
-        let lc = this.hdrCnt * 2; // for br's
-        if (isSignature) {
-          lc = lc + 1; // for signature div
-        }
-
-        for (let i = pos; i <= (pos + lc); i++) {
-          let fnode = mBody.childNodes[i];
-          if (fnode.nodeValue) {
-            rwhlog.debug('Plain Text Hdr ==> ' + fnode.nodeValue);
-          }
-
-          if (this.isReplyToNode(fnode)) {
-            lc = lc + 2;
-            rwhlog.debug('Reply-To header found');
-          }
-          mBody.removeChild(fnode);
-        }
-
-        mBody.insertBefore(hdrRwhNode, mBody.childNodes[pos - 1]);
+        // let rootElement = gMsgCompose.editor.rootElement;
+        // rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
       }
     } else {
-      //
-      // For Thunderbird
-      //
-      let fwdContainer = this.getElement('moz-forward-container');
-      let sigOnBtm = gCurrentIdentity.getBoolAttribute('sig_bottom');
-      let isSignature = this.isSignaturePresent;
-      let rootElement = gMsgCompose.editor.rootElement;
-      let sigNode;
+      this.log.debug('Headers count: ' + this.hdrCnt);
 
-      rwhlog.debug('Is signature present: ' + isSignature);
+      // Logically removing text node header elements
+      this.deleteNode(fwdContainer.firstChild);
 
-      // signature present and location above quoted email (top)
-      if (!sigOnBtm && isSignature) {
-        sigNode = this.getElement('moz-signature').cloneNode(true);
-        rootElement.removeChild(this.getElement('moz-signature'));
-        rwhlog.debug('Thunderbird signature node: ' + sigNode);
+      // Logically removing forward header elements
+      let lc = (this.hdrCnt * 2) + 1; // for br's
+      if (isSignature) {
+        lc = lc + 1; // for signature div
       }
 
-      if (this.isHtmlMail) {
-        while (fwdContainer.firstChild) {
-          if (this.contains(fwdContainer.firstChild.className, 'moz-email-headers-table')) {
-            break;
-          }
-          fwdContainer.removeChild(fwdContainer.firstChild);
+      for (let i = 0; i <= lc; i++) {
+        let fnode = fwdContainer.firstChild;
+        if (fnode.nodeValue) {
+          this.log.debug('Plain Text Hdr ==> ' + fnode.nodeValue);
         }
 
-        fwdContainer.replaceChild(hdrRwhNode, this.getElement('moz-email-headers-table'));
-
-        // put signature back to the place
-        if (!sigOnBtm && isSignature) {
-          rootElement.insertBefore(sigNode, fwdContainer);
-          this.cleanEmptyTags(rootElement.firstChild);
-
-          // let rootElement = gMsgCompose.editor.rootElement;
-          // rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
-        }
-      } else {
-        rwhlog.debug('Headers count: ' + this.hdrCnt);
-
-        // Logically removing text node header elements
-        this.deleteNode(fwdContainer.firstChild);
-
-        // Logically removing forward header elements
-        let lc = (this.hdrCnt * 2) + 1; // for br's
-        if (isSignature) {
-          lc = lc + 1; // for signature div
+        if (this.isReplyToNode(fnode)) {
+          lc = lc + 2;
+          this.log.debug('Reply-To header found');
         }
 
-        for (let i = 0; i <= lc; i++) {
-          let fnode = fwdContainer.firstChild;
-          if (fnode.nodeValue) {
-            rwhlog.debug('Plain Text Hdr ==> ' + fnode.nodeValue);
-          }
+        this.deleteNode(fnode);
+      }
 
-          if (this.isReplyToNode(fnode)) {
-            lc = lc + 2;
-            rwhlog.debug('Reply-To header found');
-          }
+      fwdContainer.replaceChild(hdrRwhNode, fwdContainer.firstChild);
 
-          this.deleteNode(fnode);
-        }
-
-        fwdContainer.replaceChild(hdrRwhNode, fwdContainer.firstChild);
-
-        // put signature back to the place
-        if (!sigOnBtm && isSignature) {
-          rootElement.insertBefore(sigNode, fwdContainer);
-          this.cleanEmptyTags(rootElement.firstChild);
-        }
+      // put signature back to the place
+      if (!sigOnBtm && isSignature) {
+        rootElement.insertBefore(sigNode, fwdContainer);
+        this.cleanEmptyTags(rootElement.firstChild);
       }
     }
 
@@ -800,17 +655,8 @@ var ReplyWithHeader = {
     let blockquotes = this.byTagName('blockquote');
 
     if (blockquotes.length > 0) {
-      for (let i = 0, len = this.Prefs.cleanNewBlockQuote ? 1 : blockquotes.length; i < len; i++) {
+      for (let i = 0, len = this.prefs.cleanNewBlockQuote ? 1 : blockquotes.length; i < len; i++) {
         blockquotes[i].setAttribute('style', this.bqStyleStr);
-      }
-    }
-
-    if (rwhhost.isPostbox) {
-      let pbBody = this.getElement('__pbConvBody');
-      if (pbBody) {
-        pbBody.style.color = '#000000';
-        pbBody.style.marginLeft = '0px';
-        pbBody.style.marginRight = '0px';
       }
     }
   },
@@ -820,7 +666,7 @@ var ReplyWithHeader = {
 
     if (mailBody) {
       // NOTE: Here RWH Add-On does string find and replace. No external creation of HTML string
-      if (this.Prefs.cleanOnlyNewQuoteChar) {
+      if (this.prefs.cleanOnlyNewQuoteChar) {
         mailBody.innerHTML = mailBody.innerHTML.replace(/>(&gt;) ?/g, '>');
       } else {
         mailBody.innerHTML = mailBody.innerHTML.replace(/<br>(&gt;)+ ?/g, '<br>').replace(/(<\/?span [^>]+>)(&gt;)+ /g, '$1');
@@ -841,30 +687,16 @@ var ReplyWithHeader = {
   },
 
   init: function() {
-    gMsgCompose.RegisterStateListener(ReplyWithHeader.composeStateListener);
-  },
-
-  composeStateListener: {
-    NotifyComposeFieldsReady: function() {},
-    NotifyComposeBodyReady: function() {
-      try {
-        ReplyWithHeader.handleMailCompose();
-      } catch(ex) {
-        rwhlog.errorWithException('An error occurred, please report an issue to add-on author here '
-          + '- https://github.com/jeevatkm/ReplyWithHeaderMozilla/issues', ex);
-      }
-    },
-    ComposeProcessDone: function(aResult) {},
-    SaveInFolderDone: function(folderURI) {}
+    ReplyWithHeader.handleMailCompose();
   },
 
   handleMailCompose: function() {
-    let prefs = this.Prefs;
-    rwhlog.enableDebug = prefs.isDebugEnabled;
+    let prefs = this.prefs;
+    this.log.enableDebug = prefs.isDebugEnabled;
 
-    rwhlog.debug('Initializing ' + ReplyWithHeader.addOnName + ' v' + ReplyWithHeader.addOnVersion
-      + ' (' + rwhhost.app + ' ' + rwhhost.version
-      + ', ' + rwhhost.OS + ', ' + rwhhost.buildID + ')');
+    this.log.debug('Initializing ' + ReplyWithHeader.addOnName + ' v' + ReplyWithHeader.addOnVersion
+      + ' (' + this.host.app + ' ' + this.host.version
+      + ', ' + this.host.OS + ', ' + this.host.buildID + ')');
 
     /*
      * ReplyWithHeader has to be enabled; extensions.replywithheader.enable=true and
@@ -875,15 +707,15 @@ var ReplyWithHeader = {
     if (prefs.isEnabled && this.isOkayToMoveOn) {
       this.hdrCnt = 4; // From, To, Subject, Date
 
-      // rwhlog.debug('BEFORE Raw Content:: ' + gMsgCompose.editor.rootElement.innerHTML);
-      rwhlog.debug('Email content-type: ' + (this.isHtmlMail ? 'HTML' : 'Plain text'));
+      // this.log.debug('BEFORE Raw Content:: ' + gMsgCompose.editor.rootElement.innerHTML);
+      this.log.debug('Email content-type: ' + (this.isHtmlMail ? 'HTML' : 'Plain text'));
 
       if (this.isReply) {
-        rwhlog.debug('Email compose type: Reply/ReplyAll');
+        this.log.debug('Email compose type: Reply/ReplyAll');
 
         this.handleReplyMessage();
       } else if (this.isForward) {
-        rwhlog.debug('Email compose type: Forward');
+        this.log.debug('Email compose type: Forward');
 
         this.handleForwardMessage();
       }
@@ -902,15 +734,15 @@ var ReplyWithHeader = {
 
       this.handOverToUser();
 
-      // rwhlog.debug('AFTER Raw Content:: ' + gMsgCompose.editor.rootElement.innerHTML);
+      // this.log.debug('AFTER Raw Content:: ' + gMsgCompose.editor.rootElement.innerHTML);
     } else {
       if (prefs.isEnabled) {
         // Resend=10, Redirect=15
         if (this.composeType == 10 || this.composeType == 15) {
-          rwhlog.info('Email composeType [' + this.composeType + '] is not supported.');
+          this.log.info('Email composeType [' + this.composeType + '] is not supported.');
         }
       } else {
-        rwhlog.info('ReplyWithHeader add-on is not enabled, you can enable it in the Add-On Preferences.');
+        this.log.info('ReplyWithHeader add-on is not enabled, you can enable it in the Add-On Preferences.');
       }
     }
   },
@@ -921,19 +753,10 @@ var ReplyWithHeader = {
         this.alerts.showAlertNotification('resource://replywithheader/icon-64.png',
           'ReplyWithHeader', str, false, '', null, '');
       } catch (ex) {
-        rwhlog.errorWithException('Unable to show RWH notify alert.', ex);
+        this.log.errorWithException('Unable to show RWH notify alert.', ex);
       }
     }
-  },
-
-  openUrl: function(url) {
-    try {
-      this.messenger.launchExternalURL(url);
-    } catch (ex) {
-      rwhlog.errorWithException('Unable to open RWH URL.', ex);
-    }
-  },
-
+  }
 };
 
 // Getting Add-On name & version #

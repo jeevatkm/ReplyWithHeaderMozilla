@@ -1,0 +1,273 @@
+<!--
+  Copyright (c) Jeevanandam M. (jeeva@myjeeva.com)
+
+  This Source Code Form is subject to the terms of the Mozilla Public
+  License, v. 2.0. If a copy of the MPL was not distributed with this
+  file, You can obtain one at
+  https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
+  -->
+<!DOCTYPE html>
+<html id="rwhAddonPrefsDialog">
+
+<head>
+    <meta charset="UTF-8">
+    <title>RWH Preferences</title>
+    <link rel="stylesheet" href="chrome://messenger/skin/colors.css">
+    <link rel="stylesheet" href="options.css">
+    <script src="/chrome/content/i18n.js"></script>
+    <script src="options.js" type="module"></script>
+</head>
+
+<body>
+
+    <div class="hbox" style="margin-bottom: 1em">
+        <label>
+            <input type="checkbox" id="enableRwh" data-preference="enable" />
+            Enable
+        </label>
+        <div class="spacer"></div>
+        <img src='/skin/language.png' width='21' height='21' />
+        <select id="hdrLocale" data-preference="header.locale">
+        </select>
+    </div>
+
+    <div id="tabpanel">
+        <ul role="tablist" id="tablist">
+            <li id="link1" role="tab" aria-controls="panel-1" aria-selected="true">Manage Headers</li>
+            <li id="link2" role="tab" aria-controls="panel-2" aria-selected="false">Misc</li>
+            <li id="link3" role="tab" aria-controls="panel-3" aria-selected="false">About</li>
+        </ul>
+        <div id="tabcontent">
+            <div id="panel-1" role="tabpanel" aria-labelledby="link1" aria-hidden="false">
+                <fieldset id="hboxFromAttribution">
+                    <legend id="lblFromAttribution">Header 'From' attribution style"</legend>
+                    <div class="vbox" data-type="radiogroup" data-preference="header.from.style">
+                        <label>
+                            <input type="radio" name="fromAttributionStyle" value="0" />
+                            Default
+                        </label>
+                        <label>
+                            <input type="radio" name="fromAttributionStyle" value="1" />
+                            Outlook Simple (From: Name)
+                        </label>
+                        <label>
+                            <input type="radio" name="fromAttributionStyle" value="2" />
+                            Outlook Extended (From: Name [mailto:email-address])
+                        </label>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend id="lblHeaderToCcAttrib">Header 'To' &amp; 'Cc' attribution style</legend>
+                    <div class="vbox" data-type="radiogroup" data-preference="header.tocc.style">
+                        <label><input type="radio" value="0" name="toccAttributionStyle" />Default (To: Name1
+                            &lt;email-address1&gt;, ...)</label>
+                        <label><input type="radio" value="1" name="toccAttributionStyle" />Outlook (To: Name1; Name2;
+                            ...)</label>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend id="lblHeaderQuotSeq">Header quoting sequence and labels</legend>
+                    <div class="vbox" data-type="radiogroup" data-preference="header.lblseq.style">
+                        <label><input type="radio" name="quotSeqAttributionStyle" value="0" />Default (Subject, Date,
+                            From, To, Cc)</label>
+                        <label><input type="radio" name="quotSeqAttributionStyle" value="1" />Outlook (From, Sent, To,
+                            Cc, Subject)</label>
+                        <label><input type="radio" name="quotSeqAttributionStyle" value="2" />Simple (From, Sent,
+                            Subject)</label>
+                        <label><input type="radio" name="quotSeqAttributionStyle" value="3" />Lookout (From, To, Cc,
+                            Date, Subject)</label>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend id="lblHdrDate">Header date format</legend>
+                    <div class="hbox" data-type="radiogroup" data-preference="header.date.format">
+                        <label><input type="radio" name="quotDateAttributionStyle" value="0" />Locale timezone</label>
+                        <label><input type="radio" name="quotDateAttributionStyle" value="1" />International timezone
+                            (UTC)</label>
+                    </div>
+                    <div class="hbox" data-type="radiogroup" data-preference="header.time.format">
+                        <label><input type="radio" name="quotTimeAttributionStyle" value="0" />12 hours format</label>
+                        <label><input type="radio" name="quotTimeAttributionStyle" value="1" />24 hours format</label>
+                    </div>
+                    <div class="hbox">
+                        <label>
+                            <input type="checkbox" id="quotDateIncludeTimezone" data-preference="header.date.timezone" />
+                            Include short timezone info
+                        </label>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend id="lblTypography">Header typography</legend>
+                    <div class="table">
+                        <div class="label" id="lblFontface">Font face:</div>
+                        <div class="hbox">
+                            <select id="hdrFontface" data-preference="header.font.face"></select>
+                        </div>
+
+                        <div class="label" id="lblFontsize">Font size:</div>
+                        <div class="hbox">
+                            <select id="hdrFontsize" data-preference="header.font.size"></select>
+                            <select id="hdrFontsizeUnit" data-preference="header.font.size.unit">
+                                <option label="Pixel" value="px"></option>
+                                <option label="Point" value="pt"></option>
+                            </select>
+                        </div>
+
+                        <div class="label" id="lblFontcolor">Color:</div>
+                        <div class="hbox">
+                            <input id="hdrFontColor" type="color" data-preference="header.font.color" />
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend id="lblSpace">Header line spaces</legend>
+                    <div class="table">
+                        <div class="label" id="lblBeforeHeader">Before header:</div>
+                        <div class="hbox">
+                            <select id="spaceBeforeHdr" data-preference="header.space.before">
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+
+                        <div class="label" id="lblAfterHeader">After header:</div>
+                        <div class="hbox">
+                            <select id="spaceAfterHdr" data-preference="header.space.after">
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+
+                        <div class="label" id="lblBeforeSeparator">Before separator:</div>
+                        <div class="hbox">
+                            <select id="spaceBeforeSep" data-preference="header.separator.space.before">
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+
+                        <div class="label" id="lblSepLineSize">Line size:</div>
+                        <div class="hbox">
+                            <select id="hdrSepLineSize" data-preference="header.separator.line.size">
+                                <option value="1">1px</option>
+                                <option value="2">2px</option>
+                                <option value="3">3px</option>
+                                <option value="4">4px</option>
+                                <option value="5">5px</option>
+                                <option value="6">6px</option>
+                            </select>
+                        </div>
+
+                        <div class="label" id="lblSepLineColor">Line color:</div>
+                        <div class="hbox">
+                            <input id="hdrSepLineColor" type="color" data-preference="header.separator.line.color" />
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div id="panel-2" role="tabpanel" aria-labelledby="link2" aria-hidden="true">
+                <fieldset>
+                    <legend id="lblCntFormat">Content formatting and cleanups</legend>
+                    <div class="hbox">
+                        <label>
+                            <input type="checkbox" id="cleanBlockQuote" data-preference="clean.blockquote" />
+                            Cleanup the blockquote colors
+                        </label>
+                    </div>
+                    <div class="hbox" style="margin-left:35px">
+                        <label>
+                            <input type="checkbox" id="cleanNewBlockQuote" data-preference="clean.new.blockquote" />
+                            Cleanup only new blockquote color
+                        </label>
+                    </div>
+                    <div class="hbox">
+                        <label>
+                            <input type="checkbox" id="cleanGreaterThanChar" data-preference="clean.char.greaterthan" />
+                            Cleanup the quote character '>'
+                        </label>
+                    </div>
+                    <div class="hbox" style="margin-left:35px">
+                        <label>
+                            <input type="checkbox" id="cleanOnlyNewQuoteChar" data-preference="clean.only.new.quote.char" />
+                            Cleanup only new quote character
+                        </label>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend id="lblHeaderFormat">Subject reformatting</legend>
+                    <div class="hbox">
+                        <label>
+                            <input type="checkbox" id="transSubjectPrefix" data-preference="trans.subject.prefix" />
+                            Transform subject prefix (Re -> RE and Fwd -> FW)
+                        </label>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend id="lblHeaderCleanups">Header cleanups</legend>
+                    <div class="hbox">
+                        <label>
+                            <input type="checkbox" id="excludePlainTextHdrPrefix" data-preference="clean.pln.hdr.prefix" />
+                            Don't include plain text header prefix
+                        </label>
+                    </div>
+            </div>
+
+            <div id="panel-3" role="tabpanel" aria-labelledby="link3" aria-hidden="true">
+                <div class="vbox center" style="margin-top: 30px">
+                    <img id="abtRwhLogo" src='/skin/icon-64.png' width='64' height='64' />
+                    <div class="label" id="abtRwhCaption" style="font-weight:bold;">ReplyWithHeader</div>
+                    <div class="label" id="abtRwhCopyrights" style="font-size:12px;">&#169; Jeevanandam M.</div>
+                    <div class="label" id="abtRwhCopyrightsNotes" style="font-size:12px;">All rights reserved.</div>
+                </div>
+                <div class="vbox center" style="margin-top: 30px">
+                    <div class="hbox" id="hboxRwhBtn">
+                        <button id="button_website">Website</button>
+                        <button id="button_review">Write a Review</button>
+                        <button id="button_issues">Report Issues</button>
+                    </div>
+                </div>
+                <div class="vbox center" id="hboxEnableRwhDebugMode" style="margin: 15px 0 60px 0">
+                    <label>
+                        <input type="checkbox" id="enableRwhDebugMode" data-preference="debug"
+                            tooltiptext="Add-on logs useful debug details in the Error Console" />
+                        Enable debug mode
+                    </label>
+                </div>
+
+                <fieldset>
+                    <legend>Support ReplyWithHeader</legend>
+                    <div class="vbox center" style="margin-top:10px;">
+                        <div class="hbox" id="hboxDonateBtn" style="margin-bottom:10px;margin-top:5px">
+                            <img src='/skin/bitcoin-24.png' width='24' height='24'
+                                id="bitcoin_img"
+                                tooltiptext="Click here to copy BTC address." style="cursor: pointer" />
+                            <div class="label" style="font-size:11px;cursor:pointer"
+                                id="bitcoin_div"
+                                tooltiptext="Click here to copy BTC address.">1FG6G5tCmFm7vrc7BzUyRxr3RBrMDJA6zp</div>
+                            <img src='/skin/paypal-btn.png' width='142' height='27'
+                                id="button_paypal" style="cursor: pointer;margin-left:15px"
+                                tooltiptext="Click here to Donate via Paypal." />
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>

@@ -2,40 +2,58 @@
     "name": "ReplyWithHeader",
     "short_name": "RWH",
     "description": "Outlook style headers and few goodies for Thunderbird",
-    "version_name": "2.5.0",
-    "version": "2.5.0",
+    "version": "2.6.0",
     "author": "Jeevanandam M.",
     "homepage_url": "https://myjeeva.com/replywithheader-mozilla",
-
     "applications": {
         "gecko": {
             "id": "replywithheader@myjeeva.com",
-            "strict_min_version": "102.0",
-            "strict_max_version": "102.*"
+            "strict_min_version": "115.0",
+            "strict_max_version": "115.*"
         }
     },
-
     "icons": {
         "64": "skin/icon-64.png",
         "128": "icon.png"
     },
-
     "background": {
         "scripts": [
             "scripts/background.js"
         ]
     },
-
+    "options_ui": {
+        "page": "/options/options.html",
+        "browser_style": true
+    },
     "experiment_apis": {
-        "WindowListener": {
-            "schema": "experiment/api/WindowListener/schema.json",
+        "ReplyWithHeader": {
+            "schema": "experiment/api/ReplyWithHeader/schema.json",
             "parent": {
-                "scopes": ["addon_parent"],
-                "paths": [["WindowListener"]],
-                "script": "experiment/api/WindowListener/implementation.js"
+                "scopes": [
+                    "addon_parent"
+                ],
+                "paths": [
+                    [
+                        "ReplyWithHeader"
+                    ]
+                ],
+                "script": "experiment/api/ReplyWithHeader/implementation.js"
+            }
+        },
+        "LegacyPrefs": {
+            "schema": "experiment/api/LegacyPrefs/schema.json",
+            "parent": {
+                "scopes": [
+                    "addon_parent"
+                ],
+                "paths": [
+                    [
+                        "LegacyPrefs"
+                    ]
+                ],
+                "script": "experiment/api/LegacyPrefs/implementation.js"
             }
         }
     },
-
     "manifest_version": 2
 }

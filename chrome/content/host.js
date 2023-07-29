@@ -9,20 +9,14 @@
 
 'use strict';
 
-var EXPORTED_SYMBOLS = ["rwhhost"];
-
-var { Services } = ChromeUtils.import('resource://gre/modules/Services.jsm');
-
 // Host related definitions
-var rwhhost = {
+var host = {
   appinfo: Services.appinfo, // nsIXULAppInfo, nsIXULRuntime
 
   get app() {
     let appId = this.appinfo.ID;
     if (appId == '{3550f703-e582-4d05-9a08-453d09bdfdc6}') {
       return 'Thunderbird';
-    } else if (appId == 'postbox@postbox-inc.com') {
-      return 'Postbox';
     }
     return 'unknown';
   },
@@ -57,10 +51,6 @@ var rwhhost = {
 
   get isWindows() {
     return (this.OS == 'Windows');
-  },
-
-  get isPostbox() {
-    return (this.app == 'Postbox');
   },
 
   get isThunderbird() {

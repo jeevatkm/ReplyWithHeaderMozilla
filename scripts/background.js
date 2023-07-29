@@ -7,22 +7,69 @@
  * https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
  */
 
-(async () => {
+const PREF_PREFIX = "extensions.replywithheader.";
 
-  messenger.WindowListener.registerDefaultPrefs("defaults/preferences/rwh-defaults.js");
+const PREF_DEFAULTS = {
+  // RWH default preferences values
+  "enable": true,
 
-  messenger.WindowListener.registerChromeUrl([
-    ["content",  "replywithheader", "chrome/content/"],
-    ["resource", "replywithheader", "skin/"]
-  ]);
+  // RWH Header
+  "header.from.style": 2,
+  "header.tocc.style": 1,
+  "header.lblseq.style": 1,
+  "header.locale": "en-US",
+  "header.font.face": "Tahoma",
+  "header.font.size": 13,
+  "header.font.size.unit": "px",
+  "header.font.color": "#000000",
+  "header.separator.space.before": 1,
+  "header.space.before": 0,
+  "header.space.after": 1,
+  "header.separator.line.size": 1,
+  "header.separator.line.color": "#B5C4DF",
+  //   "auto.select.lang": false,
+  //   "auto.select.lang.regex.list": "",
+  "trans.subject.prefix": false,
+  //   "use.sender.date": false,
+  //   "use.local.date.regex.list": "",
 
-  messenger.WindowListener.registerOptionsPage("chrome://replywithheader/content/rwh-prefs.xhtml");
+  // RWH Date & Time
+  // 0 - Locale date format
+  // 1 - International date format - UTC
+  "header.date.format": 0,
 
-  messenger.WindowListener.registerWindow(
-    "chrome://messenger/content/messengercompose/messengercompose.xhtml",
-    "chrome://replywithheader/content/scripts/messengercompose.js"
-  );
+  // RWH Date style
+  // Full - ddd, MMM d, yyyy
+  // ISO - yyyy-MM-dd
+  //   "header.date.style": 0,
 
-  messenger.WindowListener.startListening();
+  // RWH Time style
+  // 0 - 12 hours AM/PM
+  // 1 - 24 hours
+  "header.time.format": 0,
 
-})()
+  // RWH Date header include timezone info
+  "header.date.timezone": false,
+
+  // RWH Mail message
+  "clean.blockquote": true,
+  "clean.new.blockquote": false,
+  "clean.char.greaterthan": true,
+  "clean.only.new.quote.char": false,
+  "clean.pln.hdr.prefix": false,
+
+  // RWH Debug settings
+  "debug": false,
+}
+
+async function init () {
+  for (let [name, value] of Object.entries(PREF_DEFAULTS)) {
+    await browser.LegacyPrefs.setDefaultPref(`${PREF_PREFIX}${name}`, value);
+  }
+ 
+  browser.tabs.onCreated.addListener(tab => {
+    browser.ReplyWithHeader.patchTab(tab.id);
+  });
+}
+
+init();
