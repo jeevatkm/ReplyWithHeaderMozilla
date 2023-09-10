@@ -166,7 +166,7 @@ var i18n = {
     "pt": "Mensagem encaminhada",
     "pt-BR": "Encaminhou",
     "ko": "전달된 메시지",
-    "nl": "het volgende geschreven",
+    "nl": "Doorgestuurd bericht",
     "nb": "Videresendt melding",
     "ru": "переадресованного сообщения",
     "sv": "Vidarebefordrat brev",
