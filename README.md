@@ -1,5 +1,5 @@
 # Quoting Email Headers in Thunderbird
- [![Version](https://img.shields.io/badge/version-2.4.0-blue.svg)](https://github.com/jeevatkm/ReplyWithHeaderMozilla/releases/latest) [![License](https://img.shields.io/github/license/jeevatkm/ReplyWithHeaderMozilla.svg)](LICENSE)
+ [![Version](https://img.shields.io/badge/version-2.6.0-blue.svg)](https://github.com/jeevatkm/ReplyWithHeaderMozilla/releases/latest) [![License](https://img.shields.io/github/license/jeevatkm/ReplyWithHeaderMozilla.svg)](LICENSE)
 
 ReplyWithHeaderMozilla aka [RWH Thunderbird] is an add-on for Thunderbird mail client that enables email header.
 Brings Outlook header capabilities into Thunderbird.
