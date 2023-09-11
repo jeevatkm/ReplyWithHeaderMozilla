@@ -298,6 +298,16 @@ var ReplyWithHeader = {
     return recipients.trim();
   },
 
+  getHeaderQuotSeq: function(selectedOption) {
+    let quotSeq = {
+      0: ['subject', 'date', 'from', 'to', 'cc'], // Default
+      1: ['from', 'date', 'to', 'cc', 'subject'], // Outlook
+      2: ['from', 'date', 'subject'],             // Simple
+      3: ['from', 'to', 'cc', 'date', 'subject']  // Lookout
+    };
+    return quotSeq[selectedOption];
+  },
+
   parseMsgHeader: function(hdr) {
     // Decoding values into object
     // Ref: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMsgDBHdr
@@ -328,6 +338,8 @@ var ReplyWithHeader = {
     let rawHdr = this.getMsgHeader(this.messageUri);
     let pHeader = this.parseMsgHeader(rawHdr);
     let headerQuotLblSeq = this.prefs.headerQuotLblSeq;
+    let headerQuotLblSeqValues = this.getHeaderQuotSeq(headerQuotLblSeq);
+    this.log.debug('headerQuotLblSeq: ' + headerQuotLblSeq + ' \tValues: ' + headerQuotLblSeqValues);
 
     var rwhHdr = '<div id="rwhMsgHeader">';
 
@@ -362,38 +374,16 @@ var ReplyWithHeader = {
 
       rwhHdr += this.createBrTags(this.prefs.beforeHdrSpaceCnt);
 
-      rwhHdr += htmlTagPrefix + '<b>' + this.i18n.from[locale] + '</b> ' + pHeader.from + htmlTagSuffix;
-
-      if (headerQuotLblSeq == 0) { // jshint ignore:line
-        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
-        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.date[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
-        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.to[locale] + '</b> ' + pHeader.to + htmlTagSuffix;
-
-        if (pHeader.cc) {
-          rwhHdr += htmlTagPrefix + '<b>' + this.i18n.cc[locale] + '</b> ' + pHeader.cc + htmlTagSuffix;
-        }
-      } else if (headerQuotLblSeq == 3) {
-        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.to[locale] + '</b> ' + pHeader.to + htmlTagSuffix;
-
-        if (pHeader.cc) {
-          rwhHdr += htmlTagPrefix + '<b>' + this.i18n.cc[locale] + '</b> ' + pHeader.cc + htmlTagSuffix;
-        }
-        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.date[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
-        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
-      } else if (headerQuotLblSeq == 1) {
-        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.sent[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
-        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.to[locale] + '</b> ' + pHeader.to + htmlTagSuffix;
-
-        if (pHeader.cc) {
-          rwhHdr += htmlTagPrefix + '<b>' + this.i18n.cc[locale] + '</b> ' + pHeader.cc + htmlTagSuffix;
+      headerQuotLblSeqValues.forEach(function (hdrKey, _) {
+        let lbl = this.i18n[hdrKey][locale]
+        if (headerQuotLblSeq == 1 && hdrKey == 'date') {
+          lbl = this.i18n['sent'][locale]
         }
 
-        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
-
-      } else if (headerQuotLblSeq == 2) {
-        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.sent[locale] + '</b> ' + pHeader.date + htmlTagSuffix;
-        rwhHdr += htmlTagPrefix + '<b>' + this.i18n.subject[locale] + '</b> ' + pHeader.subject + htmlTagSuffix;
-      }
+        if (pHeader[hdrKey]) {
+          rwhHdr += htmlTagPrefix + '<b>' + lbl + '</b> ' + pHeader[hdrKey] + htmlTagSuffix;
+        }
+      }, this);
 
     } else { // for plain/text emails
       if (!this.prefs.excludePlainTxtHdrPrefix) {
@@ -408,38 +398,17 @@ var ReplyWithHeader = {
 
       rwhHdr += this.createBrTags(this.prefs.beforeHdrSpaceCnt);
 
-      rwhHdr += this.i18n.from[locale] + ' ' + pHeader.from + '<br/>';
-
-      if (headerQuotLblSeq == 0) { // jshint ignore:line
-        rwhHdr += this.i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
-        rwhHdr += this.i18n.date[locale] + ' ' + pHeader.date + '<br/>';
-        rwhHdr += this.i18n.to[locale] + ' ' + pHeader.to + '<br/>';
-
-        if (pHeader.cc) {
-          rwhHdr += this.i18n.cc[locale] + ' ' + pHeader.cc + '<br/>';
-        }
-      } else if (headerQuotLblSeq == 3) {
-        rwhHdr += this.i18n.to[locale] + ' ' + pHeader.to + '<br/>';
-
-        if (pHeader.cc) {
-          rwhHdr += this.i18n.cc[locale] + ' ' + pHeader.cc + '<br/>';
-        }
-        rwhHdr += this.i18n.date[locale] + ' ' + pHeader.date + '<br/>';
-        rwhHdr += this.i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
-      } else if (headerQuotLblSeq == 1) {
-        rwhHdr += this.i18n.sent[locale] + ' ' + pHeader.date + '<br/>';
-        rwhHdr += this.i18n.to[locale] + ' ' + pHeader.to + '<br/>';
-
-        if (pHeader.cc) {
-          rwhHdr += this.i18n.cc[locale] + ' ' + pHeader.cc + '<br/>';
+      headerQuotLblSeqValues.forEach(function (hdrKey, _) {
+        let lbl = this.i18n[hdrKey][locale]
+        if (headerQuotLblSeq == 1 && hdrKey == 'date') {
+          lbl = this.i18n['sent'][locale]
         }
 
-        rwhHdr += this.i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
+        if (pHeader[hdrKey]) {
+          rwhHdr += lbl + ' ' + pHeader[hdrKey] + '<br/>';
+        }
+      }, this);
 
-      } else if (headerQuotLblSeq == 2) {
-        rwhHdr += this.i18n.sent[locale] + ' ' + pHeader.date + '<br/>';
-        rwhHdr += this.i18n.subject[locale] + ' ' + pHeader.subject + '<br/>';
-      }
     }
 
     rwhHdr += this.createBrTags(this.prefs.afterHdrSpaceCnt);
