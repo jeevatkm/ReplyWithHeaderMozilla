@@ -77,6 +77,10 @@ var prefs = {
     return this.getStringPref('header.font.face');
   },
 
+  get headerSystemFontFace() {
+    return this.getBoolPref('header.system.font.face');
+  },
+
   get headerFontSize() {
     return this.getIntPref('header.font.size');
   },
@@ -87,6 +91,10 @@ var prefs = {
 
   get headerFontColor() {
     return this.getStringPref('header.font.color');
+  },
+
+  get headerSystemFontColor() {
+    return this.getBoolPref('header.system.font.color');
   },
 
   get headerQuotLblSeq() {

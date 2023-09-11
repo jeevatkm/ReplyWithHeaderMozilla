@@ -102,6 +102,11 @@
                         <div class="label" id="lblFontface">Font face:</div>
                         <div class="hbox">
                             <select id="hdrFontface" data-preference="header.font.face"></select>
+                            <div class="spacer"></div>
+                            <label style="margin-right: 7px;">
+                                <input type="checkbox" id="hdrSystemFontface" data-preference="header.system.font.face" />
+                                Use system font
+                            </label>
                         </div>
 
                         <div class="label" id="lblFontsize">Font size:</div>
@@ -116,6 +121,11 @@
                         <div class="label" id="lblFontcolor">Color:</div>
                         <div class="hbox">
                             <input id="hdrFontColor" type="color" data-preference="header.font.color" />
+                            <div class="spacer"></div>
+                            <label>
+                                <input type="checkbox" id="hdrFontSystemColor" data-preference="header.system.font.color" />
+                                Use system color
+                            </label>
                         </div>
                     </div>
                 </fieldset>
