@@ -341,10 +341,19 @@ var ReplyWithHeader = {
       let fontSize = this.prefs.headerFontSize;
       let fontSizeUnit = this.prefs.headerFontSizeUnit;
       let fontColor = this.prefs.headerFontColor;
+      let systemFontColor = this.prefs.headerSystemFontColor;
+      let systemFontFace = this.prefs.headerSystemFontFace;
+      this.log.debug('System Font face: ' + systemFontFace + '\tSystem Font Color: ' + systemFontColor);
       this.log.debug('Font face: ' + fontFace + '\tFont size: ' + fontSize + fontSizeUnit + '\tColor: ' + fontColor);
 
-      let htmlTagPrefix = '<div style="font-family:' + fontFace + ' !important; color:'
-        + fontColor + ' !important; font-size:' + fontSize + fontSizeUnit + ' !important;">';
+      let htmlTagPrefix = '<div style="';
+      if (!systemFontFace) {
+        htmlTagPrefix += 'font-family:' + fontFace + ' !important;';
+      }
+      if (!systemFontColor) {
+        htmlTagPrefix += ' color:' + fontColor + ' !important;';
+      }
+      htmlTagPrefix +=  ' font-size:' + fontSize + fontSizeUnit + ' !important;">';
       let htmlTagSuffix = '</div>';
 
       let lineColor = this.prefs.headerSepLineColor;
