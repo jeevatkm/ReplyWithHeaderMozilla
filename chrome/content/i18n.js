@@ -157,7 +157,7 @@ var i18n = {
     "ru": "Отправлено:",
     "sv": "Skickat",
     "fi": "Lähetetty:",
-    "zh-CN": "发送日期：",
+    "zh-CN": "发送时间：",
   },
   "forwarded_message": {
     "en-US": "Forwarded Message",
