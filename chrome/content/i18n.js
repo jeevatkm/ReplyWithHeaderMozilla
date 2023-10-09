@@ -32,6 +32,7 @@ var i18n = {
     "sv": "Swedish",
     "fi": "Finnish",
     "zh-CN": "简体中文(中国)",
+    "hu": "Hungarian - Magyar",
   },
   "from": {
     "en-US": "From:",
@@ -53,6 +54,7 @@ var i18n = {
     "sv": "Från:",
     "fi": "Lähettäjä:",
     "zh-CN": "发件人：",
+    "hu": "Feladó:",
   },
   "to": {
     "en-US": "To:",
@@ -74,6 +76,7 @@ var i18n = {
     "sv": "Till:",
     "fi": "Vastaanottaja:",
     "zh-CN": "收件人：",
+    "hu": "Címzett:",
   },
   "cc": {
     "en-US": "Cc:",
@@ -95,6 +98,7 @@ var i18n = {
     "sv": "Kopia:",
     "fi": "Kopio:",
     "zh-CN": "抄送：",
+    "hu": "Másolat:",
   },
   "subject": {
     "en-US": "Subject:",
@@ -116,6 +120,7 @@ var i18n = {
     "sv": "Ämne:",
     "fi": "Aihe:",
     "zh-CN": "主题：",
+    "hu": "Tárgy:",
   },
   "date": {
     "en-US": "Date:",
@@ -137,6 +142,7 @@ var i18n = {
     "sv": "Datum:",
     "fi": "Päiväys:",
     "zh-CN": "日期：",
+    "hu": "Dátum:",
   },
   "sent": {
     "en-US": "Sent:",
@@ -158,6 +164,7 @@ var i18n = {
     "sv": "Skickat",
     "fi": "Lähetetty:",
     "zh-CN": "发送时间：",
+    "hu": "Dátum",
   },
   "forwarded_message": {
     "en-US": "Forwarded Message",
@@ -179,6 +186,7 @@ var i18n = {
     "sv": "Vidarebefordrat brev",
     "fi": "Välitetty viesti",
     "zh-CN": "转发的原邮件",
+    "hu": "Továbbított levél",
   },
   "original_message": {
     "en-US": "Original Message",
@@ -200,5 +208,6 @@ var i18n = {
     "sv": "Ursprungligt meddelande",    
     "fi": "Alkuperäinen viesti",
     "zh-CN": "原始邮件",
+    "hu": "Eredeti levél",
   },
 };
