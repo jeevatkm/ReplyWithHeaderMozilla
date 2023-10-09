@@ -7,8 +7,8 @@
  * https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
  */
 
-'use strict'; 
- 
+'use strict';
+
 // encoding: utf-8
 
 var i18n = {
@@ -31,7 +31,7 @@ var i18n = {
     "ru": "Russian",
     "sv": "Swedish",
     "fi": "Finnish",
-    "zh-CN": "简体中文(中国)",
+    "zh-CN": "Simplified Chinese - 简体中文",
     "hu": "Hungarian - Magyar",
   },
   "from": {
@@ -205,7 +205,7 @@ var i18n = {
     "nl": "Originele bericht",
     "nb": "Opprinnelig melding",
     "ru": "Оригинал сообщения",
-    "sv": "Ursprungligt meddelande",    
+    "sv": "Ursprungligt meddelande",
     "fi": "Alkuperäinen viesti",
     "zh-CN": "原始邮件",
     "hu": "Eredeti levél",
