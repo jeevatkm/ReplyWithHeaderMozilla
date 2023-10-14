@@ -459,6 +459,15 @@ var ReplyWithHeader = {
     }
   },
 
+  cleanNodesUpTo: function(node, cssClassName) {
+    while (node.firstChild) {
+      if (this.contains(node.firstChild.className, cssClassName)) {
+        break;
+      }
+      node.removeChild(node.firstChild);
+    }
+  },
+
   cleanEmptyTags: function(node) {
     let toDelete = true;
     while (node && toDelete) {
@@ -533,7 +542,8 @@ var ReplyWithHeader = {
         rootElement.removeChild(firstNode);
       }
 
-      //rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
+      rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
+      rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
     } else {
       let node = rootElement.firstChild;
       if (node.nodeName && node.nodeName.toLowerCase() == 'br') {
@@ -562,12 +572,11 @@ var ReplyWithHeader = {
     }
 
     if (this.isHtmlMail) {
-      while (fwdContainer.firstChild) {
-        if (this.contains(fwdContainer.firstChild.className, 'moz-email-headers-table')) {
-          break;
-        }
-        fwdContainer.removeChild(fwdContainer.firstChild);
-      }
+      // Clean up before forward container
+      this.cleanNodesUpTo(rootElement, 'moz-forward-container');
+
+      // Clean up between the nodes moz-forward-container and moz-email-headers-table
+      this.cleanNodesUpTo(fwdContainer, 'moz-email-headers-table');
 
       fwdContainer.replaceChild(hdrRwhNode, this.getElement('moz-email-headers-table'));
 
@@ -576,8 +585,8 @@ var ReplyWithHeader = {
         rootElement.insertBefore(sigNode, fwdContainer);
         this.cleanEmptyTags(rootElement.firstChild);
 
-        // let rootElement = gMsgCompose.editor.rootElement;
-        // rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
+        rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
+        rootElement.insertBefore(gMsgCompose.editor.document.createElement('br'), rootElement.firstChild);
       }
     } else {
       this.log.debug('Headers count: ' + this.hdrCnt);
