@@ -11,7 +11,7 @@ fieldset legend {
 
 html,
 body {
-    background-color: var(--color-gray-10);
+    /* background-color: var(--color-gray-10); */
 }
 
 body {
@@ -54,14 +54,14 @@ button {
     flex-grow: 10;
 }
 
-#tablist {
+#tabList {
     list-style: none;
     margin: 0;
     padding: 0;
     cursor: default;
 }
 
-#tablist li {
+#tabList li {
     background-color: var(--color-gray-10);
     border: 1px solid var(--color-gray-20);
     border-bottom: none;
@@ -72,17 +72,17 @@ button {
 
 }
 
-#tablist li:focus,
-#tablist li:hover {
+#tabList li:focus,
+#tabList li:hover {
     background-color: var(--color-blue-20);
 }
 
-#tablist li[aria-selected="true"] {
+#tabList li[aria-selected="true"] {
     background-color: white;
 }
 
 #tabcontent {
-    background-color: white;
+    /* background-color: white; */
     border: 1px solid var(--color-gray-20);
     margin: 0px;
     padding: 1em;
@@ -94,4 +94,23 @@ button {
 
 [aria-hidden="false"] {
     display: block;
+}
+
+.paypal-donate-button {
+    position: relative;
+    border-radius: 1000px;
+    cursor: pointer;
+    /* display: inline-block; */
+    min-width: 6rem;
+    text-align: center;
+    text-decoration: none;
+    transition: color 0.2s ease 0s, background-color 0.2s ease 0s, border-color 0.2s ease 0s;
+    border: 0.125rem solid rgb(255, 209, 64);
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.5rem;
+    font-weight: bold;
+    padding: 0.625rem 1.875rem;
+    background: rgb(255, 209, 64);
+    color: rgb(0, 48, 135);
 }
