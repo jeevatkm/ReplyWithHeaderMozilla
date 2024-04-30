@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) Jeevanandam M. (jeeva@myjeeva.com)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at
+ * https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
+ */
+
 fieldset {
     border: 1px solid var(--color-gray-20);
     border-top-width: 26px;
@@ -9,10 +18,10 @@ fieldset legend {
     line-height: 26px;
 }
 
-html,
+/* html,
 body {
-    /* background-color: var(--color-gray-10); */
-}
+    background-color: var(--color-gray-10);
+} */
 
 body {
     margin: 1em;
@@ -69,7 +78,6 @@ button {
     height: 1em;
     padding: 3px 10px;
     margin: 0px;
-
 }
 
 #tabList li:focus,
@@ -77,9 +85,9 @@ button {
     background-color: var(--color-blue-20);
 }
 
-#tabList li[aria-selected="true"] {
+/* #tabList li[aria-selected="true"] {
     background-color: white;
-}
+} */
 
 #tabcontent {
     /* background-color: white; */

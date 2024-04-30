@@ -9,8 +9,7 @@
 
 import * as rwhNotifications from '../modules/notifications.mjs';
 import * as rwhSettings from '../modules/settings.mjs';
-
-// const PREF_PREFIX = "extensions.replywithheader.";
+import * as rwhI18n from '../modules/headers-i18n.mjs';
 
 const homepageUrl = 'http://myjeeva.com/replywithheader-mozilla';
 const reviewsPageUrl = 'https://addons.mozilla.org/en-US/thunderbird/addon/replywithheader/';
@@ -45,9 +44,9 @@ function createOptionItem(v, l) {
 }
 
 async function populateLocale(prefElement) {
-    for (var lang in i18n.lang) {
+    for (var lang in rwhI18n.i18n.lang) {
         prefElement.appendChild(createOptionItem(
-            lang, i18n.lang[lang] + ' (' + lang + ')'
+            lang, rwhI18n.i18n.lang[lang] + ' (' + lang + ')'
         ));
     }
 }
@@ -57,6 +56,13 @@ async function loadPref(prefElement) {
     let value = await rwhSettings.get(name, {});
     switch (type) {
         case "checkbox":
+            switch (name) {
+                case 'header.html.prefix.line':
+                    prefElement.addEventListener('click', function(e) {
+                        document.getElementById('hdrHtmlPrefixLineColor').disabled = !e.target.checked;
+                    });
+                break;
+            }
             prefElement.checked = value;
             prefElement.addEventListener("change", () => savePref(prefElement));
             break;
@@ -71,6 +77,7 @@ async function loadPref(prefElement) {
             break;
         case "SELECT":
         case "color":
+        case 'text':
             switch (name) {
                 case "header.locale":
                     await populateLocale(prefElement);
@@ -97,6 +104,7 @@ async function savePref(prefElement) {
             break;
         case "SELECT":
         case "color":
+        case 'text':
             rwhSettings.set(name, prefElement.value);
             break;
     }

@@ -2,16 +2,14 @@
  * Copyright (c) Jeevanandam M. (jeeva@myjeeva.com)
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * License, v2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at
  * https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
  */
 
-'use strict';
-
 // encoding: utf-8
 
-var i18n = {
+export const i18n = {
   "lang": {
     "en-US": "English",
     "en-GB": "English",
@@ -161,12 +159,34 @@ var i18n = {
     "nl": "Verzonden:",
     "nb": "Sendt:",
     "ru": "Отправлено:",
-    "sv": "Skickat",
+    "sv": "Skickat:",
     "fi": "Lähetetty:",
     "zh-CN": "发送时间：",
-    "hu": "Dátum",
+    "hu": "Dátum:",
   },
-  "forwarded_message": {
+  "reply-to": {
+    "en-US": "Reply-To:",
+    "en-GB": "Reply-To:",
+    "en-AU": "Reply-To:",
+    "fr": "Réponse à :",
+    "de": "Antwort an:",
+    "es": "Responder a:",
+    "it": "Rispondere a:",
+    "ja": "に返信：",
+    "pl": "Odpowiedź na:",
+    "ar": "الرد على:",
+    "pt": "Responder para:",
+    "pt-BR": "Responder para:",
+    "ko": "답장하다:",
+    "nl": "Antwoord aan:",
+    "nb": "Svar-Til:",
+    "ru": "Ответить-кому:",
+    "sv": "Svara-till:",
+    "fi": "Vastausosoite:",
+    "zh-CN": "回复到：",
+    "hu": "Válasz-Címzett:",
+  },
+  "forwardedMessage": {
     "en-US": "Forwarded Message",
     "en-GB": "Forwarded Message",
     "en-AU": "Forwarded Message",
@@ -188,7 +208,7 @@ var i18n = {
     "zh-CN": "转发的原邮件",
     "hu": "Továbbított levél",
   },
-  "original_message": {
+  "originalMessage": {
     "en-US": "Original Message",
     "en-GB": "Original Message",
     "en-AU": "Original Message",

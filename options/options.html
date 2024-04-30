@@ -15,7 +15,6 @@
     <title>RWH Preferences</title>
     <link rel="stylesheet" href="chrome://messenger/skin/colors.css">
     <link rel="stylesheet" href="options.css">
-    <script src="/scripts/headers-i18n.js"></script>
     <script src="options.js" type="module"></script>
 </head>
 
@@ -31,12 +30,12 @@
     <div id="tabpanel">
         <ul role="tablist" id="tabList">
             <li id="link1" role="tab" aria-controls="panel-1" aria-selected="true">Headers</li>
-            <li id="link2" role="tab" aria-controls="panel-2" aria-selected="false">Extras</li>
+            <!-- <li id="link2" role="tab" aria-controls="panel-2" aria-selected="false">Extras</li> -->
             <li id="link3" role="tab" aria-controls="panel-3" aria-selected="false">About</li>
         </ul>
         <div id="tabcontent">
             <div id="panel-1" role="tabpanel" aria-labelledby="link1" aria-hidden="false">
-                <fieldset id="hboxFromAttribution">
+                <!-- <fieldset id="hboxFromAttribution">
                     <legend id="lblFromAttribution">Header 'From' attribution style"</legend>
                     <div class="vbox" data-type="radiogroup" data-preference="header.from.style">
                         <label>
@@ -61,10 +60,10 @@
                         <label><input type="radio" value="1" name="toccAttributionStyle" />Outlook (To: Name1; Name2;
                             ...)</label>
                     </div>
-                </fieldset>
+                </fieldset> -->
                 <fieldset>
                     <legend id="lblHeaderQuotSeq">Header quoting sequence and labels</legend>
-                    <div class="vbox" data-type="radiogroup" data-preference="header.lblseq.style">
+                    <div class="vbox" data-type="radiogroup" data-preference="header.label.seq.style">
                         <label><input type="radio" name="quotSeqAttributionStyle" value="0" />Thunderbird (Subject, Date,
                             From, To, Cc)</label>
                         <label><input type="radio" name="quotSeqAttributionStyle" value="1" />Outlook (From, Sent, To,
@@ -75,7 +74,7 @@
                             Date, Subject)</label>
                     </div>
                 </fieldset>
-                <fieldset>
+                <!-- <fieldset>
                     <legend id="lblHdrDate">Header date format</legend>
                     <div class="hbox" data-type="radiogroup" data-preference="header.date.format">
                         <label><input type="radio" name="quotDateAttributionStyle" value="0" />Locale timezone</label>
@@ -92,11 +91,36 @@
                             Include short timezone info
                         </label>
                     </div>
+                </fieldset> -->
+                <fieldset>
+                    <legend id="lblHeaderFormat">Subject prefix</legend>
+                    <div class="hbox">
+                        <label>
+                            <input type="checkbox" id="transSubjectPrefix" data-preference="trans.subject.prefix" />
+                            Transform subject prefix (Re -> RE and Fwd -> FW)
+                        </label>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend id="lblHeaderPrefix">Header prefix</legend>
+                    <div class="hbox">
+                        <label>
+                            <input type="checkbox" id="hdrPlainPrefixText" data-preference="header.plain.prefix.text" />
+                            Include plain text header prefix text
+                        </label>
+                    </div>
+                    <div class="hbox">
+                        <label>
+                            <input type="checkbox" id="hdrHtmlPrefixLine" data-preference="header.html.prefix.line" />
+                            Include HTML header prefix line, color code
+                            <input type="text" id="hdrHtmlPrefixLineColor" data-preference="header.html.prefix.line.color" style="height: 17px;width: 75px;font-size: 12px;text-align: center;" />
+                        </label>
+                    </div>
                 </fieldset>
             </div>
 
-            <div id="panel-2" role="tabpanel" aria-labelledby="link2" aria-hidden="true">
-                <!-- <fieldset>
+            <!-- <div id="panel-2" role="tabpanel" aria-labelledby="link2" aria-hidden="true">
+                <fieldset>
                     <legend id="lblCntFormat">Content formatting and cleanups</legend>
                     <div class="hbox">
                         <label>
@@ -122,25 +146,9 @@
                             Cleanup only new quote character
                         </label>
                     </div>
-                </fieldset> -->
-                <fieldset>
-                    <legend id="lblHeaderFormat">Email Subject reformatting</legend>
-                    <div class="hbox">
-                        <label>
-                            <input type="checkbox" id="transSubjectPrefix" data-preference="trans.subject.prefix" />
-                            Transform subject prefix (Re -> RE and Fwd -> FW)
-                        </label>
-                    </div>
                 </fieldset>
-                <fieldset>
-                    <legend id="lblHeaderCleanups">Header cleanups</legend>
-                    <div class="hbox">
-                        <label>
-                            <input type="checkbox" id="excludePlainTextHdrPrefix" data-preference="clean.plain.header.prefix" />
-                            Don't include plain text header prefix
-                        </label>
-                    </div>
-            </div>
+
+            </div> -->
 
             <div id="panel-3" role="tabpanel" aria-labelledby="link3" aria-hidden="true">
                 <div class="vbox center" style="margin-top: 30px">
