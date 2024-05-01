@@ -14,6 +14,7 @@ import * as rwhI18n from './headers-i18n.mjs';
 
 const positionBeforeBegin = 'beforebegin';
 const positionAfterBegin = 'afterbegin';
+const fwdHdrLookupString = '-------- ';
 
 export async function process(tab) {
     console.debug(`tab.id=${tab.id}, tab.type=${tab.type}, tab.mailTab=${tab.mailTab}`);
@@ -30,14 +31,7 @@ export async function process(tab) {
         return;
     }
 
-    let result = await rwh.process();
-    console.debug(result);
-    messenger.compose.setComposeDetails(tab.id, {
-        body: result.body,
-        subject: result.subject,
-        isModified: false
-    });
-
+    await rwh.process(tab);
 }
 
 class ReplyWithHeader {
@@ -97,27 +91,32 @@ class ReplyWithHeader {
         return this;
     }
 
-    async process() {
-        let result = null;
+    async process(tab) {
+        let result = {isModified: false};
+
+        if (rwhSettings.isTransSubjectPrefix()) {
+            let subject = this.#composeDetails.subject;
+            if (this.isReply) {
+                result.subject = subject.replace('Re:', 'RE:')
+            }
+            if (this.isForward) {
+                result.subject = subject.replace('Fwd:', 'FW:');
+            }
+        }
 
         if (this.isPlainText) {
             console.debug('Plain Text', this.plainTextBody);
             this.#text = this.plainTextBody;
-            this._processPlainText();
+            result = Object.assign({}, result, await this._processPlainText());
         } else {
             console.debug('HTML Content', this.htmlBody);
-            // Parse the message into an HTML document
             this.#document = this._createDocumentFromString(this.htmlBody);
-            result = await this._processHtml();
+            result = Object.assign({}, result, await this._processHtml());
         }
 
-        if (result && rwhSettings.isTransSubjectPrefix()) {
-            let subject = this.#composeDetails.subject;
-            result.subject = this.isReply ? subject.replace('Re:', 'RE:')
-                : subject.replace('Fwd:', 'FW:');
-        }
-
-        return result;
+        // Apply it to message compose window
+        console.debug(result);
+        messenger.compose.setComposeDetails(tab.id, result);
     }
 
     // So called private/internal methods
@@ -126,7 +125,8 @@ class ReplyWithHeader {
         let targetNodeClassName = this.targetNodeClassName;
         let targetNode = this._getByClassName(targetNodeClassName);
         if (!targetNode) {
-            console.warn('Thunderbird email target node (moz-cite-prefix or moz-forward-container) not found');
+            console.error('Thunderbird email target node (moz-cite-prefix or moz-forward-container) is not found');
+            console.error('Due to internal changes in Thunderbird. RWH unable to process email headers, contact add-on author');
 
             // return original value as-is;
             return {
@@ -138,18 +138,17 @@ class ReplyWithHeader {
         div.classList.add(targetNodeClassName);
 
         var headers = {
-            'from': this._extractAddress('from'),
-            'to': this._extractAddress('to'),
-            'cc': this._extractAddress('cc'),
-            'date': this._extractAddress('date'),
-            'reply-to': this._extractAddress('reply-to'),
-            'subject': this._extractAddress('subject'),
+            'from': this._extractHeader('from', true, true),
+            'to': this._extractHeader('to', true, true),
+            'cc': this._extractHeader('cc', true, true),
+            'date': this._extractHeader('date', false, true),
+            'reply-to': this._extractHeader('reply-to', true, true),
+            'subject': this._extractHeader('subject', false, true),
         }
-
         console.log(headers);
 
         let rwhHeaderString = await this._createHtmlHeaders(headers);
-        console.log(rwhHeaderString)
+        console.log(rwhHeaderString);
 
         let rwhHeaderHtmlElement = this._createElementFromString(rwhHeaderString);
         div.insertAdjacentElement(positionAfterBegin, rwhHeaderHtmlElement);
@@ -170,9 +169,51 @@ class ReplyWithHeader {
         }
     }
 
-    _processPlainText() {
-        console.log('_processPlainText called');
+    async _processPlainText() {
+        var headers = {
+            'from': this._extractHeader('from', true, false),
+            'to': this._extractHeader('to', true, false),
+            'cc': this._extractHeader('cc', true, false),
+            'date': this._extractHeader('date', false, false),
+            'reply-to': this._extractHeader('reply-to', true, false),
+            'subject': this._extractHeader('subject', false, false),
+        }
+        console.log(headers);
 
+        let rwhHeaders = await this._createPlainTextHeaders(headers);
+        console.log(rwhHeaders);
+
+        let textLines = this.#text.split(/\r?\n/);
+        console.log(textLines);
+
+        let locale = await rwhSettings.getHeaderLocale();
+        let startPos = 0;
+        let linesToDelete = 1;
+        if (this.isReply) {
+            let lookupWroteString = rwhI18n.i18n['wrote'][locale];
+            for(let l of textLines) {
+                if (l.trim().includes(lookupWroteString)) {
+                    break;
+                }
+                startPos++;
+            }
+        } else if (this.isForward) {
+            linesToDelete = rwhHeaders.length;
+            for(let l of textLines) {
+                if (l.trim().startsWith(fwdHdrLookupString)) {
+                    break;
+                }
+                startPos++;
+            }
+        }
+
+        console.log('startPos', startPos, textLines[startPos]);
+        textLines.splice(startPos, linesToDelete, ...rwhHeaders);
+
+        this.#text = textLines.join('\r\n');
+        return {
+            plainTextBody: this.#text
+        }
     }
 
     async _createHtmlHeaders(headers) {
@@ -180,12 +221,12 @@ class ReplyWithHeader {
         let headerLabelSeq = await rwhSettings.getHeaderLabelSeqStyle();
         let headerLabelSeqValues = rwhSettings.headerLabelSeqStyleSettings[headerLabelSeq];
 
-        let rwhHdr = '<div id="rwhHeaders"';
+        let rwhHeaders = '<div id="rwhHeaders"';
         if (await rwhSettings.isHeaderHtmlPrefixLine()) {
             let borderColor = await rwhSettings.getHeaderHtmlPrefixLineColor();
-            rwhHdr += ` style="border:none;border-top:solid ${borderColor} 1.0pt;padding:3.0pt 0cm 0cm 0cm"`
+            rwhHeaders += ` style="border:none;border-top:solid ${borderColor} 1.0pt;padding:3.0pt 0cm 0cm 0cm"`
         }
-        rwhHdr += '>';
+        rwhHeaders += '>';
 
         headerLabelSeqValues.forEach(function (hdrKey, _) {
             if (hdrKey == 'reply-to' && this.isReply) {
@@ -198,16 +239,53 @@ class ReplyWithHeader {
             }
 
             if (headers[hdrKey]) {
-                rwhHdr += '<p style="margin:0cm;font-size:11.5pt"><span><b>' + lbl + '</b> ' + headers[hdrKey] + '</span></p>';
+                rwhHeaders += '<p style="margin:0cm;font-size:11.5pt"><span><b>' + lbl + '</b> ' + headers[hdrKey] + '</span></p>';
             }
         }, this);
 
-        rwhHdr += '</div><br>';
+        rwhHeaders += '</div><br>';
 
-        return rwhHdr;
+        return rwhHeaders;
     }
 
-    _extractAddress(key) {
+    async _createPlainTextHeaders(headers) {
+        let locale = await rwhSettings.getHeaderLocale();
+        let headerLabelSeq = await rwhSettings.getHeaderLabelSeqStyle();
+        let headerLabelSeqValues = rwhSettings.headerLabelSeqStyleSettings[headerLabelSeq];
+        let lineBreak = '\r\n';
+
+        let rwhHeaders = [];
+        if (await rwhSettings.isHeaderPlainPrefixText()) {
+            rwhHeaders.push(this.isForward
+                ? '-------- ' + rwhI18n.i18n.forwardedMessage[locale] + ' --------'
+                : '-------- ' + rwhI18n.i18n.originalMessage[locale] + ' --------');
+        } else {
+            if (this.isForward) {
+                rwhHeaders.push('');
+            }
+        }
+
+        headerLabelSeqValues.forEach(function (hdrKey, _) {
+            if (hdrKey == 'reply-to' && this.isReply) {
+                return;
+            }
+
+            let lbl = rwhI18n.i18n[hdrKey][locale]
+            if (headerLabelSeq == 1 && hdrKey == 'date') {
+                lbl = rwhI18n.i18n['sent'][locale]
+            }
+
+            if (headers[hdrKey]) {
+                rwhHeaders.push(lbl + ' ' + headers[hdrKey]);
+            }
+        }, this);
+
+        rwhHeaders.push('');
+
+        return rwhHeaders;
+    }
+
+    _extractHeader(key, clean, escape) {
         let values = this.#fullMessage.headers[key];
         if (!values) {
             return null;
@@ -215,9 +293,9 @@ class ReplyWithHeader {
 
         let pv = [];
         for (let v of values) {
-            pv.push(this._cleanEmail(v));
+            pv.push((clean ? this._cleanEmail(v) : v));
         }
-        return this._escapeHtml(pv.join(', '));
+        return escape ? this._escapeHtml(pv.join(', ')) : pv.join(', ');
     }
 
     _getByClassName(className) {
