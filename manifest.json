@@ -8,7 +8,7 @@
     "browser_specific_settings": {
         "gecko": {
             "id": "replywithheader-dev@myjeeva.com",
-            "strict_min_version": "115.0"
+            "strict_min_version": "125.0"
         }
     },
     "icons": {
