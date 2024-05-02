@@ -28,6 +28,8 @@ let keyHeaderPlainPrefixText = 'header.plain.prefix.text';
 let keyHeaderHtmlPrefixLine = 'header.html.prefix.line';
 let keyHeaderHtmlPrefixLineColor = 'header.html.prefix.line.color';
 let keyTransSubjectPrefix = 'trans.subject.prefix';
+let keyCleanBlockQuoteColor = 'clean.blockquote.color';
+let keyCleanQuoteCharGreaterThan = 'clean.quote.char.greaterthan';
 
 let rwhDefaultSettings = {
     // Refer above constant headerLabelSeqStyleSettings
@@ -57,11 +59,8 @@ let rwhDefaultSettings = {
     // Date header include timezone info
     // "header.date.timezone": false,
 
-    // Mail message
-    //   "clean.blockquote": true,
-    //   "clean.new.blockquote": false,
-    //   "clean.char.greaterthan": true,
-    //   "clean.only.new.quote.char": false,
+    [keyCleanBlockQuoteColor]: true,
+    [keyCleanQuoteCharGreaterThan]: true,
 }
 
 export async function get(key, fallback) {
@@ -126,6 +125,14 @@ export async function isTransSubjectPrefix() {
     return await get(keyTransSubjectPrefix, rwhDefaultSettings[keyTransSubjectPrefix]);
 }
 
+export async function isCleanBlockQuoteColor() {
+    return await get(keyCleanBlockQuoteColor, rwhDefaultSettings[keyCleanBlockQuoteColor]);
+}
+
+export async function isCleanQuoteCharGreaterThan() {
+    return await get(keyCleanQuoteCharGreaterThan, rwhDefaultSettings[keyCleanQuoteCharGreaterThan]);
+}
+
 
 //
 // Unexported methods
@@ -133,7 +140,7 @@ export async function isTransSubjectPrefix() {
 
 async function setDefault(key, value) {
     let ev = await get(key);
-    if (ev == null) {
+    if (ev === null) {
         set(key, value);
     }
 }

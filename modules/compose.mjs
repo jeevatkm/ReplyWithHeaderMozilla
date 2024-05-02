@@ -15,6 +15,7 @@ import * as rwhI18n from './headers-i18n.mjs';
 const positionBeforeBegin = 'beforebegin';
 const positionAfterBegin = 'afterbegin';
 const fwdHdrLookupString = '-------- ';
+const plainTextFirstChars = '> ';
 
 export async function process(tab) {
     console.debug(`tab.id=${tab.id}, tab.type=${tab.type}, tab.mailTab=${tab.mailTab}`);
@@ -164,6 +165,12 @@ class ReplyWithHeader {
             mozForwardContainer.insertAdjacentElement(positionAfterBegin, this._createElement('br'));
         }
 
+        // blockquote
+        if (await rwhSettings.isCleanBlockQuoteColor() && this.isReply) {
+            let bq = this._getByTagName('blockquote');
+            bq.setAttribute('style', 'border:none !important;padding-left:0 !important;');
+        }
+
         return {
             body: new XMLSerializer().serializeToString(this.#document),
         }
@@ -209,6 +216,16 @@ class ReplyWithHeader {
 
         console.log('startPos', startPos, textLines[startPos]);
         textLines.splice(startPos, linesToDelete, ...rwhHeaders);
+
+        // greater than char '> '
+        if (await rwhSettings.isCleanQuoteCharGreaterThan()) {
+            for (let i = 0; i < textLines.length; i++) {
+                if (textLines[i].startsWith(plainTextFirstChars)) {
+                    textLines[i] = textLines[i].replace(plainTextFirstChars, '');
+                }
+            }
+        }
+
 
         this.#text = textLines.join('\r\n');
         return {
@@ -300,6 +317,10 @@ class ReplyWithHeader {
 
     _getByClassName(className) {
         return this.#document?.getElementsByClassName(className)?.[0];
+    }
+
+    _getByTagName(tagName) {
+        return this.#document?.getElementsByTagName(tagName)?.[0];
     }
 
     _createElement(tagName) {

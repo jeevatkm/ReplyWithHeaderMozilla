@@ -30,37 +30,10 @@
     <div id="tabpanel">
         <ul role="tablist" id="tabList">
             <li id="link1" role="tab" aria-controls="panel-1" aria-selected="true">Headers</li>
-            <!-- <li id="link2" role="tab" aria-controls="panel-2" aria-selected="false">Extras</li> -->
-            <li id="link3" role="tab" aria-controls="panel-3" aria-selected="false">About</li>
+            <li id="link2" role="tab" aria-controls="panel-2" aria-selected="false">About</li>
         </ul>
         <div id="tabcontent">
             <div id="panel-1" role="tabpanel" aria-labelledby="link1" aria-hidden="false">
-                <!-- <fieldset id="hboxFromAttribution">
-                    <legend id="lblFromAttribution">Header 'From' attribution style"</legend>
-                    <div class="vbox" data-type="radiogroup" data-preference="header.from.style">
-                        <label>
-                            <input type="radio" name="fromAttributionStyle" value="0" />
-                            Thunderbird
-                        </label>
-                        <label>
-                            <input type="radio" name="fromAttributionStyle" value="1" />
-                            Outlook Simple (From: Name)
-                        </label>
-                        <label>
-                            <input type="radio" name="fromAttributionStyle" value="2" />
-                            Outlook Extended (From: Name [mailto:email-address])
-                        </label>
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <legend id="lblHeaderToCcAttrib">Header 'To' &amp; 'Cc' attribution style</legend>
-                    <div class="vbox" data-type="radiogroup" data-preference="header.tocc.style">
-                        <label><input type="radio" value="0" name="toccAttributionStyle" />Thunderbird (To: Name1
-                            &lt;email-address1&gt;, ...)</label>
-                        <label><input type="radio" value="1" name="toccAttributionStyle" />Outlook (To: Name1; Name2;
-                            ...)</label>
-                    </div>
-                </fieldset> -->
                 <fieldset>
                     <legend id="lblHeaderQuotSeq">Header label sequence</legend>
                     <div class="vbox" data-type="radiogroup" data-preference="header.label.seq.style">
@@ -117,40 +90,25 @@
                         </label>
                     </div>
                 </fieldset>
-            </div>
 
-            <!-- <div id="panel-2" role="tabpanel" aria-labelledby="link2" aria-hidden="true">
                 <fieldset>
                     <legend id="lblCntFormat">Content formatting and cleanups</legend>
                     <div class="hbox">
                         <label>
-                            <input type="checkbox" id="cleanBlockQuote" data-preference="clean.blockquote" />
-                            Cleanup the blockquote colors
-                        </label>
-                    </div>
-                    <div class="hbox" style="margin-left:35px">
-                        <label>
-                            <input type="checkbox" id="cleanNewBlockQuote" data-preference="clean.new.blockquote" />
-                            Cleanup only new blockquote color
+                            <input type="checkbox" id="cleanBlockQuoteColor" data-preference="clean.blockquote.color" />
+                            Cleanup first level blockquote color
                         </label>
                     </div>
                     <div class="hbox">
                         <label>
-                            <input type="checkbox" id="cleanGreaterThanChar" data-preference="clean.char.greaterthan" />
-                            Cleanup the quote character '>'
-                        </label>
-                    </div>
-                    <div class="hbox" style="margin-left:35px">
-                        <label>
-                            <input type="checkbox" id="cleanOnlyNewQuoteChar" data-preference="clean.only.new.quote.char" />
-                            Cleanup only new quote character
+                            <input type="checkbox" id="cleanQuoteCharGreaterThan" data-preference="clean.quote.char.greaterthan" />
+                            Cleanup first level quote character '> '
                         </label>
                     </div>
                 </fieldset>
+            </div>
 
-            </div> -->
-
-            <div id="panel-3" role="tabpanel" aria-labelledby="link3" aria-hidden="true">
+            <div id="panel-2" role="tabpanel" aria-labelledby="link2" aria-hidden="true">
                 <div class="vbox center" style="margin-top: 30px">
                     <img id="abtRwhLogo" src='/images/rwh.svg' width='64' height='64' />
                     <div class="label" id="abtRwhCaption" style="font-weight:bold;">ReplyWithHeader</div>
