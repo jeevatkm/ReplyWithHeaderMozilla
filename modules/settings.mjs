@@ -21,8 +21,9 @@ export const headerLabelSeqStyleSettings = {
 }
 
 let keyHeaderLabelSeqStyle = 'header.label.seq.style';
-// let keyHeaderDateFormat = 'header.date.format';
-// let keyHeaderTimeFormat = 'header.time.format';
+let keyHeaderDateFormat = 'header.date.format';
+let keyHeaderTimeFormat = 'header.time.format';
+let keyHeaderTimeZone = 'header.date.timezone';
 let keyHeaderLocale = 'header.locale';
 let keyHeaderPlainPrefixText = 'header.plain.prefix.text';
 let keyHeaderHtmlPrefixLine = 'header.html.prefix.line';
@@ -44,20 +45,15 @@ let rwhDefaultSettings = {
     // Date & Time
     // 0 - Locale date format
     // 1 - International date format - UTC
-    // [keyHeaderDateFormat]: 0,
-
-    // Date style
-    // Full - ddd, MMM d, yyyy
-    // ISO - yyyy-MM-dd
-    //   "header.date.style": 0,
+    [keyHeaderDateFormat]: 0,
 
     // Time style
     // 0 - 12 hours AM/PM
     // 1 - 24 hours
-    // [keyHeaderTimeFormat]: 0,
+    [keyHeaderTimeFormat]: 0,
 
     // Date header include timezone info
-    // "header.date.timezone": false,
+    [keyHeaderTimeZone]: true,
 
     [keyCleanBlockQuoteColor]: true,
     [keyCleanQuoteCharGreaterThan]: true,
@@ -97,13 +93,17 @@ export async function getHeaderLabelSeqStyle() {
     return await getInt(keyHeaderLabelSeqStyle);
 }
 
-// export async function getHeaderDateFormat() {
-//     return await getInt(keyHeaderDateFormat);
-// }
+export async function getHeaderDateFormat() {
+    return await getInt(keyHeaderDateFormat);
+}
 
-// export async function getHeaderTimeFormat() {
-//     return await getInt(keyHeaderTimeFormat);
-// }
+export async function getHeaderTimeFormat() {
+    return await getInt(keyHeaderTimeFormat);
+}
+
+export async function isHeaderTimeZone() {
+    return await get(keyHeaderTimeZone, rwhDefaultSettings[keyHeaderTimeZone]);
+}
 
 export async function getHeaderLocale() {
     return await get(keyHeaderLocale, rwhDefaultSettings[keyHeaderLocale]);

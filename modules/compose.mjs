@@ -139,12 +139,12 @@ class ReplyWithHeader {
         div.classList.add(targetNodeClassName);
 
         var headers = {
-            'from': this._extractHeader('from', true, true),
-            'to': this._extractHeader('to', true, true),
-            'cc': this._extractHeader('cc', true, true),
-            'date': this._extractHeader('date', false, true),
-            'reply-to': this._extractHeader('reply-to', true, true),
-            'subject': this._extractHeader('subject', false, true),
+            'from': await this._extractHeader('from', true, true),
+            'to': await this._extractHeader('to', true, true),
+            'cc': await this._extractHeader('cc', true, true),
+            'date': await this._extractHeader('date', false, true),
+            'reply-to': await this._extractHeader('reply-to', true, true),
+            'subject': await this._extractHeader('subject', false, true),
         }
         console.log(headers);
 
@@ -178,12 +178,12 @@ class ReplyWithHeader {
 
     async _processPlainText() {
         var headers = {
-            'from': this._extractHeader('from', true, false),
-            'to': this._extractHeader('to', true, false),
-            'cc': this._extractHeader('cc', true, false),
-            'date': this._extractHeader('date', false, false),
-            'reply-to': this._extractHeader('reply-to', true, false),
-            'subject': this._extractHeader('subject', false, false),
+            'from': await this._extractHeader('from', true, false),
+            'to': await this._extractHeader('to', true, false),
+            'cc': await this._extractHeader('cc', true, false),
+            'date': await this._extractHeader('date', false, false),
+            'reply-to': await this._extractHeader('reply-to', true, false),
+            'subject': await this._extractHeader('subject', false, false),
         }
         console.log(headers);
 
@@ -302,10 +302,56 @@ class ReplyWithHeader {
         return rwhHeaders;
     }
 
-    _extractHeader(key, clean, escape) {
+    async _parseDate(d) {
+        let fallback = (' ' + d).slice(1);
+        let locale = await rwhSettings.getHeaderLocale();
+        let dateFormat = await rwhSettings.getHeaderDateFormat();
+        let timeFormat = await rwhSettings.getHeaderTimeFormat();
+        let includeTimezone = await rwhSettings.isHeaderTimeZone();
+
+        console.debug('Date format: ' + (dateFormat == 1 ? 'UTC' : 'Locale (' + locale + ')')
+                    + ', Time format: ' + (timeFormat == 1 ? '24-hour' : '12-hour')
+                    + (includeTimezone ? ', Include short timezone info' : ''))
+
+        let epoch = null;
+        try {
+            epoch = Date.parse(d);
+        } catch (e) {
+            console.error(error);
+            return fallback;
+        }
+
+        let pd = new Date(epoch);
+        let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+
+        if (dateFormat == 1) { // Locale date format
+            options.timeZone = 'UTC';
+            options.timeZoneName = 'short';
+        }
+
+        if (timeFormat == 1) {
+            options.hour12 = false;
+        } else {
+            options.hour12 = true;
+        }
+
+        if (includeTimezone) {
+            options.timeZoneName = 'short';
+        }
+
+        let ds = new Intl.DateTimeFormat(locale, options).format(pd);
+        ds = ds.replace(/GMT/, 'UTC');
+        return ds;
+    }
+
+    async _extractHeader(key, clean, escape) {
         let values = this.#fullMessage.headers[key];
         if (!values) {
             return null;
+        }
+
+        if (key === 'date') {
+            return this._escapeHtml(await this._parseDate(values[0]));
         }
 
         let pv = [];
