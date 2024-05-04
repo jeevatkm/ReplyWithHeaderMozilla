@@ -2,7 +2,7 @@
  * Copyright (c) Jeevanandam M. (jeeva@myjeeva.com)
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v2.0. If a copy of the MPL was not distributed with this
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at
  * https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
  */
@@ -21,9 +21,11 @@ async function init() {
     });
 
     rwhSettings.setDefaults();
-
 }
 
-init();
-
-console.info('Addon loaded successfully');
+try {
+    init();
+    console.info('Addon loaded successfully');
+} catch(e) {
+    console.error(e);
+}

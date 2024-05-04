@@ -2,7 +2,7 @@
  * Copyright (c) Jeevanandam M. (jeeva@myjeeva.com)
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v2.0. If a copy of the MPL was not distributed with this
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at
  * https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
  */
@@ -12,7 +12,8 @@
 import * as rwhUtils from './utils.mjs';
 
 export const optionsPrefix = 'extensions.replywithheader.';
-
+export const replySubjectPrefix = 'Re:';
+export const forwardSubjectPrefix = 'Fwd:';
 export const headerLabelSeqStyleSettings = {
     0: ['subject', 'date', 'from', 'to', 'cc', 'reply-to'], // Thunderbird
     1: ['from', 'date', 'to', 'cc', 'reply-to', 'subject'], // Outlook
