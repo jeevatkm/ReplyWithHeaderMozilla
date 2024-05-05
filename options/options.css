@@ -2,7 +2,7 @@
  * Copyright (c) Jeevanandam M. (jeeva@myjeeva.com)
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v2.0. If a copy of the MPL was not distributed with this
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at
  * https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
  */
@@ -85,9 +85,9 @@ button {
     background-color: var(--color-blue-20);
 }
 
-/* #tabList li[aria-selected="true"] {
+#tabList li[aria-selected="true"] {
     background-color: white;
-} */
+}
 
 #tabcontent {
     /* background-color: white; */
@@ -104,21 +104,28 @@ button {
     display: block;
 }
 
-.paypal-donate-button {
-    position: relative;
-    border-radius: 1000px;
+#buttonPaypal, #buttonGithub {
+    border-radius: 500px;
     cursor: pointer;
-    /* display: inline-block; */
-    min-width: 6rem;
-    text-align: center;
-    text-decoration: none;
-    transition: color 0.2s ease 0s, background-color 0.2s ease 0s, border-color 0.2s ease 0s;
-    border: 0.125rem solid rgb(255, 209, 64);
-    font-family: "Helvetica Neue", Arial, sans-serif;
-    font-size: 1.125rem;
-    line-height: 1.5rem;
-    font-weight: bold;
-    padding: 0.625rem 1.875rem;
-    background: rgb(255, 209, 64);
     color: rgb(0, 48, 135);
+    text-align: center;
+    width: 175px;
+    font-weight: bold;
+    height: 30px;
+    display: inline-block;
+}
+
+.github-sponsor-button {
+    display: inline-block;
+    overflow: visible !important;
+    vertical-align: text-bottom;
+    fill: currentColor;
+    animation-name: pulse-in;
+    animation-duration: .5s;
+    color: #bf3989 !important;
+    vertical-align: middle !important;
+    margin-right: var(--base-size-4, 4px) !important;
+    transition: transform .15s cubic-bezier(0.2, 0, 0.13, 2);
+    transform: scale(1);
+    overflow: visible !important;
 }

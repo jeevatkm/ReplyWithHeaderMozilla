@@ -2,7 +2,7 @@
  * Copyright (c) Jeevanandam M. (jeeva@myjeeva.com)
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v2.0. If a copy of the MPL was not distributed with this
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at
  * https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
  */
@@ -11,17 +11,16 @@ import * as rwhNotifications from '../modules/notifications.mjs';
 import * as rwhSettings from '../modules/settings.mjs';
 import * as rwhI18n from '../modules/headers-i18n.mjs';
 
-const homepageUrl = 'http://myjeeva.com/replywithheader-mozilla';
-const reviewsPageUrl = 'https://addons.mozilla.org/en-US/thunderbird/addon/replywithheader/';
-const issuesPageUrl = 'https://github.com/jeevatkm/ReplyWithHeaderMozilla/issues';
-const paypalDonateUrl = 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=Jeevanandam%20M%2e&item_number=ReplyWithHeaderMozilla&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted';
-
 // UI function to hide/show out option tabs.
 function tabListClickHandler(elem) {
     let target = elem.target;
 
     if (target.parentNode.id != 'tabList') return false;
 
+    openRwhTab(target);
+}
+
+function openRwhTab(target) {
     let selectedTab = document.querySelector('[aria-selected="true"]');
     selectedTab.setAttribute('aria-selected', false);
     target.setAttribute('aria-selected', true);
@@ -35,8 +34,13 @@ function tabListClickHandler(elem) {
 }
 
 function openPaypal() {
-    rwhNotifications.show("Opening PayPal Donation Page. Thanks for supporting ReplyWithHeader.");
-    messenger.windows.openDefaultBrowser(paypalDonateUrl);
+    rwhNotifications.show('Opening PayPal Donation Page. Thanks for supporting ReplyWithHeader.');
+    messenger.windows.openDefaultBrowser(rwhSettings.paypalDonateUrl);
+}
+
+function openGithub() {
+    rwhNotifications.show('Opening GitHub Sponsors Page. Thanks for supporting ReplyWithHeader.');
+    messenger.windows.openDefaultBrowser(rwhSettings.gitHubSponsorUrl);
 }
 
 function createOptionItem(v, l) {
@@ -127,10 +131,11 @@ async function savePref(prefElement) {
 async function init() {
     const elementEventMap = {
         tabList: { type: "click", callback: tabListClickHandler },
-        buttonWebsite: { type: "click", callback: () => browser.windows.openDefaultBrowser(homepageUrl) },
-        buttonReview: { type: "click", callback: () => browser.windows.openDefaultBrowser(reviewsPageUrl) },
-        buttonIssues: { type: "click", callback: () => browser.windows.openDefaultBrowser(issuesPageUrl) },
+        buttonWebsite: { type: "click", callback: () => messenger.windows.openDefaultBrowser(rwhSettings.homepageUrl) },
+        buttonReview: { type: "click", callback: () => messenger.windows.openDefaultBrowser(rwhSettings.reviewsPageUrl) },
+        buttonIssues: { type: "click", callback: () => messenger.windows.openDefaultBrowser(rwhSettings.issuesPageUrl) },
         buttonPaypal: { type: "click", callback: openPaypal },
+        buttonGithub: { type: 'click', callback: openGithub },
     }
 
     for (let [elementId, eventData] of Object.entries(elementEventMap)) {
@@ -147,6 +152,22 @@ async function init() {
     // if (!(await messenger.storage.onChanged.hasListener(storageChanged))) {
     //     await messenger.storage.onChanged.addListener(storageChanged);
     // }
+
+    // Workaround way to open tab using 'messenger.storage.local,
+    // since TB does not have way to do while calling 'messenger.runtime.openOptionsPage()'
+    let command = await rwhSettings.get('options.ui.target.command', null);
+    if (command) {
+        switch(command) {
+            case 'openHeadersTab':
+                // currently no action to perform
+            case 'openAboutTab':
+                openRwhTab(document.getElementById('aboutTab'));
+                break;
+        }
+        // await rwhSettings.remove('options.ui.target.command');
+        await messenger.storage.local.remove(rwhSettings.optionsPrefix + 'options.ui.target.command');
+    }
+
 }
 
 window.addEventListener("load", init);

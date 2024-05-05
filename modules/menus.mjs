@@ -2,16 +2,18 @@
  * Copyright (c) Jeevanandam M. (jeeva@myjeeva.com)
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v2.0. If a copy of the MPL was not distributed with this
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at
  * https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
  */
 
 // RWH Menu Module
 
-import * as rwhNotifications from './notifications.mjs';
+import * as rwhSettings from './settings.mjs';
 
-async function register() {
+let separatorIdCounter = 0;
+
+export async function register() {
     let rwhMenuId = await messenger.menus.create({
         title: "RWH",
         contexts: [
@@ -23,7 +25,8 @@ async function register() {
         title: "Options",
         parentId: rwhMenuId,
         onclick: async () => {
-            let openingPage = messenger.runtime.openOptionsPage();
+            rwhSettings.set('options.ui.target.command', 'openHeadersTab');
+            messenger.runtime.openOptionsPage();
         }
     });
 
@@ -31,27 +34,30 @@ async function register() {
         title: "About",
         parentId: rwhMenuId,
         onclick: async () => {
-            // let openingPage = messenger.runtime.openOptionsPage();
-            // rwhNotifications.show('RWH', "this is test message of about from onclick");
+            rwhSettings.set('options.ui.target.command', 'openAboutTab');
+            messenger.runtime.openOptionsPage();
         }
     });
 
-    // Message Display Menu
-    // let msgDisMenuId = await messenger.menus.create({
-    //     title: "Options",
-    //     contexts: [
-    //         "all"
-    //     ],
-    //     onclick: async () => {
-    //         messenger.notifications.create({
-    //             "type": "basic",
-    //             "iconUrl": "images/icon.png",
-    //             "title": "RWH",
-    //             "message": "hey msg display button"
-    //         });
-    //     }
-    // });
+    await messenger.menus.create({
+        id: `separator-${separatorIdCounter++}`,
+        type: 'separator',
+        parentId: rwhMenuId
+    });
+
+    await messenger.menus.create({
+        title: 'Donate via PayPal',
+        parentId: rwhMenuId,
+        onclick: async () => {
+            messenger.windows.openDefaultBrowser(rwhSettings.paypalDonateUrl);
+        }
+    });
+
+    await messenger.menus.create({
+        title: 'Sponsor via GitHub',
+        parentId: rwhMenuId,
+        onclick: async () => {
+            messenger.windows.openDefaultBrowser(rwhSettings.gitHubSponsorUrl);
+        }
+    });
 }
-
-
-export { register };

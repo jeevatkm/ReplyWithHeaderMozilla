@@ -20,6 +20,11 @@ export const headerLabelSeqStyleSettings = {
     2: ['from', 'date', 'subject'],             // Simple
     3: ['from', 'to', 'cc', 'date', 'reply-to', 'subject']  // Lookout
 }
+export const homepageUrl = 'http://myjeeva.com/replywithheader-mozilla';
+export const reviewsPageUrl = 'https://addons.mozilla.org/en-US/thunderbird/addon/replywithheader/';
+export const issuesPageUrl = 'https://github.com/jeevatkm/ReplyWithHeaderMozilla/issues';
+export const paypalDonateUrl = 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=Jeevanandam%20M%2e&item_number=ReplyWithHeaderMozilla&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted';
+export const gitHubSponsorUrl = 'https://github.com/sponsors/jeevatkm?o=esb';
 
 let keyHeaderLabelSeqStyle = 'header.label.seq.style';
 let keyHeaderDateFormat = 'header.date.format';
