@@ -31,6 +31,8 @@ export const i18n = {
     "fi": "Finnish - suomi",
     "zh-CN": "Simplified Chinese - 简体中文",
     "hu": "Hungarian - Magyar",
+    "vi": "Vietnamese - tiếng Việt",
+    "zh-TW": "Traditional Chinese - 正體中文"
   },
   "from": {
     "en-US": "From:",
@@ -53,6 +55,8 @@ export const i18n = {
     "fi": "Lähettäjä:",
     "zh-CN": "来自:",
     "hu": "Feladó:",
+    "vi": "Từ:",
+    "zh-TW": "從:"
   },
   "to": {
     "en-US": "To:",
@@ -75,6 +79,8 @@ export const i18n = {
     "fi": "Vastaanottaja:",
     "zh-CN": "收件人:",
     "hu": "Címzett:",
+    "vi": "Tới:",
+    "zh-TW": "到:"
   },
   "cc": {
     "en-US": "Cc:",
@@ -97,6 +103,8 @@ export const i18n = {
     "fi": "Kopio:",
     "zh-CN": "抄送:",
     "hu": "Másolat:",
+    "vi": "Cc:",
+    "zh-TW": "副本:"
   },
   "subject": {
     "en-US": "Subject:",
@@ -119,6 +127,8 @@ export const i18n = {
     "fi": "Aihe:",
     "zh-CN": "主题:",
     "hu": "Tárgy:",
+    "vi": "Tiêu đề:",
+    "zh-TW": "主旨:"
   },
   "date": {
     "en-US": "Date:",
@@ -141,6 +151,8 @@ export const i18n = {
     "fi": "Päiväys:",
     "zh-CN": "日期:",
     "hu": "Dátum:",
+    "vi": "Ngày:",
+    "zh-TW": "日期:"
   },
   "sent": {
     "en-US": "Sent:",
@@ -163,6 +175,8 @@ export const i18n = {
     "fi": "Lähetetty:",
     "zh-CN": "发送了:",
     "hu": "Küldött:",
+    "vi": "Đã gửi:",
+    "zh-TW": "傳送:"
   },
   "reply-to": {
     "en-US": "Reply-To:",
@@ -185,6 +199,8 @@ export const i18n = {
     "fi": "Vastausosoite:",
     "zh-CN": "回复到:",
     "hu": "Válasz-Címzett:",
+    "vi": "Trả lời Tới:",
+    "zh-TW": "回函地址:"
   },
   "forwardedMessage": {
     "en-US": "Forwarded Message",
@@ -207,6 +223,8 @@ export const i18n = {
     "fi": "Välitetty viesti",
     "zh-CN": "转发的消息",
     "hu": "Továbbított üzenet",
+    "vi": "Tin nhắn đã được chuyển tiếp",
+    "zh-TW": "轉寄郵件"
   },
   "originalMessage": {
     "en-US": "Original Message",
@@ -229,6 +247,8 @@ export const i18n = {
     "fi": "Alkuperäinen viesti",
     "zh-CN": "原始邮件",
     "hu": "Eredeti üzenet",
+    "vi": "Tin nhắn gốc",
+    "zh-TW": "原始訊息"
   },
   "wrote": {
     "en-US": "wrote:",
@@ -251,5 +271,7 @@ export const i18n = {
     "fi": "kirjoitti",
     "zh-CN": "写道:",
     "hu": "írta:",
+    "vi": "viết:",
+    "zh-TW": "寫道:"
   }
 };
