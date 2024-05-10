@@ -9,6 +9,7 @@
 
 // RWH Settings Module
 
+import { rwhLogger} from './logger.mjs';
 import * as rwhUtils from './utils.mjs';
 
 export const optionsPrefix = 'extensions.replywithheader.';
@@ -68,7 +69,7 @@ let rwhDefaultSettings = {
 export async function get(key, fallback) {
     let fullKey = optionsPrefix + key;
     let obj = await messenger.storage.local.get(fullKey);
-    console.debug(obj);
+    rwhLogger.debug(obj);
 
     if (rwhUtils.isObjectEmpty(obj)) {
         return null;
@@ -80,8 +81,12 @@ export async function get(key, fallback) {
 
 export async function set(key, value) {
     let fullKey = optionsPrefix + key;
-    console.debug(fullKey, value);
+    rwhLogger.debug(fullKey, value);
     messenger.storage.local.set({ [fullKey]: value });
+}
+
+export async function remove(key) {
+    await messenger.storage.local.remove(optionsPrefix + key);
 }
 
 export async function getInt(key) {

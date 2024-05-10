@@ -9,13 +9,15 @@
 
 // RWH Tabs Module
 
+import { rwhLogger} from './logger.mjs';
+
 const tabListeners = {};
 
 messenger.tabs.onCreated.addListener(async (tab) => {
     tabListeners[tab.type](tab);
 });
 
-async function findTab(messageId) {
+export async function findTab(messageId) {
     let tabs = await messenger.tabs.query();
     for (let tab of tabs) {
         let msg = await messenger.messageDisplay.getDisplayedMessage(tab.id);
@@ -26,12 +28,10 @@ async function findTab(messageId) {
     return null;
 }
 
-async function register(tabType, listener) {
+export async function register(tabType, listener) {
     if (tabListeners[tabType]) {
-        console.warn(`Overwriting existing listener for ${tabType}`)
+        rwhLogger.warn(`Overwriting existing listener for ${tabType}`)
     }
 
     tabListeners[tabType] = listener;
 }
-
-export { register, findTab };

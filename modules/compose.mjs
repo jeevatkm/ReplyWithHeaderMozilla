@@ -9,6 +9,7 @@
 
 // RWH Compose Module
 
+import { rwhLogger} from './logger.mjs';
 import * as rwhSettings from './settings.mjs';
 import * as rwhI18n from './headers-i18n.mjs';
 
@@ -18,17 +19,17 @@ const fwdHdrLookupString = '-------- ';
 const plainTextFirstChars = '> ';
 
 export async function process(tab) {
-    console.debug(`tab.id=${tab.id}, tab.type=${tab.type}, tab.mailTab=${tab.mailTab}`);
+    rwhLogger.debug(`tab.id=${tab.id}, tab.type=${tab.type}, tab.mailTab=${tab.mailTab}`);
 
     let composeDetails = await messenger.compose.getComposeDetails(tab.id);
-    console.debug(composeDetails);
+    rwhLogger.debug(composeDetails);
 
     let fullMsg = await messenger.messages.getFull(composeDetails.relatedMessageId);
-    console.debug(fullMsg);
+    rwhLogger.debug(fullMsg);
 
     let rwh = new ReplyWithHeader(composeDetails, fullMsg).init();
     if (!(rwh.isReply || rwh.isForward)) {
-        console.warn(`Unsupported compose type ${rwh.composeType}`);
+        rwhLogger.warn(`Unsupported compose type ${rwh.composeType}`);
         return;
     }
 
@@ -87,7 +88,7 @@ class ReplyWithHeader {
     // Method
 
     init() {
-        console.debug(`composeType=${this.composeType}, messageId=${this.#composeDetails.relatedMessageId}, isPlainText=${this.#composeDetails.isPlainText}`);
+        rwhLogger.debug(`composeType=${this.composeType}, messageId=${this.#composeDetails.relatedMessageId}, isPlainText=${this.#composeDetails.isPlainText}`);
 
         return this;
     }
@@ -106,17 +107,17 @@ class ReplyWithHeader {
         }
 
         if (this.isPlainText) {
-            console.debug('Plain Text', this.plainTextBody);
+            rwhLogger.debug('Plain Text', this.plainTextBody);
             this.#text = this.plainTextBody;
             result = Object.assign({}, result, await this._processPlainText());
         } else {
-            console.debug('HTML Content', this.htmlBody);
+            rwhLogger.debug('HTML Content', this.htmlBody);
             this.#document = this._createDocumentFromString(this.htmlBody);
             result = Object.assign({}, result, await this._processHtml());
         }
 
         // Apply it to message compose window
-        console.debug(result);
+        rwhLogger.debug(result);
         messenger.compose.setComposeDetails(tab.id, result);
     }
 
@@ -126,8 +127,8 @@ class ReplyWithHeader {
         let targetNodeClassName = this.targetNodeClassName;
         let targetNode = this._getByClassName(targetNodeClassName);
         if (!targetNode) {
-            console.error('Thunderbird email target node (moz-cite-prefix or moz-forward-container) is not found');
-            console.error('Due to internal changes in Thunderbird. RWH unable to process email headers, contact add-on author');
+            rwhLogger.error('Thunderbird email target node (moz-cite-prefix or moz-forward-container) is not found');
+            rwhLogger.error('Due to internal changes in Thunderbird. RWH unable to process email headers, contact add-on author');
 
             // return original value as-is;
             return {
@@ -146,10 +147,10 @@ class ReplyWithHeader {
             'reply-to': await this._extractHeader('reply-to', true, true),
             'subject': await this._extractHeader('subject', false, true),
         }
-        console.debug(headers);
+        rwhLogger.debug(headers);
 
         let rwhHeaderString = await this._createHtmlHeaders(headers);
-        console.debug(rwhHeaderString);
+        rwhLogger.debug(rwhHeaderString);
 
         let rwhHeaderHtmlElement = this._createElementFromString(rwhHeaderString);
         div.insertAdjacentElement(positionAfterBegin, rwhHeaderHtmlElement);
@@ -185,13 +186,13 @@ class ReplyWithHeader {
             'reply-to': await this._extractHeader('reply-to', true, false),
             'subject': await this._extractHeader('subject', false, false),
         }
-        console.log(headers);
+        rwhLogger.debug(headers);
 
         let rwhHeaders = await this._createPlainTextHeaders(headers);
-        console.log(rwhHeaders);
+        rwhLogger.debug(rwhHeaders);
 
         let textLines = this.#text.split(/\r?\n/);
-        console.log(textLines);
+        rwhLogger.debug(textLines);
 
         let locale = await rwhSettings.getHeaderLocale();
         let startPos = 0;
@@ -215,7 +216,7 @@ class ReplyWithHeader {
         }
 
         if (startPos > 0) {
-            console.log('startPos', startPos, textLines[startPos]);
+            rwhLogger.debug('startPos', startPos, textLines[startPos]);
             textLines.splice(startPos, linesToDelete, ...rwhHeaders);
         }
 
@@ -311,7 +312,7 @@ class ReplyWithHeader {
         let timeFormat = await rwhSettings.getHeaderTimeFormat();
         let includeTimezone = await rwhSettings.isHeaderTimeZone();
 
-        console.debug('Date format: ' + (dateFormat == 1 ? 'UTC' : 'Locale (' + locale + ')')
+        rwhLogger.debug('Date format: ' + (dateFormat == 1 ? 'UTC' : 'Locale (' + locale + ')')
                     + ', Time format: ' + (timeFormat == 1 ? '24-hour' : '12-hour')
                     + (includeTimezone ? ', Include short timezone info' : ''))
 
@@ -319,7 +320,7 @@ class ReplyWithHeader {
         try {
             epoch = Date.parse(d);
         } catch (e) {
-            console.error(error);
+            rwhLogger.error(error);
             return fallback;
         }
 

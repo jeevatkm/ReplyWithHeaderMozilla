@@ -7,6 +7,7 @@
  * https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
  */
 
+import { rwhLogger } from '../modules/logger.mjs';
 import * as rwhNotifications from '../modules/notifications.mjs';
 import * as rwhSettings from '../modules/settings.mjs';
 import * as rwhI18n from '../modules/headers-i18n.mjs';
@@ -21,6 +22,8 @@ function tabListClickHandler(elem) {
 }
 
 function openRwhTab(target) {
+    rwhLogger.debug(target.id, 'aria-selected=', target.getAttribute('aria-selected'));
+
     let selectedTab = document.querySelector('[aria-selected="true"]');
     selectedTab.setAttribute('aria-selected', false);
     target.setAttribute('aria-selected', true);
@@ -54,6 +57,7 @@ async function populateLocale(prefElement) {
         ));
     }
 }
+
 async function loadPref(prefElement) {
     let type = prefElement.dataset.type || prefElement.getAttribute("type") || prefElement.tagName;
     let name = prefElement.dataset.preference;
@@ -116,7 +120,7 @@ async function savePref(prefElement) {
 
 // function storageChanged(changes, area) {
 //     let changedItems = Object.keys(changes);
-//     console.info(changedItems);
+//     rwhLogger.info(changedItems);
 //     // for (let item of changedItems) {
 //     //   if (area == userPrefStorageArea && item == "userPrefs") {
 //     //     this._userPrefs = changes.userPrefs.newValue;
@@ -159,13 +163,12 @@ async function init() {
     if (command) {
         switch(command) {
             case 'openHeadersTab':
-                // currently no action to perform
+                openRwhTab(document.getElementById('headersTab'));
             case 'openAboutTab':
                 openRwhTab(document.getElementById('aboutTab'));
                 break;
         }
-        // await rwhSettings.remove('options.ui.target.command');
-        await messenger.storage.local.remove(rwhSettings.optionsPrefix + 'options.ui.target.command');
+        await rwhSettings.remove('options.ui.target.command');
     }
 
 }
