@@ -15,14 +15,14 @@ let separatorIdCounter = 0;
 
 export async function register() {
     let rwhMenuId = await messenger.menus.create({
-        title: "RWH",
+        title: 'RWH',
         contexts: [
-            "tools_menu"
+            'tools_menu'
         ],
     });
 
     await messenger.menus.create({
-        title: "Options",
+        title: 'Options',
         parentId: rwhMenuId,
         onclick: async () => {
             rwhSettings.set('options.ui.target.command', 'openHeadersTab');
@@ -31,7 +31,7 @@ export async function register() {
     });
 
     await messenger.menus.create({
-        title: "About",
+        title: 'About',
         parentId: rwhMenuId,
         onclick: async () => {
             rwhSettings.set('options.ui.target.command', 'openAboutTab');

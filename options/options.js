@@ -59,11 +59,11 @@ async function populateLocale(prefElement) {
 }
 
 async function loadPref(prefElement) {
-    let type = prefElement.dataset.type || prefElement.getAttribute("type") || prefElement.tagName;
+    let type = prefElement.dataset.type || prefElement.getAttribute('type') || prefElement.tagName;
     let name = prefElement.dataset.preference;
     let value = await rwhSettings.get(name, {});
     switch (type) {
-        case "checkbox":
+        case 'checkbox':
             switch (name) {
                 case 'header.html.prefix.line':
                     prefElement.addEventListener('click', function(e) {
@@ -72,46 +72,46 @@ async function loadPref(prefElement) {
                 break;
             }
             prefElement.checked = value;
-            prefElement.addEventListener("change", () => savePref(prefElement));
+            prefElement.addEventListener('change', () => savePref(prefElement));
             break;
-        case "radiogroup":
+        case 'radiogroup':
             let selectedElement = prefElement.querySelector(`input[type="radio"][value="${value}"]`)
             if (selectedElement) {
                 selectedElement.checked = true;
             }
             for (let radio of prefElement.querySelectorAll(`input[type="radio"]`)) {
-                radio.addEventListener("change", () => savePref(prefElement))
+                radio.addEventListener('change', () => savePref(prefElement))
             }
             break;
-        case "SELECT":
-        case "color":
+        case 'SELECT':
+        case 'color':
         case 'text':
             switch (name) {
-                case "header.locale":
+                case 'header.locale':
                     await populateLocale(prefElement);
                     break;
             }
             prefElement.value = value;
-            prefElement.addEventListener("change", () => savePref(prefElement))
+            prefElement.addEventListener('change', () => savePref(prefElement))
             break;
     }
 }
 
 async function savePref(prefElement) {
-    let type = prefElement.dataset.type || prefElement.getAttribute("type") || prefElement.tagName;
+    let type = prefElement.dataset.type || prefElement.getAttribute('type') || prefElement.tagName;
     let name = prefElement.dataset.preference;
     switch (type) {
-        case "checkbox":
+        case 'checkbox':
             rwhSettings.set(name, !!prefElement.checked);
             break;
-        case "radiogroup":
+        case 'radiogroup':
             let selectedElement = prefElement.querySelector(`input[type="radio"]:checked`)
             if (selectedElement) {
                 rwhSettings.set(name, selectedElement.value);
             }
             break;
-        case "SELECT":
-        case "color":
+        case 'SELECT':
+        case 'color':
         case 'text':
             rwhSettings.set(name, prefElement.value);
             break;
@@ -122,11 +122,11 @@ async function savePref(prefElement) {
 //     let changedItems = Object.keys(changes);
 //     rwhLogger.info(changedItems);
 //     // for (let item of changedItems) {
-//     //   if (area == userPrefStorageArea && item == "userPrefs") {
+//     //   if (area == userPrefStorageArea && item == 'userPrefs') {
 //     //     this._userPrefs = changes.userPrefs.newValue;
 //     //   }
 
-//     //   if (area == "local" && item == "defaultPrefs") {
+//     //   if (area == 'local' && item == 'defaultPrefs') {
 //     //     this._defaultPrefs = changes.defaultPrefs.newValue;
 //     //   }
 //     // }
@@ -134,11 +134,11 @@ async function savePref(prefElement) {
 
 async function init() {
     const elementEventMap = {
-        tabList: { type: "click", callback: tabListClickHandler },
-        buttonWebsite: { type: "click", callback: () => messenger.windows.openDefaultBrowser(rwhSettings.homepageUrl) },
-        buttonReview: { type: "click", callback: () => messenger.windows.openDefaultBrowser(rwhSettings.reviewsPageUrl) },
-        buttonIssues: { type: "click", callback: () => messenger.windows.openDefaultBrowser(rwhSettings.issuesPageUrl) },
-        buttonPaypal: { type: "click", callback: openPaypal },
+        tabList: { type: 'click', callback: tabListClickHandler },
+        buttonWebsite: { type: 'click', callback: () => messenger.windows.openDefaultBrowser(rwhSettings.homepageUrl) },
+        buttonReview: { type: 'click', callback: () => messenger.windows.openDefaultBrowser(rwhSettings.reviewsPageUrl) },
+        buttonIssues: { type: 'click', callback: () => messenger.windows.openDefaultBrowser(rwhSettings.issuesPageUrl) },
+        buttonPaypal: { type: 'click', callback: openPaypal },
         buttonGithub: { type: 'click', callback: openGithub },
     }
 
@@ -147,7 +147,7 @@ async function init() {
     }
 
     // Load preferences and attach onchange listeners for auto save.
-    let prefElements = document.querySelectorAll("*[data-preference]");
+    let prefElements = document.querySelectorAll('*[data-preference]');
     for (let prefElement of prefElements) {
         await loadPref(prefElement);
     }
@@ -173,4 +173,4 @@ async function init() {
 
 }
 
-window.addEventListener("load", init);
+window.addEventListener('load', init);

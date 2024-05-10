@@ -11,9 +11,9 @@
 
 export async function show(msg) {
     messenger.notifications.create({
-        "type": "basic",
-        "iconUrl": "images/rwh.png",
-        "title": 'RWH',
-        "message": msg
+        'type': 'basic',
+        'iconUrl': 'images/rwh.png',
+        'title': 'RWH',
+        'message': msg
     });
 }

@@ -43,10 +43,10 @@ let rwhDefaultSettings = {
     // Refer above constant headerLabelSeqStyleSettings
     [keyHeaderLabelSeqStyle]: 1,
 
-    [keyHeaderLocale]: "en-US",
+    [keyHeaderLocale]: 'en-US',
     [keyHeaderPlainPrefixText]: true,
     [keyHeaderHtmlPrefixLine]: true,
-    [keyHeaderHtmlPrefixLineColor]: "#B5C4DF",
+    [keyHeaderHtmlPrefixLineColor]: '#B5C4DF',
     [keyTransSubjectPrefix]: true,
 
     // Date & Time
