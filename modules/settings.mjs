@@ -24,7 +24,7 @@ export const headerLabelSeqStyleSettings = {
 export const homepageUrl = 'http://myjeeva.com/replywithheader-mozilla';
 export const reviewsPageUrl = 'https://addons.mozilla.org/en-US/thunderbird/addon/replywithheader/';
 export const issuesPageUrl = 'https://github.com/jeevatkm/ReplyWithHeaderMozilla/issues';
-export const paypalDonateUrl = 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=Jeevanandam%20M%2e&item_number=ReplyWithHeaderMozilla&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted';
+export const paypalDonateUrl = 'https://www.paypal.com/donate/?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=ReplyWithHeader+(RWH)+Thunderbird+Addon&currency_code=USD';
 export const gitHubSponsorUrl = 'https://github.com/sponsors/jeevatkm?o=esb';
 
 let keyHeaderLabelSeqStyle = 'header.label.seq.style';

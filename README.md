@@ -1,18 +1,29 @@
-# Quoting Email Headers in Thunderbird
- [![Version](https://img.shields.io/badge/version-2.6.0-blue.svg)](https://github.com/jeevatkm/ReplyWithHeaderMozilla/releases/latest) [![License](https://img.shields.io/github/license/jeevatkm/ReplyWithHeaderMozilla.svg)](LICENSE)
+<p align="center">
+ <p align="center"><img src="images/rwh.svg" height="128" width="128" /></p>
+ <h1 align="center">ReplyWithHeader (RWH)</h1>
+ <p align="center">Outlook style headers and few goodies for Thunderbird</p>
+</p>
+<p align="center">
+ <a href="https://github.com/jeevatkm/ReplyWithHeaderMozilla/releases/latest" alt="Version"><img src="https://img.shields.io/badge/version-3.0.0-blue.svg" alt="Version" /></a> <a href="LICENSE" alt="LICENSE"><img src="https://img.shields.io/github/license/jeevatkm/ReplyWithHeaderMozilla.svg" alt="LICENSE" /></a> <a href="http://myjeeva.com/replywithheader-mozilla" alt"Home page"><img src="https://img.shields.io/badge/Homepage-blue" alt"Home page" /> </a>
+</p>
 
-ReplyWithHeaderMozilla aka [RWH Thunderbird] is an add-on for Thunderbird mail client that enables email header.
-Brings Outlook header capabilities into Thunderbird.
+## Download
+Head to Thunderbord Add-ons store to download. **RWH v3 is completly rewritten from ground up in {Web|Mail}Extension model**
 
-**|  [Home page](http://myjeeva.com/replywithheader-mozilla)  |  [Download RWH Mozilla](https://addons.mozilla.org/en-US/thunderbird/addon/replywithheader/)  |  [Report Issues](#report-issues)  |  [FAQ](http://myjeeva.com/replywithheader-mozilla#faq)  |**
+<p align="center"><b><a href="https://addons.thunderbird.net/en-US/thunderbird/addon/replywithheader/" alt="">Thunderbird Add-ons Store</a></b></p>
 
-# Support RWH - Donate
+## Features
+ReplyWithHeader (RWH) is an Thunderbird email client add-on, that brings outlook style headers and few goodies into Thunderbird.
+<p align="center">
+ <img src="images/rwh-features.png" />
+</p>
 
-BTC | Paypal
---- | ---
-1FG6G5tCmFm7vrc7BzUyRxr3RBrMDJA6zp | [![Donate with Paypal](https://www.paypalobjects.com/webstatic/en_US/btn/btn_donate_pp_142x27.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=Jeevanandam%20M%2e&item_number=ReplyWithHeaderMozilla&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
+## Support & Donate
 
-# Report Issues
+* Write reviews and give Stars on [Thunderbird Add-ons Store](https://addons.thunderbird.net/en-US/thunderbird/addon/replywithheader/)
+* Donate via [PayPal](https://www.paypal.com/donate/?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=ReplyWithHeader+(RWH)+Thunderbird+Addon&currency_code=USD)
+
+## Report Issues
 
 ReplyWithHeaderMozilla uses [GitHub’s integrated issue tracking system](https://github.com/jeevatkm/ReplyWithHeaderMozilla/issues) to record bugs and feature requests. If you want to raise an issue, please follow the recommendations bellow:
 
@@ -20,14 +31,14 @@ ReplyWithHeaderMozilla uses [GitHub’s integrated issue tracking system](https:
   * Please provide as much information as possible with the issue report, we like to know the version of ReplyWithHeader that you are using.
   * If you need to paste code, or include a stack trace use Markdown code block
 
-# Creator
+## Creator
 
 [Jeevanandam M.](https://github.com/jeevatkm) (jeeva@myjeeva.com)
 
-# Contributors
+## Contributors
 
 Have a look on [Contributors](https://github.com/jeevatkm/ReplyWithHeaderMozilla/graphs/contributors) page.
 
-# License
+## License
 
 ReplyWithHeader Mozilla is released under [MPL-2.0 License](LICENSE)
