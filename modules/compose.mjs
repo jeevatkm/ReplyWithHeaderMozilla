@@ -25,6 +25,10 @@ export async function process(tab) {
 
     let composeDetails = await messenger.compose.getComposeDetails(tab.id);
     rwhLogger.debug(composeDetails);
+    if (composeDetails.type === 'new') {
+        rwhLogger.debug('New message getting composed');
+        return;
+    }
 
     let accountId = await rwhAccounts.findIdByIdentityId(composeDetails.identityId);
     let isAccountEnabled = await rwhSettings.isAccountEnabled(accountId);
