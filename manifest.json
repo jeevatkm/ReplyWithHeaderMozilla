@@ -1,58 +1,35 @@
 {
+    "manifest_version": 2,
     "name": "ReplyWithHeader",
     "description": "Outlook style headers and few goodies for Thunderbird",
-    "version": "2.7.0",
+    "version": "3.0.0.beta1",
     "author": "Jeevanandam M.",
     "homepage_url": "https://myjeeva.com/replywithheader-mozilla",
-    "applications": {
+    "browser_specific_settings": {
         "gecko": {
             "id": "replywithheader@myjeeva.com",
-            "strict_min_version": "115.0",
-            "strict_max_version": "115.*"
+            "strict_min_version": "125.0"
         }
     },
     "icons": {
-        "64": "skin/icon-64.png",
-        "128": "icon.png"
+        "16": "images/rwh.svg",
+        "24": "images/rwh.svg",
+        "32": "images/rwh.svg",
+        "64": "images/rwh.svg",
+        "128": "images/rwh.svg"
     },
+    "permissions": [
+        "storage",
+        "notifications",
+        "menus",
+        "compose",
+        "messagesRead",
+        "accountsRead"
+    ],
     "background": {
-        "scripts": [
-            "scripts/background.js"
-        ]
+        "page": "background.html"
     },
     "options_ui": {
-        "page": "/options/options.html",
-        "browser_style": true
-    },
-    "experiment_apis": {
-        "ReplyWithHeader": {
-            "schema": "experiment/api/ReplyWithHeader/schema.json",
-            "parent": {
-                "scopes": [
-                    "addon_parent"
-                ],
-                "paths": [
-                    [
-                        "ReplyWithHeader"
-                    ]
-                ],
-                "script": "experiment/api/ReplyWithHeader/implementation.js"
-            }
-        },
-        "LegacyPrefs": {
-            "schema": "experiment/api/LegacyPrefs/schema.json",
-            "parent": {
-                "scopes": [
-                    "addon_parent"
-                ],
-                "paths": [
-                    [
-                        "LegacyPrefs"
-                    ]
-                ],
-                "script": "experiment/api/LegacyPrefs/implementation.js"
-            }
-        }
-    },
-    "manifest_version": 2
+        "page": "/options/options.html"
+    }
 }

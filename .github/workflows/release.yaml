@@ -1,18 +1,20 @@
-name: release
+name: Create release
 
 on:
   push:
     tags:
-      - '*'
-  workflow_dispatch:
+      - 'v*'
+
+permissions:
+  contents: write
 
 jobs:
-  build_release:
-    name: build_release
+  build:
+    name: Create release from tag
     runs-on: ubuntu-latest
     steps:
       - name: GIT checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Read version from manifest.json
@@ -25,7 +27,7 @@ jobs:
       - name: Build artifacts
         run: zip -r replywithheader-v${{ steps.version.outputs.VERSION }}.xpi * -x ".*"
       - name: Create release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/') # Only run for new tags
         with:
           body_path: Changelog.tmp
