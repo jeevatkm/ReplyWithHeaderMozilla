@@ -110,13 +110,7 @@ class ReplyWithHeader {
         let result = {isModified: false};
 
         if (rwhSettings.isTransSubjectPrefix()) {
-            let subject = this.#composeDetails.subject;
-            if (this.isReply && subject.startsWith(rwhSettings.replySubjectPrefix)) {
-                result.subject = subject.replace(rwhSettings.replySubjectPrefix, 'RE:')
-            }
-            if (this.isForward && subject.startsWith(rwhSettings.forwardSubjectPrefix)) {
-                result.subject = subject.replace(rwhSettings.forwardSubjectPrefix, 'FW:');
-            }
+            result.subject = this._transformSubjectPrefix(this.#composeDetails.subject);
         }
 
         if (this.isPlainText) {
@@ -158,7 +152,7 @@ class ReplyWithHeader {
             'cc': await this._extractHeader('cc', true, true),
             'date': await this._extractHeader('date', false, true),
             'reply-to': await this._extractHeader('reply-to', true, true),
-            'subject': await this._extractHeader('subject', false, true),
+            'subject': this._transformSubjectPrefix(await this._extractHeader('subject', false, true)),
         }
         rwhLogger.debug(headers);
 
@@ -197,7 +191,7 @@ class ReplyWithHeader {
             'cc': await this._extractHeader('cc', true, false),
             'date': await this._extractHeader('date', false, false),
             'reply-to': await this._extractHeader('reply-to', true, false),
-            'subject': await this._extractHeader('subject', false, false),
+            'subject': this._transformSubjectPrefix(await this._extractHeader('subject', false, false)),
         }
         rwhLogger.debug(headers);
 
@@ -419,5 +413,15 @@ class ReplyWithHeader {
             }
             node.removeChild(node.firstChild);
         }
+    }
+
+    _transformSubjectPrefix(subject) {
+        if (subject.startsWith(rwhSettings.replySubjectPrefix)) {
+            return subject.replace(rwhSettings.replySubjectPrefix, 'RE:')
+        }
+        if (subject.startsWith(rwhSettings.forwardSubjectPrefix)) {
+            return subject.replace(rwhSettings.forwardSubjectPrefix, 'FW:');
+        }
+        return subject;
     }
 }
