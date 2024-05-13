@@ -23,7 +23,8 @@
         "notifications",
         "menus",
         "compose",
-        "messagesRead"
+        "messagesRead",
+        "accountsRead"
     ],
     "background": {
         "page": "background.html"

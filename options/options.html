@@ -20,10 +20,18 @@
 
 <body>
 
-    <div class="hbox" style="margin-bottom: 1em">
+    <div class="hbox" style="margin-bottom: 1.5em">
+        <img src='/images/mail-accounts.svg' width='21' height='21' title="Mail Accounts" />
+        <div id="multiselectAccount" class="multiselect">
+            <div id="selectBox" class="selectBox">
+                <select><option>Select an Accounts</option></select>
+                <div class="overSelect"></div>
+            </div>
+            <div id="multiselectCheckboxes"></div>
+        </div>
         <div class="spacer"></div>
-        <img src='/images/language.svg' width='21' height='21' />
-        <select id="hdrLocale" data-preference="header.locale">
+        <img src='/images/language.svg' width='21' height='21' title="Locale" />
+        <select id="hdrLocale" data-preference="header.locale" style="width: 175px;">
         </select>
     </div>
 

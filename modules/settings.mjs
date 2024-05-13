@@ -94,10 +94,27 @@ export async function getInt(key) {
     return parseInt(v)
 }
 
+export async function setDefault(key, value) {
+    let ev = await get(key);
+    if (ev === null) {
+        set(key, value);
+    }
+}
+
 export async function setDefaults() {
     for (let [name, value] of Object.entries(rwhDefaultSettings)) {
         await setDefault(name, value);
     }
+}
+
+export async function setAccountDefaults(accounts) {
+    for (let account of accounts) {
+        await setDefault(`${account.id}.enabled`, true);
+    }
+}
+
+export async function isAccountEnabled(accountId) {
+    return await get(`${accountId}.enabled`, true);
 }
 
 export async function getHeaderLabelSeqStyle() {
@@ -142,16 +159,4 @@ export async function isCleanBlockQuoteColor() {
 
 export async function isCleanQuoteCharGreaterThan() {
     return await get(keyCleanQuoteCharGreaterThan, rwhDefaultSettings[keyCleanQuoteCharGreaterThan]);
-}
-
-
-//
-// Unexported methods
-//
-
-async function setDefault(key, value) {
-    let ev = await get(key);
-    if (ev === null) {
-        set(key, value);
-    }
 }

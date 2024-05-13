@@ -133,3 +133,47 @@ button {
 #hboxRwhBtn button {
     cursor: pointer;
 }
+
+/* multiselect dropdown - start */
+.multiselect {
+    width: 150px;
+}
+
+.selectBox {
+    position: relative;
+}
+
+.selectBox select {
+    width: 100%;
+}
+
+.overSelect {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+#multiselectCheckboxes {
+    display: none;
+    position: absolute;
+    width: 200px;
+    background-color: white;
+    border-radius: 7px;
+    margin-top: -26px;
+    padding: 6px;
+    line-height: 1.7em;
+    border: 1px solid var(--color-gray-40);
+    box-shadow:0 0 10px var(--color-gray-40);
+}
+
+#multiselectCheckboxes label {
+    display: block;
+}
+
+#multiselectCheckboxes label:hover {
+    background: var(--color-gray-20);
+    border-radius: 4px;
+}
+/* multiselect dropdown - end */

@@ -12,6 +12,8 @@
 import { rwhLogger} from './logger.mjs';
 import * as rwhSettings from './settings.mjs';
 import * as rwhI18n from './headers-i18n.mjs';
+import * as rwhAccounts from './accounts.mjs';
+import * as rwhUtils from './utils.mjs';
 
 const positionBeforeBegin = 'beforebegin';
 const positionAfterBegin = 'afterbegin';
@@ -23,6 +25,13 @@ export async function process(tab) {
 
     let composeDetails = await messenger.compose.getComposeDetails(tab.id);
     rwhLogger.debug(composeDetails);
+
+    let accountId = await rwhAccounts.findIdByIdentityId(composeDetails.identityId);
+    let isAccountEnabled = await rwhSettings.isAccountEnabled(accountId);
+    rwhLogger.debug('AccountId', accountId, 'isAccountEnabled', isAccountEnabled);
+    if (!isAccountEnabled) {
+        return;
+    }
 
     let fullMsg = await messenger.messages.getFull(composeDetails.relatedMessageId);
     rwhLogger.debug(fullMsg);
@@ -152,7 +161,7 @@ class ReplyWithHeader {
         let rwhHeaderString = await this._createHtmlHeaders(headers);
         rwhLogger.debug(rwhHeaderString);
 
-        let rwhHeaderHtmlElement = this._createElementFromString(rwhHeaderString);
+        let rwhHeaderHtmlElement = rwhUtils.createElementFromString(rwhHeaderString);
         div.insertAdjacentElement(positionAfterBegin, rwhHeaderHtmlElement);
         targetNode.replaceWith(div);
 
@@ -401,12 +410,6 @@ class ReplyWithHeader {
 
     _createDocumentFromString(s) {
         return new DOMParser().parseFromString(s, 'text/html')
-    }
-
-    _createElementFromString(htmlString) {
-        var div = document.createElement('div');
-        div.innerHTML = htmlString.trim();
-        return div.firstElementChild;
     }
 
     _cleanNodesUpToClassName(node, cssClassName) {
