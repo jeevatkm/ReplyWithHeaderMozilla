@@ -18,8 +18,10 @@ export function isObjectEmpty(objectName) {
     return true;
 }
 
+export function createDocumentFromString(htmlString) {
+    return new DOMParser().parseFromString(htmlString, 'text/html')
+}
+
 export function createElementFromString(htmlString) {
-    var div = document.createElement('div');
-    div.innerHTML = htmlString.trim();
-    return div.firstElementChild;
+    return createDocumentFromString(htmlString)?.body.firstElementChild;
 }

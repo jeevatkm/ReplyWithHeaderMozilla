@@ -121,7 +121,7 @@ class ReplyWithHeader {
             result = Object.assign({}, result, await this._processPlainText());
         } else {
             rwhLogger.debug('HTML Content', this.htmlBody);
-            this.#document = this._createDocumentFromString(this.htmlBody);
+            this.#document = rwhUtils.createDocumentFromString(this.htmlBody);
             result = Object.assign({}, result, await this._processHtml());
         }
 
@@ -406,10 +406,6 @@ class ReplyWithHeader {
 
     _escapeHtml(v) {
         return (v || '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-    }
-
-    _createDocumentFromString(s) {
-        return new DOMParser().parseFromString(s, 'text/html')
     }
 
     _cleanNodesUpToClassName(node, cssClassName) {
