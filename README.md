@@ -22,6 +22,7 @@ ReplyWithHeader (RWH) is an Thunderbird email client add-on, that brings outlook
 
 * Write reviews and give Stars on [Thunderbird Add-ons Store](https://addons.thunderbird.net/en-US/thunderbird/addon/replywithheader/)
 * Donate via [PayPal](https://www.paypal.com/donate/?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=ReplyWithHeader+(RWH)+Thunderbird+Addon&currency_code=USD)
+* Sponsor via [GitHub](https://github.com/sponsors/jeevatkm)
 
 ## Report Issues
 
