@@ -30,32 +30,42 @@ export async function process(tab) {
         return;
     }
 
+    // Check account level disable exists
     let accountId = await rwhAccounts.findIdByIdentityId(composeDetails.identityId);
     let isAccountEnabled = await rwhSettings.isAccountEnabled(accountId);
     rwhLogger.debug('AccountId', accountId, 'isAccountEnabled', isAccountEnabled);
     if (!isAccountEnabled) {
-        return;
+        return; // RWH stops here
+    }
+
+    // Check 10s disable exists on message level
+    let isMessageLevelDisabled = await rwhSettings.get(`disable.${accountId}.message_${composeDetails.relatedMessageId}`);
+    rwhLogger.debug('isMessageLevelDisabled', isMessageLevelDisabled);
+    if (isMessageLevelDisabled) {
+        return; // RWH stops here
     }
 
     let fullMsg = await messenger.messages.getFull(composeDetails.relatedMessageId);
     rwhLogger.debug(fullMsg);
 
-    let rwh = new ReplyWithHeader(composeDetails, fullMsg).init();
+    let rwh = new ReplyWithHeader(accountId, composeDetails, fullMsg).init();
     if (!(rwh.isReply || rwh.isForward)) {
         rwhLogger.warn(`Unsupported compose type ${rwh.composeType}`);
-        return;
+        return; // RWH stops here
     }
 
     await rwh.process(tab);
 }
 
 class ReplyWithHeader {
+    #accountId
     #composeDetails
     #fullMessage
     #document
     #text
 
-    constructor(composeDetails, fullMessage) {
+    constructor(accountId, composeDetails, fullMessage) {
+        this.#accountId = accountId;
         this.#composeDetails = composeDetails;
         this.#fullMessage = fullMessage;
     }
