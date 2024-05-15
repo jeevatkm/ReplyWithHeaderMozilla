@@ -11,6 +11,7 @@
 
 import { rwhLogger } from './logger.mjs';
 import * as rwhSettings from './settings.mjs';
+import * as rwhNotifications from './notifications.mjs';
 
 let separatorIdCounter = 0;
 
@@ -63,7 +64,15 @@ const messageDisplayActionMenus = [
         onclick: async (clickData, tab) => {
             let message = await messenger.messageDisplay.getDisplayedMessage(tab.id);
             let prefName = `disable.${message.folder.accountId}.message_${message.id}`;
-            await setPrefAndSetDelayClear(prefName, true);
+            badgeCounter = 10;
+            let intervalId = setInterval(showStatusBadge, 1000, tab.id);
+            await setPrefAndSetDelayClear({
+                prefName: prefName,
+                intervalId: intervalId,
+                value: true,
+                tabId: tab.id,
+            });
+            rwhNotifications.show('Add-on is disabled for 10 seconds on currently displayed message');
         }
     },
     {
@@ -73,20 +82,36 @@ const messageDisplayActionMenus = [
         onclick: async (clickData, tab) => {
             let message = await messenger.messageDisplay.getDisplayedMessage(tab.id);
             let prefName = `header.fwd.all.${message.folder.accountId}.message_${message.id}`;
-            await setPrefAndSetDelayClear(prefName, true);
+            badgeCounter = 10;
+            let intervalId = setInterval(showStatusBadge, 1000, tab.id);
+            await setPrefAndSetDelayClear({
+                prefName: prefName,
+                intervalId: intervalId,
+                value: true,
+                tabId: tab.id,
+            });
+            rwhNotifications.show('Add-on enables forwarding all headers for 10 seconds on currently displayed message');
         }
     }
 ];
 
-async function setPrefAndSetDelayClear(prefName, value) {
-    rwhLogger.debug('set', prefName, value);
-    await rwhSettings.set(prefName, value);
-    setTimeout(delayedRemove, delayedDeleteMillisecond, prefName);
+let badgeCounter = 10;
+function showStatusBadge(tabId) {
+    badgeCounter--;
+    messenger.messageDisplayAction.setBadgeText({ text: `${badgeCounter}s`, tabId: tabId });
 }
 
-async function delayedRemove(prefName) {
-    rwhLogger.debug('clear', prefName);
-    await rwhSettings.remove(prefName);
+async function setPrefAndSetDelayClear(obj) {
+    rwhLogger.debug('set', obj);
+    await rwhSettings.set(obj.prefName, obj.value);
+    setTimeout(delayedRemove, delayedDeleteMillisecond, obj);
+}
+
+async function delayedRemove(obj) {
+    rwhLogger.debug('clear', obj);
+    clearInterval(obj.intervalId);
+    messenger.messageDisplayAction.setBadgeText({ text: null, tabId: obj.tabId });
+    await rwhSettings.remove(obj.prefName);
 }
 
 export async function register() {

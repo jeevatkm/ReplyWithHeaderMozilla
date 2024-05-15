@@ -25,3 +25,16 @@ export function createDocumentFromString(htmlString) {
 export function createElementFromString(htmlString) {
     return createDocumentFromString(htmlString)?.body.firstElementChild;
 }
+
+const knownHeaderCaps = ['x', 'id', 'spf', 'dkim', 'messageid', 'arc'];
+export function toPartialCanonicalFormat(hdrKey) {
+    let values = [];
+    for (let v of hdrKey.split('-')) {
+        if (knownHeaderCaps.includes(v)) {
+            values.push(v.toUpperCase());
+        } else {
+            values.push(v.charAt(0).toUpperCase() + v.slice(1));
+        }
+    }
+    return values.join('-');
+}

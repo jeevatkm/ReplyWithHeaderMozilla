@@ -9,7 +9,7 @@
 
 // RWH Compose Module
 
-import { rwhLogger} from './logger.mjs';
+import { rwhLogger } from './logger.mjs';
 import * as rwhSettings from './settings.mjs';
 import * as rwhI18n from './headers-i18n.mjs';
 import * as rwhAccounts from './accounts.mjs';
@@ -117,7 +117,7 @@ class ReplyWithHeader {
     }
 
     async process(tab) {
-        let result = {isModified: false};
+        let result = { isModified: false };
 
         if (rwhSettings.isTransSubjectPrefix()) {
             result.subject = this._transformSubjectPrefix(this.#composeDetails.subject);
@@ -224,7 +224,7 @@ class ReplyWithHeader {
             }
         } else if (this.isForward) {
             linesToDelete = rwhHeaders.length;
-            for(let l of textLines) {
+            for (let l of textLines) {
                 if (l.trim().startsWith(fwdHdrLookupString)) {
                     break;
                 }
@@ -280,6 +280,7 @@ class ReplyWithHeader {
             }
         }, this);
 
+        rwhHeaders += await this._handleAllHeadersFlow(false, true);
         rwhHeaders += '</div><br>';
 
         return rwhHeaders;
@@ -289,7 +290,6 @@ class ReplyWithHeader {
         let locale = await rwhSettings.getHeaderLocale();
         let headerLabelSeq = await rwhSettings.getHeaderLabelSeqStyle();
         let headerLabelSeqValues = rwhSettings.headerLabelSeqStyleSettings[headerLabelSeq];
-        let lineBreak = '\r\n';
 
         let rwhHeaders = [];
         if (await rwhSettings.isHeaderPlainPrefixText()) {
@@ -317,6 +317,10 @@ class ReplyWithHeader {
             }
         }, this);
 
+        let remainingHeaders = await this._handleAllHeadersFlow(false, false);
+        if (remainingHeaders.length > 0) {
+            rwhHeaders = [...rwhHeaders, ...remainingHeaders];
+        }
         rwhHeaders.push('');
 
         return rwhHeaders;
@@ -330,8 +334,8 @@ class ReplyWithHeader {
         let includeTimezone = await rwhSettings.isHeaderTimeZone();
 
         rwhLogger.debug('Date format: ' + (dateFormat == 1 ? 'UTC' : 'Locale (' + locale + ')')
-                    + ', Time format: ' + (timeFormat == 1 ? '24-hour' : '12-hour')
-                    + (includeTimezone ? ', Include short timezone info' : ''))
+            + ', Time format: ' + (timeFormat == 1 ? '24-hour' : '12-hour')
+            + (includeTimezone ? ', Include short timezone info' : ''))
 
         let epoch = null;
         try {
@@ -381,9 +385,18 @@ class ReplyWithHeader {
         return escape ? this._escapeHtml(pv.join(', ')) : pv.join(', ');
     }
 
+    async _extractRemainingHeaders(clean, escape) {
+        let remainingHeaders = {};
+        for (let key of Object.keys(this.#fullMessage.headers)) {
+            if (rwhSettings.headerLabelSeqStyleSettings[0].includes(key)) { continue; }
+            remainingHeaders[key] = await this._extractHeader(key, clean, escape);
+        }
+        return remainingHeaders;
+    }
+
     _findPlainTextReplyInsertMarker(textLines, lookupWord) {
         let startPos = 0;
-        for(let l of textLines) {
+        for (let l of textLines) {
             if (l.trim().includes(lookupWord)) {
                 return { found: true, startPos: startPos }
             }
@@ -433,5 +446,34 @@ class ReplyWithHeader {
             return subject.replace(rwhSettings.forwardSubjectPrefix, 'FW:');
         }
         return subject;
+    }
+
+    async _handleAllHeadersFlow(clean, escape) {
+        if (this.isReply) { return ''; }
+
+        let prefName = `header.fwd.all.${this.#accountId}.message_${this.#composeDetails.relatedMessageId}`;
+        let isForwardAllHeaders = await rwhSettings.get(prefName);
+        rwhLogger.debug('isForwardAllHeaders', isForwardAllHeaders);
+        if (isForwardAllHeaders) {
+            let remainingHeaders = await this._extractRemainingHeaders(clean, escape);
+            rwhLogger.debug(remainingHeaders);
+
+            if (this.isPlainText) {
+                let rwhHeaders = [];
+                for (let [key, value] of Object.entries(remainingHeaders)) {
+                    rwhHeaders.push(rwhUtils.toPartialCanonicalFormat(key) + ': ' + value);
+                }
+                return rwhHeaders;
+            } else {
+                let rwhHeaders = '';
+                for (let [key, value] of Object.entries(remainingHeaders)) {
+                    rwhHeaders += '<p style="margin:0cm;font-size:11.5pt"><span><b>'
+                        + rwhUtils.toPartialCanonicalFormat(key) + ':</b> ' + value + '</span></p>';
+                }
+                return rwhHeaders;
+            }
+        }
+
+        return '';
     }
 }
