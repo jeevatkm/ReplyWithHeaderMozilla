@@ -18,8 +18,23 @@ export function isObjectEmpty(objectName) {
     return true;
 }
 
+export function createDocumentFromString(htmlString) {
+    return new DOMParser().parseFromString(htmlString, 'text/html')
+}
+
 export function createElementFromString(htmlString) {
-    var div = document.createElement('div');
-    div.innerHTML = htmlString.trim();
-    return div.firstElementChild;
+    return createDocumentFromString(htmlString)?.body.firstElementChild;
+}
+
+const knownHeaderCaps = ['x', 'id', 'spf', 'dkim', 'messageid', 'arc', 'ms', 'mime', 'smtp', 'guid', 'eid'];
+export function toPartialCanonicalFormat(hdrKey) {
+    let values = [];
+    for (let v of hdrKey.split('-')) {
+        if (knownHeaderCaps.includes(v)) {
+            values.push(v.toUpperCase());
+        } else {
+            values.push(v.charAt(0).toUpperCase() + v.slice(1));
+        }
+    }
+    return values.join('-');
 }

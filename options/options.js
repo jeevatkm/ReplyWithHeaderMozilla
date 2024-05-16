@@ -202,6 +202,7 @@ async function init() {
         switch(command) {
             case 'openHeadersTab':
                 openRwhTab(document.getElementById('headersTab'));
+                break;
             case 'openAboutTab':
                 openRwhTab(document.getElementById('aboutTab'));
                 break;

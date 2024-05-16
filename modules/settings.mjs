@@ -9,7 +9,7 @@
 
 // RWH Settings Module
 
-import { rwhLogger} from './logger.mjs';
+import { rwhLogger } from './logger.mjs';
 import * as rwhUtils from './utils.mjs';
 
 export const optionsPrefix = 'extensions.replywithheader.';

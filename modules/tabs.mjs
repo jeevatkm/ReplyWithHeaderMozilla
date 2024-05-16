@@ -9,7 +9,7 @@
 
 // RWH Tabs Module
 
-import { rwhLogger} from './logger.mjs';
+import { rwhLogger } from './logger.mjs';
 
 const tabListeners = {};
 

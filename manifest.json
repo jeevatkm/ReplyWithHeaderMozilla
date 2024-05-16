@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "ReplyWithHeader",
     "description": "Outlook style headers and few goodies for Thunderbird",
-    "version": "3.0.0.beta1",
+    "version": "3.0.0.beta2",
     "author": "Jeevanandam M.",
     "homepage_url": "https://myjeeva.com/replywithheader-mozilla",
     "browser_specific_settings": {
@@ -26,6 +26,15 @@
         "messagesRead",
         "accountsRead"
     ],
+    "message_display_action": {
+        "default_title": "RWH",
+        "type": "menu",
+        "default_icon": {
+            "16": "images/rwh.svg",
+            "24": "images/rwh.svg",
+            "32": "images/rwh.svg"
+        }
+    },
     "background": {
         "page": "background.html"
     },
