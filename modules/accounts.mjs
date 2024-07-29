@@ -22,7 +22,7 @@ export async function findIdByIdentityId(identityId) {
 }
 
 export async function all() {
-    let accounts = await messenger.accounts.list();
+    let accounts = await messenger.accounts.list(false);
     let res = [];
     for (let account of accounts) {
         if (account.type === 'none') { continue };
