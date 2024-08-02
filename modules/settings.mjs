@@ -32,6 +32,7 @@ let keyHeaderDateFormat = 'header.date.format';
 let keyHeaderTimeFormat = 'header.time.format';
 let keyHeaderTimeZone = 'header.date.timezone';
 let keyHeaderLocale = 'header.locale';
+let keyHeaderLocaleUserSelected = 'header.locale.user.selected';
 let keyHeaderPlainPrefixText = 'header.plain.prefix.text';
 let keyHeaderHtmlPrefixLine = 'header.html.prefix.line';
 let keyHeaderHtmlPrefixLineColor = 'header.html.prefix.line.color';
@@ -45,6 +46,7 @@ let rwhDefaultSettings = {
     [keyHeaderLabelSeqStyle]: 1,
 
     [keyHeaderLocale]: 'en-US',
+    [keyHeaderLocaleUserSelected]: false,
     [keyHeaderPlainPrefixText]: true,
     [keyHeaderHtmlPrefixLine]: true,
     [keyHeaderHtmlPrefixLineColor]: '#B5C4DF',
@@ -137,6 +139,10 @@ export async function isHeaderTimeZone() {
 
 export async function getHeaderLocale() {
     return await get(keyHeaderLocale, rwhDefaultSettings[keyHeaderLocale]);
+}
+
+export async function isHeaderLocaleUserSelected() {
+    return await get(keyHeaderLocaleUserSelected, rwhDefaultSettings[keyHeaderLocaleUserSelected]);
 }
 
 export async function isHeaderPlainPrefixText() {
