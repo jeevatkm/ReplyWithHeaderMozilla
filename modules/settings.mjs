@@ -37,6 +37,7 @@ let keyHeaderHtmlPrefixLine = 'header.html.prefix.line';
 let keyHeaderHtmlPrefixLineColor = 'header.html.prefix.line.color';
 let keyTransSubjectPrefix = 'trans.subject.prefix';
 let keyCleanBlockQuoteColor = 'clean.blockquote.color';
+let keyCleanAllBlockQuoteColor = 'clean.blockquote.all.color';
 let keyCleanQuoteCharGreaterThan = 'clean.quote.char.greaterthan';
 
 let rwhDefaultSettings = {
@@ -63,6 +64,7 @@ let rwhDefaultSettings = {
     [keyHeaderTimeZone]: true,
 
     [keyCleanBlockQuoteColor]: true,
+    [keyCleanAllBlockQuoteColor]: false,
     [keyCleanQuoteCharGreaterThan]: true,
 }
 
@@ -155,6 +157,10 @@ export async function isTransSubjectPrefix() {
 
 export async function isCleanBlockQuoteColor() {
     return await get(keyCleanBlockQuoteColor, rwhDefaultSettings[keyCleanBlockQuoteColor]);
+}
+
+export async function isCleanAllBlockQuoteColor() {
+    return await get(keyCleanAllBlockQuoteColor, rwhDefaultSettings[keyCleanAllBlockQuoteColor]);
 }
 
 export async function isCleanQuoteCharGreaterThan() {

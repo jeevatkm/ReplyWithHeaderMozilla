@@ -19,6 +19,7 @@ const positionBeforeBegin = 'beforebegin';
 const positionAfterBegin = 'afterbegin';
 const fwdHdrLookupString = '-------- ';
 const plainTextFirstChars = '> ';
+const cleanBlockQuoteStyle = 'border:none !important; padding-left:0px !important; margin-left:0px !important;';
 
 export async function process(tab) {
     rwhLogger.debug(`tab.id=${tab.id}, tab.type=${tab.type}, tab.mailTab=${tab.mailTab}`);
@@ -176,17 +177,22 @@ class ReplyWithHeader {
         // put back the cleaned up <br> tags as-is
         if (this.isReply) {
             div.insertAdjacentElement(positionAfterBegin, this._createElement('br'));
+
+            // blockquote
+            if (await rwhSettings.isCleanAllBlockQuoteColor()) { // all
+                let bqs = this._getAllByTagName('blockquote');
+                for (let b of bqs) {
+                    b.setAttribute('style', cleanBlockQuoteStyle);
+                }
+            } else if (await rwhSettings.isCleanBlockQuoteColor()) { // first level
+                let bq = this._getByTagName('blockquote');
+                bq.setAttribute('style', cleanBlockQuoteStyle);
+            }
         }
         if (this.isForward) {
             let mozForwardContainer = this._getByClassName('moz-forward-container');
             this._cleanNodesUpToClassName(mozForwardContainer, targetNodeClassName);
             mozForwardContainer.insertAdjacentElement(positionAfterBegin, this._createElement('br'));
-        }
-
-        // blockquote
-        if (await rwhSettings.isCleanBlockQuoteColor() && this.isReply) {
-            let bq = this._getByTagName('blockquote');
-            bq.setAttribute('style', 'border:none !important;padding-left:0 !important;');
         }
 
         return {
@@ -410,7 +416,11 @@ class ReplyWithHeader {
     }
 
     _getByTagName(tagName) {
-        return this.#document?.getElementsByTagName(tagName)?.[0];
+        return this._getAllByTagName(tagName)?.[0];
+    }
+
+    _getAllByTagName(tagName) {
+        return this.#document?.getElementsByTagName(tagName);
     }
 
     _createElement(tagName) {
