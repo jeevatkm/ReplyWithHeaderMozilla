@@ -25,9 +25,12 @@ messenger.runtime.onInstalled.addListener(async function (details) {
 
 messenger.accounts.onCreated.addListener(async function (id, account) {
     rwhLogger.debug('onCreated', id, account);
-    if (account.type === 'imap' || account.type === 'pop3') {
-        rwhSettings.setDefault(`${id}.enabled`, true);
-    }
+    rwhSettings.setDefault(`${id}.enabled`, true);
+
+    // TODO revisit later on
+    // if (account.type === 'imap' || account.type === 'pop3') {
+    //    rwhSettings.setDefault(`${id}.enabled`, true);
+    // }
 });
 
 messenger.accounts.onDeleted.addListener(async function (id) {
