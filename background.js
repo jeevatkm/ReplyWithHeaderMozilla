@@ -36,6 +36,11 @@ messenger.accounts.onDeleted.addListener(async function (id) {
 });
 
 async function detectLocaleAndSetAsDefault() {
+    let userSelected = await rwhSettings.isHeaderLocaleUserSelected();
+    if (userSelected) {
+        return;
+    }
+
     let uiLocale = messenger.i18n.getUILanguage();
     let selected = rwhI18n.i18n.lang[uiLocale];
     let currentLocale = await rwhSettings.getHeaderLocale();

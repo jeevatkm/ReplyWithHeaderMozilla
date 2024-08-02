@@ -125,6 +125,12 @@ async function savePref(prefElement) {
         case 'SELECT':
         case 'color':
         case 'text':
+            switch (name) {
+                case 'header.locale':
+                    rwhSettings.set('header.locale.user.selected', true);
+                    break;
+            }
+
             rwhSettings.set(name, prefElement.value);
             break;
     }
