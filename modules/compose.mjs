@@ -16,10 +16,11 @@ import * as rwhAccounts from './accounts.mjs';
 import * as rwhUtils from './utils.mjs';
 
 const positionBeforeBegin = 'beforebegin';
+const positionBeforeEnd = 'beforeend';
 const positionAfterBegin = 'afterbegin';
 const fwdHdrLookupString = '-------- ';
 const plainTextFirstChars = '> ';
-const cleanBlockQuoteStyle = 'border:none !important; padding-left:0px !important; margin-left:0px !important;';
+const cleanBlockQuoteStyle = 'border:none !important; padding-left:0 !important; margin-left:0 !important;';
 
 export async function process(tab) {
     rwhLogger.debug(`tab.id=${tab.id}, tab.type=${tab.type}, tab.mailTab=${tab.mailTab}`);
@@ -176,7 +177,9 @@ class ReplyWithHeader {
 
         // put back the cleaned up <br> tags as-is
         if (this.isReply) {
-            div.insertAdjacentElement(positionAfterBegin, this._createElement('br'));
+			// Originally, there's no <br> after the (unindented) cite prefix.
+			// With the table style, it looks better with an extra empty line (like everybody else has it).
+            div.insertAdjacentElement(positionBeforeEnd, this._createElement('br'));
 
             // blockquote
             if (await rwhSettings.isCleanAllBlockQuoteColor()) { // all
@@ -192,7 +195,15 @@ class ReplyWithHeader {
         if (this.isForward) {
             let mozForwardContainer = this._getByClassName('moz-forward-container');
             this._cleanNodesUpToClassName(mozForwardContainer, targetNodeClassName);
-            mozForwardContainer.insertAdjacentElement(positionAfterBegin, this._createElement('br'));
+			
+			// Insert 2 <br> before the headers to make it look like a reply does.
+			mozForwardContainer.insertAdjacentElement(positionAfterBegin, this._createElement('br'));
+			mozForwardContainer.insertAdjacentElement(positionAfterBegin, this._createElement('br'));
+
+			// There are 2 <br> originally, but none for reply mode.
+			// We add one for replies, so let's remove one for forwards to make it even.
+			let nextBr = mozForwardContainer.querySelector("div.moz-email-headers-table + br");
+			nextBr?.remove();
         }
 
         return {
@@ -267,7 +278,7 @@ class ReplyWithHeader {
         let rwhHeaders = '<div id="rwhHeaders"';
         if (await rwhSettings.isHeaderHtmlPrefixLine()) {
             let borderColor = await rwhSettings.getHeaderHtmlPrefixLineColor();
-            rwhHeaders += ` style="border:none;border-top:solid ${borderColor} 1.0pt;padding:3.0pt 0cm 0cm 0cm"`
+            rwhHeaders += ` style="border-top:solid ${borderColor} 1px;padding-top:3px"`
         }
         rwhHeaders += '>';
 
@@ -282,12 +293,12 @@ class ReplyWithHeader {
             }
 
             if (headers[hdrKey]) {
-                rwhHeaders += '<p style="margin:0cm;font-size:11.5pt"><span><b>' + lbl + '</b> ' + headers[hdrKey] + '</span></p>';
+                rwhHeaders += '<p style="margin:0"><span><b>' + lbl + '</b> ' + headers[hdrKey] + '</span></p>';
             }
         }, this);
 
         rwhHeaders += await this._handleAllHeadersFlow(false, true);
-        rwhHeaders += '</div><br>';
+        rwhHeaders += '</div>';
 
         return rwhHeaders;
     }
@@ -477,7 +488,7 @@ class ReplyWithHeader {
             } else {
                 let rwhHeaders = '';
                 for (let [key, value] of Object.entries(remainingHeaders)) {
-                    rwhHeaders += '<p style="margin:0cm;font-size:11.5pt"><span><b>'
+                    rwhHeaders += '<p style="margin:0"><span><b>'
                         + rwhUtils.toPartialCanonicalFormat(key) + ':</b> ' + value + '</span></p>';
                 }
                 return rwhHeaders;
