@@ -7,24 +7,112 @@
  * https://github.com/jeevatkm/ReplyWithHeaderMozilla/blob/master/LICENSE
  */
 
-fieldset {
-    border: 1px solid var(--color-gray-20);
-    border-top-width: 26px;
-    margin: 1ex 0 1ex 0;
+@media (prefers-color-scheme: dark) {
+    :root {
+        --border-color: color-mix(in srgb, var(--background-color-box) 93%, white);
+        --background-color: color-mix(in srgb, var(--background-color-box) 90%, white);
+        --hover-color: color-mix(in srgb, var(--background-color-box) 90%, black);
+    }
+
+    body {
+        color: rgb(228, 228, 229);
+    }
+
+    fieldset {
+        border: 1px solid var(--color-gray-30);
+    }
+
+    fieldset legend {
+        background: var(--color-gray-30);
+        color: #000;
+        line-height: 26px;
+    }
+
+    #accountSelectImg, #hdrLocaleImg {
+        filter: invert(80%) sepia(100%) saturate(0%) hue-rotate(229deg) brightness(107%) contrast(105%);
+    }
+
+    #tabList li {
+        border: 1px solid var(--color-gray-30);
+        font-size: 92%;
+        font-weight: bold;
+    }
+
+    #tabList li:focus,
+    #tabList li:hover {
+        background-color: #3c3c3f !important;
+    }
+
+    #tabList li[aria-selected="true"] {
+        background-color: var(--background-color-box) !important;
+        color: #3478f7;
+    }
+
+    #tabList li[aria-selected="false"] {
+        background-color: #3c3c3f !important;
+        font-size: 85%;
+    }
+
+    #tabcontent {
+        border: 1px solid var(--color-gray-30);
+    }
+
+    #multiselectCheckboxes {
+        background-color: var(--background-color-box) !important;
+        border: 1px solid #474748 !important;
+        box-shadow:0 0 10px #000000 !important;
+    }
+
+    #multiselectCheckboxes label:hover {
+        background: #3c3c3f !important;
+        border-radius: 4px !important;
+    }
+
+    #buttonPaypal, #buttonGithub {
+        background-color: var(--color-gray-20) !important;
+    }
+
+    #buttonPaypal:hover, #buttonGithub:hover {
+        background-color: var(--color-gray-30) !important;
+        color: #3478f7;
+    }
+
 }
 
-fieldset legend {
-    background: var(--color-gray-20);
-    line-height: 26px;
+@media (prefers-color-scheme: light) {
+    :root {
+        --border-color: color-mix(in srgb, var(--background-color-box) 93%, black);
+        --background-color: color-mix(in srgb, var(--background-color-box) 90%, black);
+        --hover-color: color-mix(in srgb, var(--background-color-box) 90%, white);
+    }
+
+    fieldset {
+        border: 1px solid var(--color-gray-20);
+    }
+
+    fieldset legend {
+        background: var(--color-gray-20);
+        line-height: 26px;
+    }
+
 }
 
-/* html,
-body {
-    background-color: var(--color-gray-10);
-} */
+html {
+    color-scheme: light dark;
+    background-color: var(--background-color-box);
+}
 
 body {
     margin: 1em;
+}
+
+button {
+    margin: 3px;
+}
+
+fieldset {
+    border-top-width: 26px !important;
+    margin: 1ex 0 1ex 0;
 }
 
 .vbox {
@@ -33,10 +121,6 @@ body {
 }
 .center {
     align-items: center;
-}
-
-button {
-    margin: 3px;
 }
 
 .hbox {
@@ -90,10 +174,10 @@ button {
 }
 
 #tabcontent {
-    /* background-color: white; */
     border: 1px solid var(--color-gray-20);
     margin: 0px;
     padding: 1em;
+    margin-top: 2px;
 }
 
 [aria-hidden="true"] {
