@@ -4,11 +4,11 @@
  <p align="center">Outlook style headers and few goodies for Thunderbird</p>
 </p>
 <p align="center">
- <a href="https://github.com/jeevatkm/ReplyWithHeaderMozilla/releases/latest" alt="Version"><img src="https://img.shields.io/badge/version-3.0.0-blue.svg" alt="Version" /></a> <a href="LICENSE" alt="LICENSE"><img src="https://img.shields.io/github/license/jeevatkm/ReplyWithHeaderMozilla.svg" alt="LICENSE" /></a> <a href="http://myjeeva.com/replywithheader-mozilla" alt"Home page"><img src="https://img.shields.io/badge/Homepage-blue" alt"Home page" /> </a>
+ <a href="https://github.com/jeevatkm/ReplyWithHeaderMozilla/releases/latest" alt="Version"><img src="https://img.shields.io/badge/version-3.1.0-blue.svg" alt="Version" /></a> <a href="LICENSE" alt="LICENSE"><img src="https://img.shields.io/github/license/jeevatkm/ReplyWithHeaderMozilla.svg" alt="LICENSE" /></a> <a href="http://myjeeva.com/replywithheader-mozilla" alt"Home page"><img src="https://img.shields.io/badge/Homepage-blue" alt"Home page" /> </a>
 </p>
 
 ## Download
-Head to Thunderbord Add-ons store to download. **RWH v3 is completly rewritten from ground up in {Web|Mail}Extension model**
+Head to Thunderbird Add-ons store to download. **RWH v3 is completely rewritten from the ground up in {Web|Mail}Extension model**
 
 <p align="center"><b><a href="https://addons.thunderbird.net/en-US/thunderbird/addon/replywithheader/" alt="">Thunderbird Add-ons Store</a></b></p>
 
