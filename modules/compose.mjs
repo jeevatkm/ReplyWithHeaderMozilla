@@ -15,12 +15,11 @@ import * as rwhI18n from './headers-i18n.mjs';
 import * as rwhAccounts from './accounts.mjs';
 import * as rwhUtils from './utils.mjs';
 
-const positionBeforeBegin = 'beforebegin';
 const positionBeforeEnd = 'beforeend';
 const positionAfterBegin = 'afterbegin';
 const fwdHdrLookupString = '-------- ';
 const plainTextFirstChars = '> ';
-const cleanBlockQuoteStyle = 'border:none !important; padding-left:0 !important; margin-left:0 !important;';
+const cleanBlockQuoteStyle = 'border:none !important; padding-left:0px !important; margin-left:0px !important;';
 
 export async function process(tab) {
     rwhLogger.debug(`tab.id=${tab.id}, tab.type=${tab.type}, tab.mailTab=${tab.mailTab}`);
@@ -278,7 +277,7 @@ class ReplyWithHeader {
         let rwhHeaders = '<div id="rwhHeaders"';
         if (await rwhSettings.isHeaderHtmlPrefixLine()) {
             let borderColor = await rwhSettings.getHeaderHtmlPrefixLineColor();
-            rwhHeaders += ` style="border-top:solid ${borderColor} 1px;padding-top:3px"`
+            rwhHeaders += ` style="border:none;border-top:solid ${borderColor} 1.0pt;padding:3.0pt 0cm 0cm 0cm"`
         }
         rwhHeaders += '>';
 
@@ -293,7 +292,7 @@ class ReplyWithHeader {
             }
 
             if (headers[hdrKey]) {
-                rwhHeaders += '<p style="margin:0"><span><b>' + lbl + '</b> ' + headers[hdrKey] + '</span></p>';
+                rwhHeaders += '<p style="margin:0cm"><span><b>' + lbl + '</b> ' + headers[hdrKey] + '</span></p>';
             }
         }, this);
 
