@@ -19,23 +19,19 @@ messenger.runtime.onInstalled.addListener(async function (details) {
     // About 'details' argument
     // Refer here: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onInstalled
     rwhLogger.debug(details);
-    let accounts = await rwhAccounts.all();
-    rwhSettings.setAccountDefaults(accounts);
+
+    let identities = await rwhAccounts.allIdentities();
+    rwhSettings.setIdentityDefaults(identities);
 });
 
-messenger.accounts.onCreated.addListener(async function (id, account) {
-    rwhLogger.debug('onCreated', id, account);
-    rwhSettings.setDefault(`${id}.enabled`, true);
-
-    // TODO revisit later on
-    // if (account.type === 'imap' || account.type === 'pop3') {
-    //    rwhSettings.setDefault(`${id}.enabled`, true);
-    // }
+messenger.identities.onCreated.addListener(async function (identityId, identity) {
+    rwhLogger.debug('onCreated', identityId, identity);
+    rwhSettings.setDefault(`identity.${identityId}.enabled`, true);
 });
 
-messenger.accounts.onDeleted.addListener(async function (id) {
-    rwhLogger.debug('onDeleted', id);
-    rwhSettings.remove(`${id}.enabled`);
+messenger.identities.onDeleted.addListener(async function (identityId) {
+    rwhLogger.debug('onDeleted', identityId);
+    rwhSettings.remove(`identity.${identityId}.enabled`);
 });
 
 async function detectLocaleAndSetAsDefault() {

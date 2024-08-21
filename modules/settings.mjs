@@ -111,14 +111,14 @@ export async function setDefaults() {
     }
 }
 
-export async function setAccountDefaults(accounts) {
-    for (let account of accounts) {
-        await setDefault(`${account.id}.enabled`, true);
+export async function setIdentityDefaults(identities) {
+    for (let identity of identities) {
+        await setDefault(`identity.${identity.id}.enabled`, true);
     }
 }
 
-export async function isAccountEnabled(accountId) {
-    return await get(`${accountId}.enabled`, true);
+export async function isIdentityEnabled(identityId) {
+    return await get(`identity.${identityId}.enabled`, true);
 }
 
 export async function getHeaderLabelSeqStyle() {

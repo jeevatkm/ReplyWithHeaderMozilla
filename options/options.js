@@ -62,10 +62,9 @@ async function populateLocale(prefElement) {
 
 async function populateAccounts() {
     let multiselectCheckboxes = document.getElementById('multiselectCheckboxes');
-    let accounts = await rwhAccounts.all();
-
-    for (let account of accounts) {
-        let e = rwhUtils.createElementFromString(`<label for="${account.id}"><input type="checkbox" id="${account.id}" data-preference="${account.id}.enabled" />${account.name}</label>`);
+    let identities = await rwhAccounts.allIdentities();
+    for (let identity of identities) {
+        let e = rwhUtils.createElementFromString(`<label for="identity_${identity.id}"><input type="checkbox" id="identity_${identity.id}" data-preference="identity.${identity.id}.enabled" />${identity.email}</label>`);
         multiselectCheckboxes.appendChild(e);
     }
 }
@@ -167,8 +166,8 @@ async function init() {
     }
 
     // Account multi select
-    let multiselectAccount = document.getElementById('multiselectAccount');
-    multiselectAccount.addEventListener('click', function(e) {
+    let multiselectIdentity = document.getElementById('multiselectIdentity');
+    multiselectIdentity.addEventListener('click', function(e) {
         const multiselectCheckboxes = document.getElementById('multiselectCheckboxes');
         if (!multiselectExpanded) {
             multiselectCheckboxes.style.display = 'block';

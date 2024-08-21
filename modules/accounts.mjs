@@ -10,7 +10,7 @@
 // RWH Account Module
 
 export async function findIdByIdentityId(identityId) {
-    let accounts = await messenger.accounts.list();
+    let accounts = await messenger.accounts.list(false);
     for (let account of accounts) {
         for (let identity of account.identities) {
             if (identity.id === identityId) {
@@ -21,15 +21,13 @@ export async function findIdByIdentityId(identityId) {
     return null;
 }
 
-export async function all() {
-    let accounts = await messenger.accounts.list(false);
+export async function allIdentities() {
+    let identities = await messenger.identities.list();
     let res = [];
-    for (let account of accounts) {
-        if (account.type === 'none') { continue };
+    for (let identity of identities) {
         res.push({
-            'id': account.id,
-            'name': account.name,
-            'type': account.type
+            'id': identity.id,
+            'email': identity.email,
         });
     }
     return res;
