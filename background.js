@@ -59,11 +59,15 @@ async function init() {
     });
 
     await detectLocaleAndSetAsDefault();
+
+    let tbInfo = await messenger.runtime.getBrowserInfo();
+    let tbPlatformInfo = await messenger.runtime.getPlatformInfo();
+    let manifestInfo = messenger.runtime.getManifest();
+    rwhLogger.info(`Add-on v${manifestInfo.version} loaded successfully (TB v${tbInfo.version}, Platform: ${tbPlatformInfo.os} ${tbPlatformInfo.arch})`);
 }
 
 try {
     init();
-    rwhLogger.info('Addon loaded successfully');
 } catch (e) {
     rwhLogger.error(e);
 }
