@@ -31,22 +31,25 @@ export async function process(tab) {
         return;
     }
 
-    // Check account level disable exists
-    let accountId = await rwhAccounts.findIdByIdentityId(composeDetails.identityId);
-    let isAccountEnabled = await rwhSettings.isAccountEnabled(accountId);
-    rwhLogger.debug('AccountId', accountId, 'isAccountEnabled', isAccountEnabled);
-    if (!isAccountEnabled) {
+    // Check identity level disable exists
+    let identityId = composeDetails.identityId;
+    let accountId = await rwhAccounts.findIdByIdentityId(identityId);
+    let isIdentityEnabled = await rwhSettings.isIdentityEnabled(identityId);
+    rwhLogger.debug('AccountId', accountId, 'IdentityId:', identityId, 'isIdentityEnabled:', isIdentityEnabled);
+    if (!isIdentityEnabled) {
         return; // RWH stops here
     }
 
+    let messageId = composeDetails.relatedMessageId;
+
     // Check 10s disable exists on message level
-    let isMessageLevelDisabled = await rwhSettings.get(`disable.${accountId}.message_${composeDetails.relatedMessageId}`);
+    let isMessageLevelDisabled = await rwhSettings.get(`disable.${accountId}.message_${messageId}`);
     rwhLogger.debug('isMessageLevelDisabled', isMessageLevelDisabled);
     if (isMessageLevelDisabled) {
         return; // RWH stops here
     }
 
-    let fullMsg = await messenger.messages.getFull(composeDetails.relatedMessageId);
+    let fullMsg = await messenger.messages.getFull(messageId);
     rwhLogger.debug(fullMsg);
 
     let rwh = new ReplyWithHeader(accountId, composeDetails, fullMsg).init();

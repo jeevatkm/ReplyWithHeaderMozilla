@@ -28,7 +28,7 @@
         line-height: 26px;
     }
 
-    #accountSelectImg, #hdrLocaleImg {
+    #identitySelectImg, #hdrLocaleImg {
         filter: invert(80%) sepia(100%) saturate(0%) hue-rotate(229deg) brightness(107%) contrast(105%);
     }
 
