@@ -194,15 +194,10 @@ class ReplyWithHeader {
         if (this.isForward) {
             let mozForwardContainer = this._getByClassName('moz-forward-container');
             this._cleanNodesUpToClassName(mozForwardContainer, targetNodeClassName);
-			
-			// Insert 2 <br> before the headers to make it look like a reply does.
-			mozForwardContainer.insertAdjacentElement(positionAfterBegin, this._createElement('br'));
-			mozForwardContainer.insertAdjacentElement(positionAfterBegin, this._createElement('br'));
 
-			// There are 2 <br> originally, but none for reply mode.
-			// We add one for replies, so let's remove one for forwards to make it even.
-			let nextBr = mozForwardContainer.querySelector("div.moz-email-headers-table + br");
-			nextBr?.remove();
+            // Insert 2 <br> before the headers to make it look like a reply does.
+            mozForwardContainer.insertAdjacentElement(positionAfterBegin, this._createElement('br'));
+            mozForwardContainer.insertAdjacentElement(positionAfterBegin, this._createElement('br'));
         }
 
         return {
@@ -262,7 +257,6 @@ class ReplyWithHeader {
             }
         }
 
-
         this.#text = textLines.join('\r\n');
         return {
             plainTextBody: this.#text
@@ -277,7 +271,7 @@ class ReplyWithHeader {
         let rwhHeaders = '<div id="rwhHeaders"';
         if (await rwhSettings.isHeaderHtmlPrefixLine()) {
             let borderColor = await rwhSettings.getHeaderHtmlPrefixLineColor();
-            rwhHeaders += ` style="border:none;border-top:solid ${borderColor} 1.0pt;padding:3.0pt 0cm 0cm 0cm"`
+            rwhHeaders += ` style="border:none;border-top:solid ${borderColor} 1.0pt;padding:3.0pt 0cm 0cm 0cm;width:100%"`
         }
         rwhHeaders += '>';
 
