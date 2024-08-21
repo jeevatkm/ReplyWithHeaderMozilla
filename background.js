@@ -41,7 +41,7 @@ async function detectLocaleAndSetAsDefault() {
     }
 
     let uiLocale = messenger.i18n.getUILanguage();
-    let selected = rwhI18n.i18n.lang[uiLocale];
+    let selected = rwhI18n.i18n.lang[uiLocale] ?? 'en-US';
     let currentLocale = await rwhSettings.getHeaderLocale();
     rwhLogger.debug('currentLocale:', currentLocale, 'uiLocale:', uiLocale, 'selected:', selected);
     if (selected !== 'undefined' && currentLocale !== uiLocale) {
