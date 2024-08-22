@@ -81,6 +81,12 @@ async function loadPref(prefElement) {
                         document.getElementById('hdrHtmlPrefixLineColor').disabled = !e.target.checked;
                     });
                 break;
+                case 'header.html.font.size':
+                    prefElement.addEventListener('click', function(e) {
+                        document.getElementById('hdrHtmlFontSizeValue').disabled = !e.target.checked;
+                    });
+                    document.getElementById('hdrHtmlFontSizeValue').disabled = !value;
+                break;
             }
             prefElement.checked = value;
             prefElement.addEventListener('change', () => savePref(prefElement));

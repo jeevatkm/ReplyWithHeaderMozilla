@@ -179,6 +179,7 @@ class ReplyWithHeader {
 			// Originally, there's no <br> after the (unindented) cite prefix.
 			// With the table style, it looks better with an extra empty line (like everybody else has it).
             div.insertAdjacentElement(positionBeforeEnd, this._createElement('br'));
+            div.insertAdjacentElement(positionAfterBegin, this._createElement('br'));
 
             // blockquote
             if (await rwhSettings.isCleanAllBlockQuoteColor()) { // all
@@ -194,15 +195,10 @@ class ReplyWithHeader {
         if (this.isForward) {
             let mozForwardContainer = this._getByClassName('moz-forward-container');
             this._cleanNodesUpToClassName(mozForwardContainer, targetNodeClassName);
-			
-			// Insert 2 <br> before the headers to make it look like a reply does.
-			mozForwardContainer.insertAdjacentElement(positionAfterBegin, this._createElement('br'));
-			mozForwardContainer.insertAdjacentElement(positionAfterBegin, this._createElement('br'));
 
-			// There are 2 <br> originally, but none for reply mode.
-			// We add one for replies, so let's remove one for forwards to make it even.
-			let nextBr = mozForwardContainer.querySelector("div.moz-email-headers-table + br");
-			nextBr?.remove();
+            // Insert 2 <br> before the headers to make it look like a reply does.
+            mozForwardContainer.insertAdjacentElement(positionAfterBegin, this._createElement('br'));
+            mozForwardContainer.insertAdjacentElement(positionAfterBegin, this._createElement('br'));
         }
 
         return {
@@ -262,7 +258,6 @@ class ReplyWithHeader {
             }
         }
 
-
         this.#text = textLines.join('\r\n');
         return {
             plainTextBody: this.#text
@@ -277,9 +272,18 @@ class ReplyWithHeader {
         let rwhHeaders = '<div id="rwhHeaders"';
         if (await rwhSettings.isHeaderHtmlPrefixLine()) {
             let borderColor = await rwhSettings.getHeaderHtmlPrefixLineColor();
-            rwhHeaders += ` style="border:none;border-top:solid ${borderColor} 1.0pt;padding:3.0pt 0cm 0cm 0cm"`
+            rwhHeaders += ` style="border:none;border-top:solid ${borderColor} 1.0pt;padding:3.0pt 0cm 0cm 0cm;width:100%"`
         }
         rwhHeaders += '>';
+
+        // font size
+        let fontSizeStyle = '';
+        if (await rwhSettings.isHeaderHtmlFontSize()) {
+            let fontSizeValue = await rwhSettings.getHeaderHtmlFontSizeValue() ?? null;
+            if (fontSizeValue) {
+                fontSizeStyle = `;font-size:${fontSizeValue}`;
+            }
+        }
 
         headerLabelSeqValues.forEach(function (hdrKey, _) {
             if (hdrKey == 'reply-to' && this.isReply) {
@@ -292,7 +296,7 @@ class ReplyWithHeader {
             }
 
             if (headers[hdrKey]) {
-                rwhHeaders += '<p style="margin:0cm"><span><b>' + lbl + '</b> ' + headers[hdrKey] + '</span></p>';
+                rwhHeaders += '<p style="margin:0cm' + fontSizeStyle +'"><span><b>' + lbl + '</b> ' + headers[hdrKey] + '</span></p>';
             }
         }, this);
 

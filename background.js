@@ -41,7 +41,7 @@ async function detectLocaleAndSetAsDefault() {
     }
 
     let uiLocale = messenger.i18n.getUILanguage();
-    let selected = rwhI18n.i18n.lang[uiLocale];
+    let selected = rwhI18n.i18n.lang[uiLocale] ?? 'en-US';
     let currentLocale = await rwhSettings.getHeaderLocale();
     rwhLogger.debug('currentLocale:', currentLocale, 'uiLocale:', uiLocale, 'selected:', selected);
     if (selected !== 'undefined' && currentLocale !== uiLocale) {
@@ -59,11 +59,15 @@ async function init() {
     });
 
     await detectLocaleAndSetAsDefault();
+
+    let tbInfo = await messenger.runtime.getBrowserInfo();
+    let tbPlatformInfo = await messenger.runtime.getPlatformInfo();
+    let manifestInfo = messenger.runtime.getManifest();
+    rwhLogger.info(`Add-on v${manifestInfo.version} loaded successfully (TB v${tbInfo.version}, Platform: ${tbPlatformInfo.os} ${tbPlatformInfo.arch})`);
 }
 
 try {
     init();
-    rwhLogger.info('Addon loaded successfully');
 } catch (e) {
     rwhLogger.error(e);
 }

@@ -36,6 +36,8 @@ let keyHeaderLocaleUserSelected = 'header.locale.user.selected';
 let keyHeaderPlainPrefixText = 'header.plain.prefix.text';
 let keyHeaderHtmlPrefixLine = 'header.html.prefix.line';
 let keyHeaderHtmlPrefixLineColor = 'header.html.prefix.line.color';
+let keyHeaderHtmlFontSize = 'header.html.font.size';
+let keyHeaderHtmlFontSizeValue = 'header.html.font.size.value';
 let keyTransSubjectPrefix = 'trans.subject.prefix';
 let keyCleanBlockQuoteColor = 'clean.blockquote.color';
 let keyCleanAllBlockQuoteColor = 'clean.blockquote.all.color';
@@ -50,6 +52,8 @@ let rwhDefaultSettings = {
     [keyHeaderPlainPrefixText]: true,
     [keyHeaderHtmlPrefixLine]: true,
     [keyHeaderHtmlPrefixLineColor]: '#B5C4DF',
+    [keyHeaderHtmlFontSize]: false,
+    [keyHeaderHtmlFontSizeValue]: '11.5pt',
     [keyTransSubjectPrefix]: true,
 
     // Date & Time
@@ -155,6 +159,14 @@ export async function isHeaderHtmlPrefixLine() {
 
 export async function getHeaderHtmlPrefixLineColor() {
     return await get(keyHeaderHtmlPrefixLineColor, rwhDefaultSettings[keyHeaderHtmlPrefixLineColor]);
+}
+
+export async function isHeaderHtmlFontSize() {
+    return await get(keyHeaderHtmlFontSize, rwhDefaultSettings[keyHeaderHtmlFontSize]);
+}
+
+export async function getHeaderHtmlFontSizeValue() {
+    return await get(keyHeaderHtmlFontSizeValue, rwhDefaultSettings[keyHeaderHtmlFontSizeValue]);
 }
 
 export async function isTransSubjectPrefix() {
