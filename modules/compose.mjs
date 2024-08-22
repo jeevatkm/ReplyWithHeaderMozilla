@@ -179,6 +179,7 @@ class ReplyWithHeader {
 			// Originally, there's no <br> after the (unindented) cite prefix.
 			// With the table style, it looks better with an extra empty line (like everybody else has it).
             div.insertAdjacentElement(positionBeforeEnd, this._createElement('br'));
+            div.insertAdjacentElement(positionAfterBegin, this._createElement('br'));
 
             // blockquote
             if (await rwhSettings.isCleanAllBlockQuoteColor()) { // all
@@ -275,6 +276,15 @@ class ReplyWithHeader {
         }
         rwhHeaders += '>';
 
+        // font size
+        let fontSizeStyle = '';
+        if (await rwhSettings.isHeaderHtmlFontSize()) {
+            let fontSizeValue = await rwhSettings.getHeaderHtmlFontSizeValue() ?? null;
+            if (fontSizeValue) {
+                fontSizeStyle = `;font-size:${fontSizeValue}`;
+            }
+        }
+
         headerLabelSeqValues.forEach(function (hdrKey, _) {
             if (hdrKey == 'reply-to' && this.isReply) {
                 return;
@@ -286,7 +296,7 @@ class ReplyWithHeader {
             }
 
             if (headers[hdrKey]) {
-                rwhHeaders += '<p style="margin:0cm"><span><b>' + lbl + '</b> ' + headers[hdrKey] + '</span></p>';
+                rwhHeaders += '<p style="margin:0cm' + fontSizeStyle +'"><span><b>' + lbl + '</b> ' + headers[hdrKey] + '</span></p>';
             }
         }, this);
 
