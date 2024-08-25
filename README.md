@@ -4,7 +4,7 @@
  <p align="center">Outlook style headers and few goodies for Thunderbird</p>
 </p>
 <p align="center">
- <a href="https://github.com/jeevatkm/ReplyWithHeaderMozilla/releases/latest" alt="Version"><img src="https://img.shields.io/badge/version-3.1.0-blue.svg" alt="Version" /></a> <a href="LICENSE" alt="LICENSE"><img src="https://img.shields.io/github/license/jeevatkm/ReplyWithHeaderMozilla.svg" alt="LICENSE" /></a> <a href="http://myjeeva.com/replywithheader-mozilla" alt"Home page"><img src="https://img.shields.io/badge/Homepage-blue" alt"Home page" /> </a>
+ <a href="https://github.com/jeevatkm/ReplyWithHeaderMozilla/releases/latest" alt="Version"><img src="https://img.shields.io/badge/version-3.2.0-blue.svg" alt="Version" /></a> <a href="LICENSE" alt="LICENSE"><img src="https://img.shields.io/github/license/jeevatkm/ReplyWithHeaderMozilla.svg" alt="LICENSE" /></a> <a href="http://myjeeva.com/replywithheader-mozilla" alt"Home page"><img src="https://img.shields.io/badge/Homepage-blue" alt"Home page" /> </a>
 </p>
 
 ## Download
@@ -20,7 +20,7 @@ ReplyWithHeader (RWH) is an Thunderbird email client add-on, that brings outlook
 
 ## Support & Donate
 
-* Write reviews and give Stars on [Thunderbird Add-ons Store](https://addons.thunderbird.net/en-US/thunderbird/addon/replywithheader/)
+* Provide 5 Stars reviews on [Thunderbird Add-ons Website aka ATN](https://addons.thunderbird.net/en-US/thunderbird/addon/replywithheader/)
 * Donate via [PayPal](https://www.paypal.com/donate/?cmd=_donations&business=QWMZG74FW4QYC&lc=US&item_name=ReplyWithHeader+(RWH)+Thunderbird+Addon&currency_code=USD)
 * Sponsor via [GitHub](https://github.com/sponsors/jeevatkm)
 
