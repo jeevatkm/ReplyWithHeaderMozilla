@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "ReplyWithHeader",
     "description": "Outlook style headers and few goodies for Thunderbird",
-    "version": "3.2.0-dev",
+    "version": "3.2.0",
     "author": "Jeevanandam M.",
     "homepage_url": "https://myjeeva.com/replywithheader-mozilla",
     "browser_specific_settings": {
