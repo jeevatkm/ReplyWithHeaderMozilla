@@ -224,15 +224,28 @@ class ReplyWithHeader {
         rwhLogger.debug(textLines);
 
         let locale = await rwhSettings.getHeaderLocale();
+        rwhLogger.debug('locale -', locale);
+
         let startPos = 0;
         let linesToDelete = 1;
         if (this.isReply) {
-            let r = this._findPlainTextReplyInsertMarker(textLines, rwhI18n.i18n['wrote'][locale]);
-            if (r.found) {
-                startPos = r.startPos;
-            } else { // fallback
-                r = this._findPlainTextReplyInsertMarker(textLines, rwhI18n.i18n['wrote']['en-US']);
-                startPos = r.found ? r.startPos : 0;
+            // Reply insert marker by fallback order
+            var lookupValues = new Array(
+                rwhI18n.i18n['wrote'][locale],
+                rwhI18n.i18n['wrote']['en-US'],
+                rwhI18n.i18n['originalMessage'][locale],
+                rwhI18n.i18n['originalMessage']['en-US'],
+            );
+            rwhLogger.debug('lookupValues -', lookupValues);
+
+            for (let idx in lookupValues) {
+                let v = lookupValues[idx];
+                let r = this._findPlainTextReplyInsertMarker(textLines, v);
+                if (r.found) {
+                    rwhLogger.debug(`Found by the index: ${idx} value: ${v}`);
+                    startPos = r.startPos;
+                    break;
+                }
             }
         } else if (this.isForward) {
             linesToDelete = rwhHeaders.length;
@@ -244,8 +257,9 @@ class ReplyWithHeader {
             }
         }
 
+        rwhLogger.debug('startPos -', startPos);
         if (startPos > 0) {
-            rwhLogger.debug('startPos', startPos, textLines[startPos]);
+            rwhLogger.debug('textLines: ', textLines[startPos]);
             textLines.splice(startPos, linesToDelete, ...rwhHeaders);
         }
 
