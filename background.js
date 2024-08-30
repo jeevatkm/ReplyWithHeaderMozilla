@@ -41,10 +41,17 @@ async function detectLocaleAndSetAsDefault() {
     }
 
     let uiLocale = messenger.i18n.getUILanguage();
-    let selected = rwhI18n.i18n.lang[uiLocale] ?? 'en-US';
+    let selected = rwhI18n.i18n.lang[uiLocale];
+    rwhLogger.debug('uiLocale:', uiLocale, 'selected:', selected);
+    if (typeof selected === 'undefined') {
+        rwhLogger.info(`Currently does not have support for locale '${uiLocale}', fallback to 'en-US'`);
+        await rwhSettings.set('header.locale', 'en-US');
+        return;
+    }
+
     let currentLocale = await rwhSettings.getHeaderLocale();
-    rwhLogger.debug('currentLocale:', currentLocale, 'uiLocale:', uiLocale, 'selected:', selected);
-    if (selected !== 'undefined' && currentLocale !== uiLocale) {
+    rwhLogger.debug('currentLocale:', currentLocale);
+    if (currentLocale !== uiLocale) {
         await rwhSettings.set('header.locale', uiLocale);
     }
 }
